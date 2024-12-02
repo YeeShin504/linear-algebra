@@ -85,7 +85,7 @@ def sympy_commands():
     >>> Matrix.create_rand_matrix(num_rows: int, num_cols: int) # creates a Matrix object with random entries
     >>> A.simplify(rational: bool = True, tolerance: float, simplify: bool = True, expand: bool = True, collect_sym: sym.Symbol = None)
     >>> A.identify(tolerance: float) # returns a matrix simplified using mp.identify 
-    >>> A.id() # returns the identity matrix with same number of rows as A
+    >>> A.elem() # returns the identity matrix with same number of rows as A
     >>> A.select_rows(*idx) # returns a new matrix with row vectors of *idx 
     >>> A.select_cols(*idx) # returns a new matrix with column vectors of *idx 
     >>> A.scale_row(idx: int, scalar: float, verbosity: int = 0) 
@@ -95,7 +95,7 @@ def sympy_commands():
     >>> A.ref(verbosity: int = 2, max_tries: int = 2, follow_GE: bool = False, matrices: int = 2) # matrices = 1 (U), 2 (LU), 3 (PLU)
     >>> A.evaluate_cases(rhs: sym.Matrix) # display a list of matrices for unknowns with critical values
     >>> A.column_constraints(use_id: bool = False, use_ref: bool = False) # returns the rref of [A | b], where b can be any vector. Use it to find constraints for b if A is not invertible.
-    >>> A.extend_basis(span_subspace: sym.Matrix = A.id()) # returns an augmented matrix with additional column vectors to span the subspace of the argument.
+    >>> A.extend_basis(span_subspace: sym.Matrix = A.elem()) # returns an augmented matrix with additional column vectors to span the subspace of the argument.
     >>> A.transition_matrix(to: sym.Matrix) # returns a transition matrix from A to the other matrix
     >>> A.intersect_subspace(other: sym.Matrix, verbosity: int = 1) # returns a basis for the subspace that is in the intersection of A and other columnspace.
     >>> A.is_same_subspace(other: sym.Matrix, verbosity: int = 1) # returns True if columnspace of A and other are equal
@@ -190,6 +190,9 @@ class Matrix(sym.MutableDenseMatrix):
         super().__init__()
         self.augpos = set()
 
+    ###########################
+    # MISCELLANEOUS FUNCTIONS #
+    ###########################
     def from_latex(expr: str, row_join=True, norm=False) -> "Matrix":
         """
         Converts a LaTeX expression into a SymPy Matrix object.
@@ -288,25 +291,6 @@ class Matrix(sym.MutableDenseMatrix):
             # If `row_join=False`, return the matrix as-is (vectors treated as columns)
             return res
 
-    def id(self) -> "Matrix":
-        """
-        Returns the identity matrix of the same size as the current matrix.
-
-        This method creates and returns an identity matrix with the same number
-        of rows (and columns) as the current matrix. The identity matrix has ones
-        on the diagonal and zeros elsewhere.
-
-        Returns:
-        - Matrix: A custom Matrix object (subclass of sympy.Matrix) that represents
-          the identity matrix of the same size as the current matrix.
-
-        Example:
-        >>> mat = Matrix([[1, 2], [3, 4]])
-        >>> mat.id()
-        Matrix([[1, 0], [0, 1]])
-        """
-        return Matrix(sym.eye(self.rows))
-
     def create_unk_matrix(
         num_rows: int = 1, num_cols: int = 1, symbol: str = "x", is_real: bool = True
     ) -> "Matrix":
@@ -343,87 +327,6 @@ class Matrix(sym.MutableDenseMatrix):
             f"{symbol}_(1:{num_rows+1})\\,(1:{num_cols+1})", is_real=is_real
         )
         return Matrix(entries).reshape(num_rows, num_cols)
-
-    def create_vander(
-        num_rows: int = 1, num_cols: int = 1, symbol: str = "x", is_real: bool = True
-    ) -> "Matrix":
-        """
-        Creates a Vandermonde matrix with symbolic entries.
-
-        This method generates a Vandermonde matrix of size `num_rows` x `num_cols`
-        where the entries are symbolic expressions. Each row in the matrix is formed
-        by raising a symbolic variable (indexed by row) to increasing powers (from 0
-        to `num_cols-1`). The `is_real` flag determines whether the symbols are real-valued.
-
-        Parameters:
-        - num_rows (int, optional): The number of rows in the Vandermonde matrix. Default is 1.
-        - num_cols (int, optional): The number of columns in the Vandermonde matrix. Default is 1.
-        - symbol (str, optional): The base name for the symbols used in the matrix entries.
-          Default is 'x'.
-        - is_real (bool, optional): If True (default), the symbols are real-valued;
-          otherwise, they are complex.
-
-        Returns:
-        - Matrix: A custom Matrix object (subclass of sympy.Matrix) that represents
-          the Vandermonde matrix with symbolic entries.
-
-        Example:
-        >>> Matrix.create_vander(3, 3, symbol='a')
-        Matrix([[a_1^0, a_1^1, a_1^2], [a_2^0, a_2^1, a_2^2], [a_3^0, a_3^1, a_3^2]])
-
-        >>> Matrix.create_vander(2, 4, symbol='b', is_real=False)
-        Matrix([[b_1^0, b_1^1, b_1^2, b_1^3], [b_2^0, b_2^1, b_2^2, b_2^3]])
-        """
-
-        entries = sym.symbols(f"{symbol}_(1:{num_rows+1})", is_real=is_real)
-        res = []
-        for entry in entries:
-            sub_res = []
-            for col_idx in range(num_cols):
-                # Raise the symbol to the power of the column index
-                sub_res.append(sym.Pow(entry, col_idx))
-            res.append(sub_res)
-        return Matrix(res)
-
-    def apply_vander(self, x: "Matrix") -> "Matrix":
-        """
-        Applies a Vandermonde transformation to the current matrix using the given vector.
-
-        This method applies a Vandermonde transformation to the current matrix by
-        substituting the free symbols in the last column with corresponding values
-        from the provided vector `x`. The number of rows in `self` must match the
-        number of elements in `x`, and `x` must be a column vector.
-
-        Parameters:
-        - x (Matrix): A column vector (Matrix object with a single column) containing
-          the values to substitute into the last column of the matrix.
-
-        Returns:
-        - Matrix: A new Matrix object where the free symbols in the last column of
-          the original matrix are substituted by the corresponding values from `x`.
-
-        Example:
-        >>> mat = Matrix([[x_1, x_2], [x_3, x_4]])
-        >>> x = Matrix([[1], [2]])
-        >>> mat.apply_vander(x)
-        Matrix([[1, 2], [1, 4]])
-
-        Notes:
-        - The matrix `self` is expected to be created via Matrix.create_vander().
-        - The `x` vector provides the values to substitute in place of these symbols.
-        """
-        # Step 1: Validate the size of the vector x
-        assert (
-            self.rows == x.rows
-        ), "Number of rows in matrix must match the size of the input vector."
-        assert x.cols == 1, "Input vector x must be a column vector."
-
-        # Step 2: Get the free symbols from the last column of the matrix
-        ordered_syms = [entry.free_symbols.pop() for entry in self.select_cols(-1)]
-
-        # Step 3: Create a substitution dictionary mapping symbols to values from vector x
-        substitution = {var: val for var, val in zip(ordered_syms, x)}
-        return self.subs(substitution)
 
     def create_rand_matrix(num_rows: int = 1, num_cols: int = 1) -> "Matrix":
         """
@@ -613,7 +516,77 @@ class Matrix(sym.MutableDenseMatrix):
             res.append(list(self.row(idx)))
         return Matrix(res)
 
-    def insert_aug_line(self, pos: int = -1) -> "Matrix":
+    def sep_part_gen(self) -> tuple["Matrix", "Matrix"]:
+        """
+        Separates a matrix into its particular and general solution parts.
+
+        This method separates the matrix into two components:
+        - The **particular solution**, which is the solution to the system when all free variables are set to zero.
+        - The **general solution**, which is the full solution including the homogeneous part.
+
+        It assumes that the matrix is in symbolic form and contains free variables that can be set to zero.
+
+        Returns:
+            tuple: A tuple containing:
+                - `part_sol` (Matrix): The particular solution (with free variables set to zero).
+                - `gen_sol` (Matrix): The general solution (the original matrix minus the particular solution).
+        
+        Example:
+            >>> mat = Matrix([[x, y], [x + y, 2*y]])
+            >>> part_sol, gen_sol = mat.sep_part_gen()
+            >>> part_sol
+            Matrix([[0, 0], [0, 0]])  # Particular solution
+            >>> gen_sol
+            Matrix([[x, y], [x + y, 2*y]])  # General solution
+        """
+
+        set_0 = dict([(symbol, 0) for symbol in self.free_symbols])
+        part_sol = self.subs(set_0)
+        gen_sol = self - part_sol
+        return part_sol, gen_sol
+
+    def scalar_factor(self, column=True) -> tuple["Matrix", "Matrix"]:
+        """
+        Factorizes a matrix into the form A = BD, where D is a diagonal matrix and B contains the vectors
+        with common divisors factored out (if `column=True`). If `column=False`, then returns A = DB instead.
+        
+        Args:
+            column (bool): If `True`, factorizes by columns (default is `True`). If `False`, factorizes by rows.
+            
+        Returns:
+            tuple["Matrix", "Matrix"]: A tuple of two matrices (B, D) such that A = BD, 
+            where D is diagonal and B contains the scaled vectors.
+        
+        Example:
+            >>> mat = Matrix([[6, 9], [12, 15]])
+            >>> B, D = mat.scalar_factor(column=True)
+            >>> B, D
+            (Matrix([[1, 1.5], [2, 2.5]]), Matrix([6, 6]))
+        """
+
+        scalars = []
+        B = self.copy()
+        if column:
+            for i in range(self.cols):
+                g = sym.gcd(tuple(self.col(i)))
+                B[:, i] /= g
+                scalars.append(g)
+            D = Matrix.diag(scalars)
+            assert self == B @ D
+            return B, D
+        else:
+            for i in range(self.rows):
+                g = sym.gcd(tuple(self.row(i)))
+                B[i, :] /= g
+                scalars.append(g)
+            D = Matrix.diag(scalars)
+            assert self == D @ B
+            return D, B
+
+    #############################
+    # CHAPTER 1: LINEAR SYSTEMS #
+    #############################
+    def aug_line(self, pos: int = -1) -> "Matrix":
         """
         Inserts an augmented line at the specified position.
 
@@ -631,7 +604,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Example:
         >>> mat = Matrix([[1, 2], [3, 4]])
-        >>> mat.insert_aug_line(1)
+        >>> mat.aug_line(1)
         Matrix([[1, 2], [3, 4], [0, 0]])
 
         Notes:
@@ -820,6 +793,66 @@ class Matrix(sym.MutableDenseMatrix):
         # Step 3: If no non-zero element is found, return -1 (indicating no pivot)
         return -1
 
+    def get_pivot_pos(self) -> list[tuple[int, int]]:
+        """
+        Finds the positions of the pivot elements in the matrix.
+
+        This method checks the matrix to determine the positions of the pivots
+        (the first non-zero entry in each row) by examining each column one-by-one.
+        It assumes that the matrix is in Row Echelon Form (REF), as checked by the
+        `is_echelon` property.
+
+        It uses `get_pivot_row` to find the pivot row for each column. For each
+        pivot found, a tuple (row, column) is added to the result list.
+
+        Returns:
+            list[tuple[int, int]]: A list of lists, where each sublist contains a
+                                   tuple representing the position (row, column) of a pivot.
+
+        Example:
+        >>> mat = Matrix([[1, 2, 3], [0, 4, 5], [0, 0, 6]])
+        >>> mat.get_pivot_pos()
+        [(0, 0), (1, 1), (2, 2)]
+        """
+
+        assert self.is_echelon  # check for REF
+
+        pivot_pos = list[tuple[int, int]] = []
+        cur_row_pos = 0
+        for cur_col_pos in range(self.cols):
+            pivot_row = self.get_pivot_row(cur_col_pos, cur_row_pos, follow_GE=False)
+
+            if pivot_row != -1:
+                pivot_pos.append((pivot_row, cur_col_pos))
+                cur_row_pos += 1
+
+        return pivot_pos
+
+    def get_pivot_elements(self) -> list[sym.Expr]:
+        """
+        Retrieves the pivot elements from the matrix.
+
+        This method identifies the pivot positions (row, column) using the
+        `get_pivot_pos` method and then extracts the elements at those positions
+        in the matrix.
+
+        Returns:
+            list[sym.Expr]: A list of pivot elements corresponding to the positions
+                            identified by `get_pivot_pos`.
+
+        Example:
+        >>> mat = Matrix([[1, 2, 3], [0, 4, 5], [0, 0, 6]])
+        >>> mat.get_pivot_elements()
+        [1, 4, 6]
+        """
+
+        pivot_elements: list[sym.Expr] = []
+
+        for i, j in self.get_pivot_pos():
+            pivot_elements.append(self[i, j])
+
+        return pivot_elements
+
     def ref(
         self,
         verbosity: int = 2,
@@ -862,9 +895,9 @@ class Matrix(sym.MutableDenseMatrix):
 
         U = self.copy()
 
-        I = self.id()
-        L = self.id()
-        P = self.id()
+        I = self.elem()
+        L = self.elem()
+        P = self.elem()
 
         # Loop over each column
         cur_row_pos = 0
@@ -962,66 +995,6 @@ class Matrix(sym.MutableDenseMatrix):
         else:
             return U
 
-    def get_pivot_pos(self) -> list[tuple[int, int]]:
-        """
-        Finds the positions of the pivot elements in the matrix.
-
-        This method checks the matrix to determine the positions of the pivots
-        (the first non-zero entry in each row) by examining each column one-by-one.
-        It assumes that the matrix is in Row Echelon Form (REF), as checked by the
-        `is_echelon` property.
-
-        It uses `get_pivot_row` to find the pivot row for each column. For each
-        pivot found, a tuple (row, column) is added to the result list.
-
-        Returns:
-            list[tuple[int, int]]: A list of lists, where each sublist contains a
-                                   tuple representing the position (row, column) of a pivot.
-
-        Example:
-        >>> mat = Matrix([[1, 2, 3], [0, 4, 5], [0, 0, 6]])
-        >>> mat.get_pivot_pos()
-        [(0, 0), (1, 1), (2, 2)]
-        """
-
-        assert self.is_echelon  # check for REF
-
-        pivot_pos = list[tuple[int, int]] = []
-        cur_row_pos = 0
-        for cur_col_pos in range(self.cols):
-            pivot_row = self.get_pivot_row(cur_col_pos, cur_row_pos, follow_GE=False)
-
-            if pivot_row != -1:
-                pivot_pos.append((pivot_row, cur_col_pos))
-                cur_row_pos += 1
-
-        return pivot_pos
-
-    def get_pivot_elements(self) -> list[sym.Expr]:
-        """
-        Retrieves the pivot elements from the matrix.
-
-        This method identifies the pivot positions (row, column) using the
-        `get_pivot_pos` method and then extracts the elements at those positions
-        in the matrix.
-
-        Returns:
-            list[sym.Expr]: A list of pivot elements corresponding to the positions
-                            identified by `get_pivot_pos`.
-
-        Example:
-        >>> mat = Matrix([[1, 2, 3], [0, 4, 5], [0, 0, 6]])
-        >>> mat.get_pivot_elements()
-        [1, 4, 6]
-        """
-
-        pivot_elements: list[sym.Expr] = []
-
-        for i, j in self.get_pivot_pos():
-            pivot_elements.append(self[i, j])
-
-        return pivot_elements
-
     def find_all_cases(self) -> List:
         cases = []
         det = (self.T @ self).det()
@@ -1089,6 +1062,118 @@ class Matrix(sym.MutableDenseMatrix):
 
         my_rref, pivots = super().rref(*args, **kwargs)
         return Matrix(my_rref), pivots
+
+    #############################
+    # CHAPTER 2: MATRIX ALGEBRA #
+    #############################
+
+    def inverse(
+        self, option: Literal['left', 'right'] | None, matrices: int = 1, verbosity: int = 0
+    ) -> tuple["Matrix", "Matrix"]:
+        """
+        Computes the left or right inverse of a matrix, depending on its rank and the specified option.
+
+        The method checks whether the matrix has full row rank or full column rank and computes either:
+        - The **left inverse** (if the matrix has full column rank).
+        - The **right inverse** (if the matrix has full row rank).
+
+        If neither option is provided, the method automatically determines which inverse to compute based on the matrix's rank.
+
+        Args:
+            option (str, optional): Specifies which inverse to compute:
+                - 'left' for the left inverse (requires the matrix to have full column rank).
+                - 'right' for the right inverse (requires the matrix to have full row rank).
+                Default is None, in which case the method attempts to determine the inverse type based on the matrix rank.
+            matrices (int, optional): Specifies the number of matrices to return:
+                - 1: Returns only the inverse matrix.
+                - 2: Returns the particular and general solutions of the inverse.
+            verbosity (int, optional): Level of verbosity for displaying intermediate steps:
+                - 0: No output.
+                - 1: Display matrices before and after RREF.
+                Default is 0.
+
+        Returns:
+            tuple: A tuple containing:
+                - The inverse matrix (if found).
+                - If `matrices == 2`, it also returns the particular and general solutions of the inverse.
+
+        Raises:
+            Exception: If no valid inverse (left or right) is found, an exception is raised.
+
+        Example:
+            >>> mat = Matrix([[1, 2], [3, 4]])
+            >>> mat.inverse(option="left")
+            Matrix([[1, 0], [0, 1]])
+        """
+
+        if option is None:
+            if self.rank() == self.cols:
+                if verbosity:
+                    print("Left inverse found!")
+                option = "left"
+            if self.rank() == self.rows:
+                if verbosity:
+                    print("Right inverse found!")
+                option = "right"
+
+        if (option is not None) and (verbosity >= 1):
+            if option == "left":
+                aug = self.T.row_join(sym.eye(self.cols))
+                print("Before RREF: [self^T | eye]")
+                display(aug)
+                print("\nAfter RREF:")
+                display(aug.rref()[0])
+            else:
+                aug = self.row_join(sym.eye(self.rows))
+                print("Before RREF: [self | eye]")
+                display(aug)
+                print("\nAfter RREF:")
+                display(aug.rref()[0])
+
+        if option is not None:
+            X = Matrix.create_unk_matrix(
+                num_rows=self.cols, num_cols=self.rows, symbol="x"
+            )
+            if option == "left":
+                eqn = X @ self - sym.eye(self.cols)
+            else:
+                eqn = self @ X - sym.eye(self.rows)
+
+            sol = sym.solve(eqn)
+            if isinstance(sol, list) and len(sol) > 0:
+                # Multiple sets of solutions found, picks the first 1
+                X = X.subs(sol[0])
+            elif isinstance(sol, dict):
+                X = X.subs(sol)
+            else:
+                print(f"No {option} inverse found! Try pseudo-inverse: .pinv()")
+                return None
+
+            if matrices == 1:
+                return X
+            else:
+                return X.sep_part_gen()
+
+    def elem(self) -> "Matrix":
+        """
+        Returns the identity matrix of the same size as the current matrix.
+
+        `A = IA`
+
+        This method creates and returns an identity matrix with the same number
+        of rows as the current matrix. The identity matrix has ones on the diagonal 
+        and zeros elsewhere.
+
+        Returns:
+        - Matrix: A custom Matrix object (subclass of sympy.Matrix) that represents
+          the identity matrix of the same size as the current matrix.
+
+        Example:
+        >>> mat = Matrix([[1, 2], [3, 4]])
+        >>> mat.elem()
+        Matrix([[1, 0], [0, 1]])
+        """
+        return Matrix(sym.eye(self.rows))
 
     def adjoint(self) -> "Matrix":
         """
@@ -1158,7 +1243,7 @@ class Matrix(sym.MutableDenseMatrix):
         vector = Matrix.create_unk_matrix(self.rows, 1, "x")
 
         # insert hidden column vectors so that the unknown vector is not reduced in rref
-        hidden = self.id()
+        hidden = self.elem()
 
         M = self.copy().row_join(hidden).row_join(vector)
         if use_ref:
@@ -1169,6 +1254,52 @@ class Matrix(sym.MutableDenseMatrix):
         # might try return res_matrix instead
         return Matrix(res_matrix)
 
+    ######################################
+    # CHAPTER 3: EUCLIDEAN VECTOR SPACES #
+    ######################################
+
+    def normalized(self, factor: bool = False) -> "Matrix":
+        """
+        Normalizes the column vectors of the matrix (scaling each vector to have a unit norm).
+
+        Optionally, returns the matrix with the column scaling factors if `factor=True`.
+
+        Args:
+            factor (bool, optional): If `True`, returns the scaling factors used for normalization.
+                Default is `False`, in which case the normalized matrix is returned.
+
+        Returns:
+            sym.Matrix: The normalized matrix if `factor=False`, or a matrix of column scaling factors if `factor=True`.
+
+        Example:
+            >>> mat = sym.Matrix([[3, 4], [1, 2]])
+            >>> norm_mat = mat.normalized()
+            >>> norm_mat
+            Matrix([[0.6, 0.8], [0.2, 0.4]])
+
+            >>> norm_factors = mat.normalized(factor=True)
+            >>> norm_factors
+            Matrix([sqrt(1/5), sqrt(1/5)])
+        """
+
+        for i in range(self.cols):
+            scalar = self.col(i).norm()
+            if scalar != 0:
+                self[:, i] /= scalar
+
+        if factor:
+            return self.scalar_factor(column=True)
+        else:
+            return self
+
+    def is_linearly_independent(self) -> bool:
+        # TODO
+        return True
+    
+    def simplify_basis(self) -> bool:
+        # TODO
+        return True
+    
     def extend_basis(
         self, span_subspace: "Matrix" = None, verbosity: int = 2
     ) -> "Matrix":
@@ -1205,7 +1336,7 @@ class Matrix(sym.MutableDenseMatrix):
         """
 
         if span_subspace is None:
-            span_subspace = self.id()
+            span_subspace = self.elem()
         aug = self.row_join(span_subspace)
         my_rref, pivots = aug.rref()
 
@@ -1218,54 +1349,6 @@ class Matrix(sym.MutableDenseMatrix):
             display(my_rref)
 
         return aug.select_cols(*pivots)
-
-    def transition_matrix(self, to: "Matrix", verbosity: int = 2) -> "Matrix":
-        """
-        Computes the transition matrix that transforms this matrix to another matrix.
-
-        This method computes the transition matrix `P` such that:
-        ```
-        to = P * self
-        ```
-        where `to` is the target matrix, and `self` is the current matrix. The method
-        achieves this by augmenting the target matrix with the current matrix, performing
-        Reduced Row Echelon Form (RREF), and extracting the appropriate part of the resulting matrix.
-
-        Args:
-            to (Matrix): The matrix to which the current matrix should be transformed.
-            verbosity (int, optional): Verbosity level for displaying information.
-                - 0: No output.
-                - 1: Display the steps.
-                - 2: Display the relevant matrices.
-                Defaults to 2.
-
-        Returns:
-            Matrix: The transition matrix `P` that satisfies `to = P * self`.
-
-        Raises:
-            AssertionError: If the columns of the current matrix and to matrix do not span the same subspace.
-
-        Example:
-            >>> mat1 = Matrix([[1, 0], [0, 1]])
-            >>> mat2 = Matrix([[2, 0], [0, 2]])
-            >>> mat1.transition_matrix(to=mat2)
-            Matrix([[2, 0], [0, 2]])
-        """
-        assert self.is_same_subspace(
-            to, verbosity=0
-        ), "Column vectors of both matrices must span the same subspace."
-
-        M = to.row_join(self)
-        res = M.rref()[0]
-        if verbosity == 1:
-            print("rref([to | self])")
-        elif verbosity >= 2:
-            print("Before RREF: [to | self]")
-            display(M)
-            print("\nAfter RREF:")
-            display(res)
-        P = res[: self.cols, self.cols :]
-        return P
 
     def intersect_subspace(self, other: "Matrix", verbosity: int = 2) -> "Matrix":
         """
@@ -1379,121 +1462,61 @@ class Matrix(sym.MutableDenseMatrix):
 
         return (max(sub_pivots) < other.cols) and (max(super_pivots) < self.cols)
 
-    def sep_part_gen(self) -> tuple["Matrix", "Matrix"]:
+    def coords_relative(self, to: "Matrix") -> "Matrix":
+        # TODO
+        return to
+    
+    def transition_matrix(self, to: "Matrix", verbosity: int = 2) -> "Matrix":
         """
-        Separates a matrix into its particular and general solution parts.
+        Computes the transition matrix that transforms this matrix to another matrix.
 
-        This method separates the matrix into two components:
-        - The **particular solution**, which is the solution to the system when all free variables are set to zero.
-        - The **general solution**, which is the full solution including the homogeneous part.
-
-        It assumes that the matrix is in symbolic form and contains free variables that can be set to zero.
-
-        Returns:
-            tuple: A tuple containing:
-                - `part_sol` (Matrix): The particular solution (with free variables set to zero).
-                - `gen_sol` (Matrix): The general solution (the original matrix minus the particular solution).
-        
-        Example:
-            >>> mat = Matrix([[x, y], [x + y, 2*y]])
-            >>> part_sol, gen_sol = mat.sep_part_gen()
-            >>> part_sol
-            Matrix([[0, 0], [0, 0]])  # Particular solution
-            >>> gen_sol
-            Matrix([[x, y], [x + y, 2*y]])  # General solution
-        """
-
-        set_0 = dict([(symbol, 0) for symbol in self.free_symbols])
-        part_sol = self.subs(set_0)
-        gen_sol = self - part_sol
-        return part_sol, gen_sol
-
-    def inverse(
-        self, option: Literal['left', 'right'] | None, matrices: int = 1, verbosity: int = 0
-    ) -> tuple["Matrix", "Matrix"]:
-        """
-        Computes the left or right inverse of a matrix, depending on its rank and the specified option.
-
-        The method checks whether the matrix has full row rank or full column rank and computes either:
-        - The **left inverse** (if the matrix has full column rank).
-        - The **right inverse** (if the matrix has full row rank).
-
-        If neither option is provided, the method automatically determines which inverse to compute based on the matrix's rank.
+        This method computes the transition matrix `P` such that:
+        ```
+        to = P * self
+        ```
+        where `to` is the target matrix, and `self` is the current matrix. The method
+        achieves this by augmenting the target matrix with the current matrix, performing
+        Reduced Row Echelon Form (RREF), and extracting the appropriate part of the resulting matrix.
 
         Args:
-            option (str, optional): Specifies which inverse to compute:
-                - 'left' for the left inverse (requires the matrix to have full column rank).
-                - 'right' for the right inverse (requires the matrix to have full row rank).
-                Default is None, in which case the method attempts to determine the inverse type based on the matrix rank.
-            matrices (int, optional): Specifies the number of matrices to return:
-                - 1: Returns only the inverse matrix.
-                - 2: Returns the particular and general solutions of the inverse.
-            verbosity (int, optional): Level of verbosity for displaying intermediate steps:
+            to (Matrix): The matrix to which the current matrix should be transformed.
+            verbosity (int, optional): Verbosity level for displaying information.
                 - 0: No output.
-                - 1: Display matrices before and after RREF.
-                Default is 0.
+                - 1: Display the steps.
+                - 2: Display the relevant matrices.
+                Defaults to 2.
 
         Returns:
-            tuple: A tuple containing:
-                - The inverse matrix (if found).
-                - If `matrices == 2`, it also returns the particular and general solutions of the inverse.
+            Matrix: The transition matrix `P` that satisfies `to = P * self`.
 
         Raises:
-            Exception: If no valid inverse (left or right) is found, an exception is raised.
+            AssertionError: If the columns of the current matrix and to matrix do not span the same subspace.
 
         Example:
-            >>> mat = Matrix([[1, 2], [3, 4]])
-            >>> mat.inverse(option="left")
-            Matrix([[1, 0], [0, 1]])
+            >>> mat1 = Matrix([[1, 0], [0, 1]])
+            >>> mat2 = Matrix([[2, 0], [0, 2]])
+            >>> mat1.transition_matrix(to=mat2)
+            Matrix([[2, 0], [0, 2]])
         """
+        assert self.is_same_subspace(
+            to, verbosity=0
+        ), "Column vectors of both matrices must span the same subspace."
 
-        if option is None:
-            if self.rank() == self.cols:
-                if verbosity:
-                    print("Left inverse found!")
-                option = "left"
-            if self.rank() == self.rows:
-                if verbosity:
-                    print("Right inverse found!")
-                option = "right"
+        M = to.row_join(self)
+        res = M.rref()[0]
+        if verbosity == 1:
+            print("rref([to | self])")
+        elif verbosity >= 2:
+            print("Before RREF: [to | self]")
+            display(M)
+            print("\nAfter RREF:")
+            display(res)
+        P = res[: self.cols, self.cols :]
+        return P
 
-        if (option is not None) and (verbosity >= 1):
-            if option == "left":
-                aug = self.T.row_join(sym.eye(self.cols))
-                print("Before RREF: [self^T | eye]")
-                display(aug)
-                print("\nAfter RREF:")
-                display(aug.rref()[0])
-            else:
-                aug = self.row_join(sym.eye(self.rows))
-                print("Before RREF: [self | eye]")
-                display(aug)
-                print("\nAfter RREF:")
-                display(aug.rref()[0])
-
-        if option is not None:
-            X = Matrix.create_unk_matrix(
-                num_rows=self.cols, num_cols=self.rows, symbol="x"
-            )
-            if option == "left":
-                eqn = X @ self - sym.eye(self.cols)
-            else:
-                eqn = self @ X - sym.eye(self.rows)
-
-            sol = sym.solve(eqn)
-            if isinstance(sol, list) and len(sol) > 0:
-                # Multiple sets of solutions found, picks the first 1
-                X = X.subs(sol[0])
-            elif isinstance(sol, dict):
-                X = X.subs(sol)
-            else:
-                print(f"No {option} inverse found! Try pseudo-inverse: .pinv()")
-                return None
-
-            if matrices == 1:
-                return X
-            else:
-                return X.sep_part_gen()
+    ###############################################
+    # CHAPTER 4: SUBSPACES ASSOCIATED TO A MATRIX #
+    ###############################################
 
     def nullspace(self, verbosity: int = 0, *args, **kwargs) -> list["Matrix"]:
         """
@@ -1536,6 +1559,10 @@ class Matrix(sym.MutableDenseMatrix):
             return []
         else:
             return super().nullspace(*args, **kwargs)
+
+    #######################################################
+    # CHAPTER 5: ORTHOGONALITY AND LEAST SQUARES SOLUTION #
+    #######################################################
 
     def orthogonal_complement(self, verbosity: int = 0) -> "Matrix":
         """
@@ -1585,78 +1612,22 @@ class Matrix(sym.MutableDenseMatrix):
             print("self^T @ self")
             display(res)
         return res.is_diagonal()
-
-    def normalized(self, factor: bool = False) -> "Matrix":
-        """
-        Normalizes the column vectors of the matrix (scaling each vector to have a unit norm).
-
-        Optionally, returns the matrix with the column scaling factors if `factor=True`.
-
-        Args:
-            factor (bool, optional): If `True`, returns the scaling factors used for normalization.
-                Default is `False`, in which case the normalized matrix is returned.
-
-        Returns:
-            sym.Matrix: The normalized matrix if `factor=False`, or a matrix of column scaling factors if `factor=True`.
-
-        Example:
-            >>> mat = sym.Matrix([[3, 4], [1, 2]])
-            >>> norm_mat = mat.normalized()
-            >>> norm_mat
-            Matrix([[0.6, 0.8], [0.2, 0.4]])
-
-            >>> norm_factors = mat.normalized(factor=True)
-            >>> norm_factors
-            Matrix([sqrt(1/5), sqrt(1/5)])
-        """
-
-        for i in range(self.cols):
-            scalar = self.col(i).norm()
-            if scalar != 0:
-                self[:, i] /= scalar
-
-        if factor:
-            return self.scalar_factor(column=True)
-        else:
-            return self
-
-    def scalar_factor(self, column=True) -> tuple["Matrix", "Matrix"]:
-        """
-        Factorizes a matrix into the form A = BD, where D is a diagonal matrix and B contains the vectors
-        with common divisors factored out (if `column=True`). If `column=False`, then returns A = DB instead.
-        
-        Args:
-            column (bool): If `True`, factorizes by columns (default is `True`). If `False`, factorizes by rows.
-            
-        Returns:
-            tuple["Matrix", "Matrix"]: A tuple of two matrices (B, D) such that A = BD, 
-            where D is diagonal and B contains the scaled vectors.
-        
-        Example:
-            >>> mat = Matrix([[6, 9], [12, 15]])
-            >>> B, D = mat.scalar_factor(column=True)
-            >>> B, D
-            (Matrix([[1, 1.5], [2, 2.5]]), Matrix([6, 6]))
-        """
-
-        scalars = []
-        B = self.copy()
-        if column:
-            for i in range(self.cols):
-                g = sym.gcd(tuple(self.col(i)))
-                B[:, i] /= g
-                scalars.append(g)
-            D = Matrix.diag(scalars)
-            assert self == B @ D
-            return B, D
-        else:
-            for i in range(self.rows):
-                g = sym.gcd(tuple(self.row(i)))
-                B[i, :] /= g
-                scalars.append(g)
-            D = Matrix.diag(scalars)
-            assert self == D @ B
-            return D, B
+    
+    def is_orthogonal(self, verbosity: int = 1) -> bool:
+        # TODO
+        return True
+    
+    def orthogonal_decomposition(self, to: "Matrix") -> tuple["Matrix", "Matrix"]:
+        #  TODO
+        return self, self
+    
+    def proj_comp(self, to: "Matrix") -> "Matrix":
+        # TODO
+        return self
+    
+    def norm_comp(self, to: "Matrix") -> "Matrix":
+        # TODO
+        return self
 
     def gram_schmidt(self, factor: bool = True, verbosity: int = 1) -> "Matrix":
         """
@@ -1734,7 +1705,7 @@ class Matrix(sym.MutableDenseMatrix):
         Q, R = super().QRdecomposition(*args, **kwargs)
         if full and Q.rows != Q.cols:
             Q = Matrix(Q)
-            Q_aug = Q.row_join(Q.id()).QRdecomposition()[0]
+            Q_aug = Q.row_join(Q.elem()).QRdecomposition()[0]
             R_aug = Matrix(R.col_join(sym.zeros(Q_aug.cols - R.rows, R.cols)))
             assert Q_aug @ R_aug == self
             return Q_aug, R_aug
@@ -1789,6 +1760,91 @@ class Matrix(sym.MutableDenseMatrix):
             return sol
         else:
             return sol.sep_part_gen()
+        
+    def create_vander(
+        num_rows: int = 1, num_cols: int = 1, symbol: str = "x", is_real: bool = True
+    ) -> "Matrix":
+        """
+        Creates a Vandermonde matrix with symbolic entries.
+
+        This method generates a Vandermonde matrix of size `num_rows` x `num_cols`
+        where the entries are symbolic expressions. Each row in the matrix is formed
+        by raising a symbolic variable (indexed by row) to increasing powers (from 0
+        to `num_cols-1`). The `is_real` flag determines whether the symbols are real-valued.
+
+        Parameters:
+        - num_rows (int, optional): The number of rows in the Vandermonde matrix. Default is 1.
+        - num_cols (int, optional): The number of columns in the Vandermonde matrix. Default is 1.
+        - symbol (str, optional): The base name for the symbols used in the matrix entries.
+          Default is 'x'.
+        - is_real (bool, optional): If True (default), the symbols are real-valued;
+          otherwise, they are complex.
+
+        Returns:
+        - Matrix: A custom Matrix object (subclass of sympy.Matrix) that represents
+          the Vandermonde matrix with symbolic entries.
+
+        Example:
+        >>> Matrix.create_vander(3, 3, symbol='a')
+        Matrix([[a_1^0, a_1^1, a_1^2], [a_2^0, a_2^1, a_2^2], [a_3^0, a_3^1, a_3^2]])
+
+        >>> Matrix.create_vander(2, 4, symbol='b', is_real=False)
+        Matrix([[b_1^0, b_1^1, b_1^2, b_1^3], [b_2^0, b_2^1, b_2^2, b_2^3]])
+        """
+
+        entries = sym.symbols(f"{symbol}_(1:{num_rows+1})", is_real=is_real)
+        res = []
+        for entry in entries:
+            sub_res = []
+            for col_idx in range(num_cols):
+                # Raise the symbol to the power of the column index
+                sub_res.append(sym.Pow(entry, col_idx))
+            res.append(sub_res)
+        return Matrix(res)
+
+    def apply_vander(self, x: "Matrix") -> "Matrix":
+        """
+        Applies a Vandermonde transformation to the current matrix using the given vector.
+
+        This method applies a Vandermonde transformation to the current matrix by
+        substituting the free symbols in the last column with corresponding values
+        from the provided vector `x`. The number of rows in `self` must match the
+        number of elements in `x`, and `x` must be a column vector.
+
+        Parameters:
+        - x (Matrix): A column vector (Matrix object with a single column) containing
+          the values to substitute into the last column of the matrix.
+
+        Returns:
+        - Matrix: A new Matrix object where the free symbols in the last column of
+          the original matrix are substituted by the corresponding values from `x`.
+
+        Example:
+        >>> mat = Matrix([[x_1, x_2], [x_3, x_4]])
+        >>> x = Matrix([[1], [2]])
+        >>> mat.apply_vander(x)
+        Matrix([[1, 2], [1, 4]])
+
+        Notes:
+        - The matrix `self` is expected to be created via Matrix.create_vander().
+        - The `x` vector provides the values to substitute in place of these symbols.
+        """
+        # Step 1: Validate the size of the vector x
+        assert (
+            self.rows == x.rows
+        ), "Number of rows in matrix must match the size of the input vector."
+        assert x.cols == 1, "Input vector x must be a column vector."
+
+        # Step 2: Get the free symbols from the last column of the matrix
+        ordered_syms = [entry.free_symbols.pop() for entry in self.select_cols(-1)]
+
+        # Step 3: Create a substitution dictionary mapping symbols to values from vector x
+        substitution = {var: val for var, val in zip(ordered_syms, x)}
+        return self.subs(substitution)
+
+    #############################
+    # CHAPTER 6: EIGEN-ANALYSIS #
+    #############################
 
     def cpoly(self, force_factor: bool = True) -> sym.Mul | tuple[sym.Mul, sym.Mul]:
         """
@@ -1810,11 +1866,11 @@ class Matrix(sym.MutableDenseMatrix):
             (x - 5, x + 1)
         """
         x = sym.symbols("x", real=True)
-        poly = (x * self.id() - self).det()
+        poly = (x * self.elem() - self).det()
         if not force_factor:
             return poly.factor()
         # Attempt to factor poly into real factors
-        roots = sym.roots(poly)
+        roots = sym.roots(poly) # TODO: FIX sym.roots NotImplementedError for multi variable
         real_fact = []
         for root, mult in roots.items():
             term = x - root
@@ -1858,7 +1914,11 @@ class Matrix(sym.MutableDenseMatrix):
                     display([val, mult, space])
 
         return super().is_diagonalizable(reals_only, *args, **kwargs)
-
+    
+    def eigenvects_associated(self, eigenvalue: sym.Expr) -> list["Matrix"] | None:
+        # TODO
+        return None
+    
     def diagonalize(
         self, reals_only: bool = True, verbosity: int = 0, *args, **kwargs
     ) -> tuple["Matrix", "Matrix"]:
@@ -1882,7 +1942,7 @@ class Matrix(sym.MutableDenseMatrix):
             for root, _ in sym.roots(poly).items():
                 if root.is_real:
                     print(f"Original: ({root})I - A")
-                    expr = root * self.id() - self
+                    expr = root * self.elem() - self
                     display(expr)
 
                     print("\nAfter RREF:")
@@ -1958,6 +2018,10 @@ class Matrix(sym.MutableDenseMatrix):
         assert (ortho_P @ D @ ortho_P.T - self).norm() == 0
         return ortho_P, D
 
+    def is_stochastic(self) -> bool:
+        # TODO
+        return True
+    
     def equilibrium_vectors(self) -> "Matrix":
         """
         Computes the equilibrium vectors of the matrix, i.e., the nullspace of (I - A).
@@ -1970,7 +2034,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         neg_entries = [entry for entry in self.flat() if entry < 0]
         assert len(neg_entries) == 0
-        P = Matrix.from_list((self.id() - self).nullspace())
+        P = Matrix.from_list((self.elem() - self).nullspace())
         for i in range(P.cols):
             if sum(P[:, i]) != 0:
                 P[:, i] /= sum(P[:, i])
@@ -2098,6 +2162,10 @@ class Matrix(sym.MutableDenseMatrix):
                 return U, S, V
         else:
             print("Error: Unknown option type!")
+
+    ####################################
+    # CHAPTER 7: LINEAR TRANSFORMATION #
+    ####################################
 
     def standard_matrix(self, out: "Matrix", matrices: int = 1) -> "Matrix":
         """
