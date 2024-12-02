@@ -15,3 +15,7 @@
 6. New functions to add
     1. vector relative to basis
     2. decompose vectors into projection and normal
+    3. general solver for AB = BA type of problems
+7. Add native OCR support
+    1. Matrix.from_pic(filepath)
+    2. Matrix.from_ss()
