@@ -7,7 +7,7 @@ import re
 import IPython.display
 from itertools import chain, combinations
 from collections import defaultdict
-from typing import List, Type, Literal
+from typing import List, Literal, Union
 
 
 ########
@@ -129,6 +129,29 @@ def is_IPython():
             return False  # Other type
     except NameError:
         return False  # Probably standard Python interpreter
+    
+def custom_print(input) -> None:
+    if isinstance(input, Matrix) and hasattr(input, "augpos") and len(input.augpos) > 0:
+        aug_print(input)
+    else:
+        display(input)
+
+def aug_print(matrix: "Matrix") -> None:
+    # get latex representation of matrix
+    raw = sym.latex(matrix, mat_str="array")
+
+    # create formatting string s to insert augment line visually
+    ls = [pos for pos in matrix.augpos if 0 < pos < matrix.cols]
+    ls.sort()
+    delta = [ls[0]]
+    delta.extend([ls[i] - ls[i-1] for i in range(1, len(ls))])
+    remainder = matrix.cols - sum(delta)
+    delta.append(remainder)
+    s = '|'.join(['c' * i for i in delta])
+    default_s = 'c' * matrix.cols
+
+    formatted = raw.replace(default_s, s)
+    display(IPython.display.Math(formatted))
 
 
 def powerset(iterable):
@@ -615,6 +638,15 @@ class Matrix(sym.MutableDenseMatrix):
             pos = self.cols
         self.augpos.add(pos)
         return self
+    
+    def row_join(self, other: "Matrix") -> "Matrix":
+        offset = self.cols
+        new_augpos = self.augpos
+        for pos in other.augpos:
+            new_augpos.add(pos)
+        new_mat = Matrix(super().row_join(other))
+        new_mat.augpos = new_augpos
+        return new_mat
 
     def scale_row(self, idx: int, scalar: float, verbosity: int = 0) -> "Matrix":
         """
@@ -859,7 +891,7 @@ class Matrix(sym.MutableDenseMatrix):
         max_tries: int = 2,
         follow_GE: bool = False,
         matrices: int = 2,
-    ) -> "Matrix" | tuple["Matrix", "Matrix"] | tuple["Matrix", "Matrix", "Matrix"]:
+    ) -> Union["Matrix", tuple["Matrix", "Matrix"], tuple["Matrix", "Matrix", "Matrix"]]:
         """
         Performs the Row Echelon Form (REF) transformation on the matrix.
 
@@ -1068,7 +1100,7 @@ class Matrix(sym.MutableDenseMatrix):
     #############################
 
     def inverse(
-        self, option: Literal['left', 'right'] | None, matrices: int = 1, verbosity: int = 0
+        self, option: Union[Literal['left', 'right'], None], matrices: int = 1, verbosity: int = 0
     ) -> tuple["Matrix", "Matrix"]:
         """
         Computes the left or right inverse of a matrix, depending on its rank and the specified option.
@@ -1713,7 +1745,7 @@ class Matrix(sym.MutableDenseMatrix):
 
     def solve_least_squares(
         self, rhs: "Matrix", verbosity: int = 1, matrices: int = 1, *args, **kwargs
-    ) -> "Matrix" | tuple["Matrix"]:
+    ) -> Union["Matrix", tuple["Matrix"]]:
         """
         Solves the least squares problem `Ax = b`, where `A` is the matrix and `b` is the right-hand side.
         Uses SymPy's built-in method for least squares when the rank condition is met, otherwise uses a custom
@@ -1846,7 +1878,7 @@ class Matrix(sym.MutableDenseMatrix):
     # CHAPTER 6: EIGEN-ANALYSIS #
     #############################
 
-    def cpoly(self, force_factor: bool = True) -> sym.Mul | tuple[sym.Mul, sym.Mul]:
+    def cpoly(self, force_factor: bool = True) -> Union[sym.Mul, tuple[sym.Mul, sym.Mul]]:
         """
         Computes the characteristic polynomial of the matrix and attempts to factor it into real and complex parts.
         
@@ -1915,7 +1947,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         return super().is_diagonalizable(reals_only, *args, **kwargs)
     
-    def eigenvects_associated(self, eigenvalue: sym.Expr) -> list["Matrix"] | None:
+    def eigenvects_associated(self, eigenvalue: sym.Expr) -> Union[list["Matrix"], None]:
         # TODO
         return None
     
@@ -2121,7 +2153,7 @@ class Matrix(sym.MutableDenseMatrix):
 
     def fast_svd(
         self, option: Literal["np", "sym"] = "np", identify: bool = True, tolerance: float = None
-    ) -> tuple[np.matrix, np.matrix, np.matrix] | tuple["Matrix", "Matrix", "Matrix"]:
+    ) -> Union[tuple[np.matrix, np.matrix, np.matrix], tuple["Matrix", "Matrix", "Matrix"]]:
         """
         A faster version of SVD that returns a numerical decomposition of the matrix. 
         Optionally identifies surds/rationals from the float.
