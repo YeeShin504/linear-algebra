@@ -1146,13 +1146,13 @@ class Matrix(sym.MutableDenseMatrix):
 
         if (option is not None) and (verbosity >= 1):
             if option == "left":
-                aug = self.T.row_join(sym.eye(self.cols))
+                aug = self.T.aug_line().row_join(sym.eye(self.cols))
                 print("Before RREF: [self^T | eye]")
                 display(aug)
                 print("\nAfter RREF:")
                 display(aug.rref()[0])
             else:
-                aug = self.row_join(sym.eye(self.rows))
+                aug = self.aug_line().row_join(sym.eye(self.rows))
                 print("Before RREF: [self | eye]")
                 display(aug)
                 print("\nAfter RREF:")
@@ -1407,8 +1407,8 @@ class Matrix(sym.MutableDenseMatrix):
 
         if span_subspace is None:
             span_subspace = self.elem()
-        aug = self.row_join(span_subspace)
-        my_rref, pivots = aug.rref()
+        aug = self.aug_line().row_join(span_subspace)
+        rref_mat, pivots = aug.rref()
 
         if verbosity == 1:
             print("rref([self | span_subspace])")
@@ -1416,7 +1416,7 @@ class Matrix(sym.MutableDenseMatrix):
             print("Before RREF: [self | span_subspace]")
             display(aug)
             print("\nAfter RREF:")
-            display(my_rref)
+            display(rref_mat)
 
         return aug.select_cols(*pivots)
 
@@ -1510,8 +1510,8 @@ class Matrix(sym.MutableDenseMatrix):
         if self.rows != other.rows:
             raise sym.ShapeError(f"The matrices have incompatible number of rows ({self.rows}, {other.rows})")
 
-        sub_rref, sub_pivots = other.row_join(self).rref()
-        super_rref, super_pivots = self.row_join(other).rref()
+        sub_rref, sub_pivots = other.aug_line().row_join(self).rref()
+        super_rref, super_pivots = self.aug_line().row_join(other).rref()
 
         if verbosity == 1:
             print('Check rref([other | self])')
@@ -1519,13 +1519,13 @@ class Matrix(sym.MutableDenseMatrix):
         elif verbosity >= 2:
             print("Check if span(self) is subspace of span(other)")
             print("\nBefore RREF: [other | self]")
-            display(other.row_join(self))
+            display(other.aug_line().row_join(self))
             print("\nAfter RREF:")
             display(sub_rref)
 
             print("\nCheck if span(other) is subspace of span(self)")
             print("\nBefore RREF: [self | other]")
-            display(self.row_join(other))
+            display(self.aug_line().row_join(other))
             print("\nAfter RREF:")
             display(super_rref)
 
@@ -1589,7 +1589,7 @@ class Matrix(sym.MutableDenseMatrix):
             to, verbosity=0
         ), "Column vectors of both matrices must span the same subspace."
 
-        M = to.row_join(self)
+        M = to.aug_line().row_join(self)
         res = M.rref()[0]
         if verbosity == 1:
             print("rref([to | self])")
@@ -1858,7 +1858,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         if verbosity >= 1:
             print("[A.T A | A.T b]")
-            aug_matrix = ATA.row_join(ATb)
+            aug_matrix = ATA.aug_line().row_join(ATb)
             display(aug_matrix)
             print("\nAfter RREF")
             display(aug_matrix.rref()[0])
