@@ -53,8 +53,7 @@ def sympy_commands():
     # Symbolic Methods 
     >>> A.T # transpose
     >>> A.inv() # inverse
-    >>> A.adjoint() # redefined behaviour as per MA1522 definition
-    >>> A.adjugate() # classical adjoint (defined as adjoint in MA1522)
+    >>> A.adj() # defined as adjoint as per MA1522 definition
     >>> A.cofactor(i, j) # (i, j) cofactor
     >>> A.cofactor_matrix() # cofactor matrix
     >>> A.columnspace(simplify=False) # list of vectors that span column space of A
@@ -131,7 +130,7 @@ def is_IPython():
         return False  # Probably standard Python interpreter
     
 def custom_print(input) -> None:
-    if isinstance(input, Matrix) and hasattr(input, "augpos") and len(input.augpos) > 0:
+    if isinstance(input, Matrix) and hasattr(input, "aug_pos") and len(input.aug_pos) > 0:
         aug_print(input)
     else:
         display(input)
@@ -141,26 +140,27 @@ def aug_print(matrix: "Matrix") -> None:
     raw = sym.latex(matrix, mat_str="array")
 
     # create formatting string s to insert augment line visually
-    ls = [pos for pos in matrix.augpos if 0 < pos < matrix.cols]
+    ls = [pos for pos in matrix.aug_pos if 0 < pos < matrix.cols]
     ls.sort()
     delta = [ls[0]]
     delta.extend([ls[i] - ls[i-1] for i in range(1, len(ls))])
     remainder = matrix.cols - sum(delta)
     delta.append(remainder)
-    s = '|'.join(['c' * i for i in delta])
-    default_s = 'c' * matrix.cols
+    s = '{' + '|'.join(['c' * i for i in delta]) + '}'
+    default_s = '{' + 'c' * matrix.cols + '}'
 
     formatted = raw.replace(default_s, s)
     display(IPython.display.Math(formatted))
 
+def display(input) -> None:
+    if is_IPython():
+        if isinstance(input, Matrix) and hasattr(input, "aug_pos") and len(input.aug_pos) > 0:
+            aug_print(input)
+        else:
+            IPython.display.display(input)
+    else:
+        sym.pprint(input)            
 
-def powerset(iterable):
-    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
-    s = list(iterable)
-    return list(chain.from_iterable(combinations(s, r) for r in range(len(s) + 1)))
-
-
-display = IPython.display.display if is_IPython() else sym.pprint
 sym.init_printing(use_unicode=True)
 np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
 
@@ -168,18 +168,16 @@ np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
 # CUSTOM FUNCTIONS #
 ####################
 
+def powerset(iterable):
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    s = list(iterable)
+    return list(chain.from_iterable(combinations(s, r) for r in range(len(s) + 1)))
+
 
 def is_zero(expr) -> bool:
     # returns True if expr can be 0 for real values of unknowns
     # use is_complex rather than is_real as symbol.is_complex and
     # symbol.is_real returns None
-
-    def is_real_dict(case) -> bool:
-        for _, value in case.items():
-            # zero is considered complex
-            if value.is_complex and value != 0:
-                return False
-        return True
 
     if (not isinstance(expr, sym.Expr)) or isinstance(expr, sym.Number):
         return expr == 0
@@ -193,25 +191,10 @@ def is_zero(expr) -> bool:
     sol = sym.solve(sym.Eq(expr, 0), expr.free_symbols)
     return len(sol) > 0
 
-    sol = sym.solve(sym.Eq(expr, 0), expr.free_symbols)
-    # display(f"{sol=}")
-    for case in sol:
-        if isinstance(case, dict):
-            if is_real_dict(case):
-                return True
-            else:
-                continue
-        elif case.is_symbol or case.is_real:
-            return True
-        elif not case.is_complex:
-            return True
-    return False
-
-
 class Matrix(sym.MutableDenseMatrix):
     def __init__(self, matrix) -> None:
         super().__init__()
-        self.augpos = set()
+        self.aug_pos = set()
 
     ###########################
     # MISCELLANEOUS FUNCTIONS #
@@ -236,10 +219,10 @@ class Matrix(sym.MutableDenseMatrix):
         - Matrix: A custom Matrix object (subclass of sympy.Matrix) representing the parsed LaTeX expression.
 
         Example:
-        >>> Matrix.from_latex(r'\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}')
+        >>> Matrix.from_latex('\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}')
         Matrix([[1, 2], [3, 4]])
 
-        >>> Matrix.from_latex(r'\begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}', norm=True)
+        >>> Matrix.from_latex('\\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix}', norm=True)
         Matrix([[1/√14], [2/√14], [3/√14]])
         """
 
@@ -631,21 +614,26 @@ class Matrix(sym.MutableDenseMatrix):
         Matrix([[1, 2], [3, 4], [0, 0]])
 
         Notes:
-        - The method updates the `augpos` attribute to track the position of the inserted line.
+        - The method updates the `aug_pos` attribute to track the position of the inserted line.
         """
 
-        if pos == -1:
-            pos = self.cols
-        self.augpos.add(pos)
+        new_pos = pos
+        if new_pos < 0:
+            new_pos += self.cols
+
+        if not 0 <= new_pos <= self.cols:
+            raise IndexError(f'Position for augmented line ({pos}) out of range ({self.cols}).')
+
+        self.aug_pos.add(pos)
         return self
     
     def row_join(self, other: "Matrix") -> "Matrix":
         offset = self.cols
-        new_augpos = self.augpos
-        for pos in other.augpos:
-            new_augpos.add(pos)
+        new_aug_pos = self.aug_pos
+        for pos in other.aug_pos:
+            new_aug_pos.add(pos)
         new_mat = Matrix(super().row_join(other))
-        new_mat.augpos = new_augpos
+        new_mat.aug_pos = new_aug_pos
         return new_mat
 
     def scale_row(self, idx: int, scalar: float, verbosity: int = 0) -> "Matrix":
