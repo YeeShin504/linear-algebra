@@ -109,7 +109,7 @@ def sympy_commands():
     >>> A.cpoly(force_factor: bool = True) # returns a factorised characterstic polynomial for a square matrix
     >>> A.is_diagonalizable(reals_only: bool = True, verbosity: int = 1) # modified diagonalizability criteria to align with MA1522 (reals_only)
     >>> A.diagonalize(reals_only: bool = True, verbosity:  int = 0) # returns tuple of invertible P and diagonal D
-    >>> A.is_orthogonally_diagonalizable() # checks if matrix is symmetric
+    >>> A.is_orthogonally_diagonalizable # checks if matrix is symmetric
     >>> A.orthogonally_diagonalize(reals_only: bool = True, factor: bool = True, verbosity = 1) # returns tuple of orthogonal matrix P and diagonal D
     >>> A.equilibrium_vectors() # returns a matrix whose column vectors are probability vectors such that Ax = x
     >>> A.fast_svd(option: str = 'np', identify: bool = True, tolerance: float = None) # returns a svd via numerical methods. Attempt to convert back to symbolic via identify not guaranteed.
@@ -189,6 +189,11 @@ class Matrix(sym.MutableDenseMatrix):
     def __init__(self, matrix) -> None:
         super().__init__()
         self.aug_pos = set()
+
+    def copy(self) -> "Matrix":
+        new_mat = super().copy()
+        new_mat.aug_pos = self.aug_pos if hasattr(self, "aug_pos") else set()
+        return new_mat
 
     ###########################
     # MISCELLANEOUS FUNCTIONS #
@@ -420,6 +425,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         # Create a new Matrix object from the simplified list and update the original object
         temp = Matrix(temp)
+        temp.aug_pos = self.aug_pos if hasattr(self, "aug_pos") else set()
         self.__dict__.update(temp.__dict__)
         return self
 
@@ -1201,7 +1207,9 @@ class Matrix(sym.MutableDenseMatrix):
         >>> mat.elem()
         Matrix([[1, 0], [0, 1]])
         """
-        return Matrix(sym.eye(self.rows))
+        elem_mat = Matrix(sym.eye(self.rows))
+        elem_mat.aug_pos = set()
+        return elem_mat
 
     def adjoint(self) -> "Matrix":
         """
@@ -2094,7 +2102,7 @@ class Matrix(sym.MutableDenseMatrix):
         # Changed default for reals_only to True to align with MA1522 syllabus
         # Note that you can just apply GSP on P directly, since eigenspace associated to different eigenvalues are orthogonal
         # However, we follow the steps given in MA1522 syllabus here
-        assert self.is_orthogonally_diagonalizable()
+        assert self.is_orthogonally_diagonalizable
         # P, D = super().diagonalize(reals_only, *args, **kwargs)
         P, D = self.diagonalize(
             reals_only=reals_only, verbosity=verbosity, *args, **kwargs
