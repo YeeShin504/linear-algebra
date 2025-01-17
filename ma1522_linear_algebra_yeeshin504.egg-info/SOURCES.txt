@@ -1,0 +1,9 @@
+LICENSE.txt
+README.md
+pyproject.toml
+symbolic.py
+ma1522_linear_algebra_yeeshin504.egg-info/PKG-INFO
+ma1522_linear_algebra_yeeshin504.egg-info/SOURCES.txt
+ma1522_linear_algebra_yeeshin504.egg-info/dependency_links.txt
+ma1522_linear_algebra_yeeshin504.egg-info/requires.txt
+ma1522_linear_algebra_yeeshin504.egg-info/top_level.txt

@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+symbolic.py
+ma1522_linear_algebra.egg-info/PKG-INFO
+ma1522_linear_algebra.egg-info/SOURCES.txt
+ma1522_linear_algebra.egg-info/dependency_links.txt
+ma1522_linear_algebra.egg-info/requires.txt
+ma1522_linear_algebra.egg-info/top_level.txt

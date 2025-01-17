@@ -1,0 +1,9 @@
+LICENSE.txt
+README.md
+pyproject.toml
+symbolic.py
+linear_algebra.egg-info/PKG-INFO
+linear_algebra.egg-info/SOURCES.txt
+linear_algebra.egg-info/dependency_links.txt
+linear_algebra.egg-info/requires.txt
+linear_algebra.egg-info/top_level.txt
