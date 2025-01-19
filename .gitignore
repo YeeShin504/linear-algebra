@@ -3,4 +3,6 @@
 *.py[cod]
 *$py.class
 test.ipynb
-
+*.egg-info/
+.ruff_cache/
+dist/

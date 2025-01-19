@@ -247,12 +247,11 @@ wheels = [
 ]
 
 [[package]]
-name = "linear-algebra"
+name = "ma1522-linear-algebra"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "numpy" },
-    { name = "ruff" },
     { name = "sympy" },
     { name = "sympy-latex-parser" },
 ]
@@ -260,18 +259,21 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "ipykernel" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "numpy", specifier = ">=2.2.1" },
-    { name = "ruff", specifier = ">=0.9.2" },
     { name = "sympy", specifier = ">=1.13.3" },
     { name = "sympy-latex-parser", specifier = ">=1.9.0" },
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "ipykernel", specifier = ">=6.29.5" }]
+dev = [
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "ruff", specifier = ">=0.9.2" },
+]
 
 [[package]]
 name = "matplotlib-inline"
