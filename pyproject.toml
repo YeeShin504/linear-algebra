@@ -1,6 +1,6 @@
 [project]
 name = "ma1522-linear-algebra"
-version = "0.1.0"
+version = "0.2.0"
 description = "Python scripts for NUS MA1522 Linear Algebra for Computing"
 readme = "README.md"
 requires-python = ">=3.10"
