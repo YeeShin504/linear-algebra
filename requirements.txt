@@ -28,6 +28,6 @@ six==1.16.0
 stack-data==0.6.3
 sympy==1.13.2
 sympy-latex-parser==1.9.0
-tornado==6.4.1
+tornado==6.5
 traitlets==5.14.3
 wcwidth==0.2.13
