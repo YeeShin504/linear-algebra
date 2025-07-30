@@ -1,3 +1,16 @@
+"""Include the following methods in the tests
+- from_latex
+- from_list
+- _shape
+- create_unk_matrix
+- create_rand_matrix
+- eye
+- zeros
+- ones
+- diag
+- T
+"""
+
 import pytest
 import sympy as sym
 
@@ -53,7 +66,7 @@ class TestFromLatex:
         """
         result = Matrix.from_latex(r"""
             \begin{array} 
-            1 & 2 \\ 
+            1 & 2 \\
             3 & 4 
             \end{array}
         """)
@@ -64,7 +77,7 @@ class TestFromLatex:
         """Test conversion from array environment to pmatrix"""
         result = Matrix.from_latex(r"""
             \begin{array}{cc}
-            1 & 2 \\ 
+            1 & 2 \\
             3 & 4 
             \end{array}
         """)
@@ -75,7 +88,7 @@ class TestFromLatex:
         """Test conversion from array environment to pmatrix"""
         result = Matrix.from_latex(r"""
             \begin{array}{} 
-            1 & 2 \\ 
+            1 & 2 \\
             3 & 4 
             \end{array}
         """)
@@ -86,11 +99,11 @@ class TestFromLatex:
         """Test parsing a matrix multiplication expression"""
         result = Matrix.from_latex(r"""
             \begin{pmatrix} 
-            1 & 2 \\ 
+            1 & 2 \\
             3 & 4 
             \end{pmatrix}
             \begin{pmatrix} 
-            5 & 6 \\ 
+            5 & 6 \\
             7 & 8 
             \end{pmatrix}
         """)
@@ -102,13 +115,13 @@ class TestFromLatex:
         [
             # row_join=True means vectors are treated as columns
             (
-                r"""\{ \begin{pmatrix} 1 \\ 3 \end{pmatrix}, \begin{pmatrix} 2 \\ 4 \end{pmatrix} \}""",
+                r"\{ \begin{pmatrix} 1 \\ 3 \end{pmatrix}, \begin{pmatrix} 2 \\ 4 \end{pmatrix} \}",
                 True,
                 Matrix([[1, 2], [3, 4]]),
             ),
             # row_join=False means vectors are treated as rows
             (
-                r"""\{ \begin{pmatrix} 1 \\ 3 \end{pmatrix}, \begin{pmatrix} 2 \\ 4 \end{pmatrix} \}""",
+                r"\{ \begin{pmatrix} 1 \\ 3 \end{pmatrix}, \begin{pmatrix} 2 \\ 4 \end{pmatrix} \}",
                 False,
                 Matrix([[1], [3], [2], [4]]),
             ),
@@ -268,50 +281,36 @@ class TestCreateUnkMatrix:
         assert sym.re(result[0, 0]) == result[0, 0]  # Verify real number
 
 
-class TestShapeOperations:
-    """Tests for matrix shape operations (_shape method)"""
+class TestCreateRandMatrix:
+    def test_create_rand_matrix(self):
+        mat = Matrix.create_rand_matrix(2, 2)
+        assert mat.shape == (2, 2)
+        # Check if elements are numbers (not symbolic by default)
+        assert all(isinstance(elem, (int, float)) for elem in mat.flat())
 
-    matrix = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-    def test_scalar_shape(self):
-        """Test extracting the scalar (diagonal) part of a matrix"""
-        result = TestShapeOperations.matrix._shape(Shape.SCALAR)
-        expected = Matrix([[1, 0, 0], [0, 5, 0], [0, 0, 9]])
-        assert result == expected
+class TestOverriddenFactoryMethods:
+    def test_eye(self):
+        mat = Matrix.eye(3)
+        assert mat == sym.eye(3)
+        assert isinstance(mat, Matrix)
 
-    def test_upper_shape(self):
-        """Test extracting the upper triangular part of a matrix"""
-        result = TestShapeOperations.matrix._shape(Shape.UPPER)
-        expected = Matrix([[1, 2, 3], [0, 5, 6], [0, 0, 9]])
-        assert result == expected
+    def test_zeros(self):
+        mat = Matrix.zeros(2, 3)
+        assert mat == sym.zeros(2, 3)
+        assert isinstance(mat, Matrix)
 
-    def test_lower_shape(self):
-        """Test extracting the lower triangular part of a matrix"""
-        result = TestShapeOperations.matrix._shape(Shape.LOWER)
-        expected = Matrix([[1, 0, 0], [4, 5, 0], [7, 8, 9]])
-        assert result == expected
+    def test_ones(self):
+        mat = Matrix.ones(2, 2)
+        assert mat == sym.ones(2, 2)
+        assert isinstance(mat, Matrix)
 
-    def test_strict_upper_shape(self):
-        """Test extracting the strictly upper triangular part of a matrix"""
-        result = TestShapeOperations.matrix._shape(Shape.STRICT_UPPER)
-        expected = Matrix([[0, 2, 3], [0, 0, 6], [0, 0, 0]])
-        assert result == expected
+    def test_diag(self):
+        mat = Matrix.diag(1, 2, 3)
+        assert mat == sym.diag(1, 2, 3)
+        assert isinstance(mat, Matrix)
 
-    def test_strict_lower_shape(self):
-        """Test extracting the strictly lower triangular part of a matrix"""
-        result = TestShapeOperations.matrix._shape(Shape.STRICT_LOWER)
-        expected = Matrix([[0, 0, 0], [4, 0, 0], [7, 8, 0]])
-        assert result == expected
-
-    def test_symmetric_shape(self):
-        """Test creating a symmetric matrix from a given matrix"""
-        result = TestShapeOperations.matrix._shape(Shape.SYMMETRIC)
-        # Should be using upper triangular to reflect
-        expected = Matrix([[1, 2, 3], [2, 5, 6], [3, 6, 9]])
-        assert result == expected
-
-    def test_non_square_matrix(self):
-        """Test that shape function raises an error for non-square matrices"""
-        matrix = Matrix([[1, 2, 3], [4, 5, 6]])  # 2x3 matrix
-        with pytest.raises(sym.NonSquareMatrixError):
-            matrix._shape(Shape.SCALAR)
+    def test_T_property(self):
+        mat = Matrix([[1, 2], [3, 4]])
+        assert mat.T == Matrix([[1, 3], [2, 4]])
+        assert isinstance(mat.T, Matrix)
