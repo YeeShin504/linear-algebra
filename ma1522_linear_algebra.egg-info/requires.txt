@@ -1,4 +1,0 @@
-numpy>=2.2.1
-ruff>=0.9.2
-sympy>=1.13.3
-sympy-latex-parser>=1.9.0
