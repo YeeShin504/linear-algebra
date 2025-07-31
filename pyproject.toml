@@ -14,7 +14,20 @@ dependencies = [
 dev = [
     "ipykernel>=6.29.5",
     "ruff>=0.9.2",
+    "pytest>=8.3.5",
+    "mkdocs-material>=9.6.16",
+    "mkdocstrings[python]>=0.18",
+    "mkdocs-jupyter>=0.25.1",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-literate-nav>=0.6.2",
+    "pygments>=2.19.1",
 ]
 
 [tool.setuptools]
 license-files = []
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = "src"
