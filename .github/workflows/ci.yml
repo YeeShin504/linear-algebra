@@ -10,19 +10,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Configure Git Credentials
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: ~/.cache
-          restore-keys: |
-            mkdocs-material-
-      - run: pip install mkdocs-material, mkdocs-jupyter
-      - run: mkdocs gh-deploy --force
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Deploy docs
+        run: uv run mkdocs gh-deploy --force
+
+      # - uses: actions/checkout@v4
+      # - name: Configure Git Credentials
+      #   run: |
+      #     git config user.name github-actions[bot]
+      #     git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: 3.x
+      # - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      # - uses: actions/cache@v4
+      #   with:
+      #     key: mkdocs-material-${{ env.cache_id }}
+      #     path: ~/.cache
+      #     restore-keys: |
+      #       mkdocs-material-
+      # - run: pip install mkdocs-material, mkdocs-jupyter
+      # - run: mkdocs gh-deploy --force
