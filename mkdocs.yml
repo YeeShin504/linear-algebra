@@ -14,7 +14,7 @@ theme:
 
 plugins:
   - search
-  - mkdocs-jupyter:
+  - mkdocs-jupyter
   - gen-files:
       scripts:
         - docs/assets/python/gen_ref_pages.py
