@@ -15,14 +15,8 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 
 #### Prerequisites
 
-This project is best supported in a Jupyter Notebook environment with Python 3.12+. You can download Python from [here](https://www.python.org/downloads/).
+This project is best supported in a Jupyter Notebook environment with Python 3.10+. You can download Python from [here](https://www.python.org/downloads/).
 
-#### Clone the Repository
-
-```bash
-git clone https://github.com/YeeShin504/linear-algebra.git
-cd linear-algebra
-```
 
 #### Install Dependencies
 
@@ -43,10 +37,14 @@ It is recommended to use a virtual environment for managing dependencies.
       source venv/bin/activate
       ```
 
-3. Install the required dependencies:
+3. Install the library:
     ```bash
-    pip install -r requirements.txt
+    pip install ma1522-linear-algebra
     ```
+   It is recommended to use a Jupyter Notebook environment to run the code.
+   ```bash
+   pip install notebook
+   ```
 
 ### Usage
 
@@ -73,13 +71,10 @@ display(augmented_matrix)
 A.solve(rhs=b)
 
 # Alternatively, the full steps with LU Factorisation can be found using `ref` with the appropriate options.
-augmented_matrix.ref(matrices=2, verbosity=2)
+augmented_matrix.ref(verbosity=2)
 ```
 
-Documentation of more functions can be found using the following commands.
-```python
-sympy_commands()
-```
+Documentation of more functions can be found [here](https://yeeshin504.github.io/linear-algebra/).
 
 More usage examples can be found under the examples folder. Proper documentation would be coming soon for all functions found in `symbolic.py`.
 
@@ -90,9 +85,7 @@ More usage examples can be found under the examples folder. Proper documentation
 ### Work in Progress
 
 - [ ] Include better documentations for how to use the functions.
-- [ ] Add conditions to generate specific matrices (either randomly or symbolically).
 - [ ] Better `ref` algorithm to determine boundary conditions for a given matrix.
-- [ ] Offline Optical Character Recognition (OCR) support to key in entries of matrices quickly and accurately during exam conditions.
 
 ### Credits
 
