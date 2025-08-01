@@ -1565,7 +1565,7 @@ class Matrix(sym.MutableDenseMatrix):
         r"""
         Computes the column constraints for the matrix by appending a symbolic vector.
 
-        This method creates a matrix where a random column vector ($\begin{pmatrix} x_1 \\ \vdots \\ x_m \end{pmatrix}$)
+        This method creates a matrix where a random column vector $\begin{pmatrix} x_1 \\ \vdots \\ x_m \end{pmatrix}$
         is added to the matrix as an additional column. It then constructs a larger augmented matrix
         and optionally computes its Row Echelon Form (REF) or Reduced Row Echelon Form (RREF).
 
