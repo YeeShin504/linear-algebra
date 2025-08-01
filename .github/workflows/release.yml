@@ -1,7 +1,7 @@
 name: build and publish
 on:
   release:
-    types: ["published"]
+    types: ["published", "prereleased"]
 permissions:
   contents: write
 jobs:
