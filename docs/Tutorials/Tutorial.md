@@ -25,7 +25,7 @@ Follow these steps to get everything set up:
 
 2.  **Install dependencies:**
     ```bash
-    pip install ma1522-linear-algebra, notebook
+    pip install ma1522-linear-algebra notebook
     ```
 
 3.  **Start Jupyter:**
