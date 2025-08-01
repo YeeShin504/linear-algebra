@@ -1,0 +1,1072 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python scripts for NUS MA1522 Linear Algebra for Computing">
+      
+      
+        <meta name="author" content="Yee Shin Teng">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>MA1522 Linear Algebra for Computing Tutorial 1 - linear-algebra</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ma1522-linear-algebra-for-computing-tutorial-1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="linear-algebra" class="md-header__button md-logo" aria-label="linear-algebra" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            linear-algebra
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MA1522 Linear Algebra for Computing Tutorial 1
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/YeeShin504/linear-algebra" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    YeeShin504/linear-algebra
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/custom_types/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Tutorial/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Tutorial
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../scrap/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Finals
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="linear-algebra" class="md-nav__button md-logo" aria-label="linear-algebra" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    linear-algebra
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/YeeShin504/linear-algebra" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    YeeShin504/linear-algebra
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/custom_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    custom_types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/symbolic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    symbolic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    utils
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Finals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#diagram-to-be-inserted" class="md-nav__link">
+    <span class="md-ellipsis">
+      DIAGRAM TO BE INSERTED
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-1">MA1522 Linear Algebra for Computing Tutorial 1<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-1" title="Permanent link">&para;</a></h1>
+<hr />
+<p><strong>1.</strong> (a) Find a linear equation in the variables <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(y\)</span> that has a general solution <span class="arithmatex">\(x = 1+2t\)</span> and <span class="arithmatex">\(y = t\)</span> where <span class="arithmatex">\(t\)</span> is an arbitrary parameter.</p>
+<p>(b) Show that <span class="arithmatex">\(x = t\)</span> and <span class="arithmatex">\(y = \frac{1}{2}t - \frac{1}{2}\)</span>, where <span class="arithmatex">\(t\)</span> is an arbitrary parameter, is also a general solution for the equation constructed in part (a).</p>
+<hr />
+<p><strong>2.</strong> Find a linear equation in the variables <span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(y\)</span>, and <span class="arithmatex">\(z\)</span> that has a general solution</p>
+<div class="arithmatex">\[\begin{cases} x = 3 - 4s + t \\
+y = s  \\
+z = t
+\end{cases} 
+\quad s, t \in \mathbb{R}\]</div>
+<hr />
+<p><strong>3.</strong> Solve the following linear systems.</p>
+<p>(a) <span class="arithmatex">\(<span class="arithmatex">\(\begin{cases} 3x_1 &amp; + &amp; 2x_2 &amp; - &amp; 4x_3 &amp; = &amp; 3 \\
+2x_1 &amp; + &amp; 3x_2 &amp; + &amp; 3x_3 &amp; = &amp; 15  \\
+5x_1 &amp; - &amp; 3x_2 &amp; + &amp; x_3 &amp; = &amp; 14 \end{cases}\)</span>\)</span></p>
+<p>(b) <span class="arithmatex">\(<span class="arithmatex">\(\begin{cases} a &amp;+&amp; b &amp;-&amp; c &amp;-&amp; 2d &amp;=&amp; 0  \\
+ 2a &amp;+&amp; b &amp;-&amp; c &amp;+&amp; d &amp;=&amp; -2  \\
+ -a &amp;+&amp; b &amp;-&amp; 3c &amp;+&amp; d &amp;=&amp; 4 \end{cases}\)</span>\)</span></p>
+<p>(c) <span class="arithmatex">\(<span class="arithmatex">\(\begin{cases} x &amp;-&amp; 4y &amp;+&amp; 2z &amp;=&amp; -2  \\
+ x &amp;+&amp; 2y &amp;-&amp; 2z &amp;=&amp; -3  \\
+ x &amp;-&amp; y &amp;&amp; &amp;=&amp; 4 \end{cases}\)</span>\)</span></p>
+<hr />
+<p><strong>4.</strong> Determine the values of <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> so that the linear system</p>
+<div class="arithmatex">\[\begin{cases} ax &amp;&amp; &amp;+&amp; bz &amp;=&amp; 2  \\
+ ax &amp;+&amp; ay &amp;+&amp; 4z &amp;=&amp; 4  \\
+ &amp;&amp; ay &amp;+&amp; 2z &amp;=&amp; b \end{cases}\]</div>
+<p>(a) has no solution;</p>
+<p>(b) has only one solution;</p>
+<p>(c) has infinitely many solutions and a general solution has one arbitrary parameter;</p>
+<p>(d) has infinitely many solutions and a general solution has two arbitrary parameters.</p>
+<hr />
+<p><strong>5.</strong> (a) Does an inconsistent linear system with more unknowns than equations exist?</p>
+<p>(b) Does a linear system which has only one solution, but more equations than unknowns, exist?</p>
+<p>(c) Does a linear system which has only one solution, but more unknowns than equations, exist?</p>
+<p>(d) Does a linear system which has infinitely many solutions, but more equations than unknowns, exist?</p>
+<hr />
+<p><strong>6.</strong> Solve the following system of non-linear equations:</p>
+<div class="arithmatex">\[\begin{cases} x^2 &amp;-&amp; y^2 &amp;+&amp; 2z^2 &amp;=&amp; 6  \\
+ 2x^2 &amp;+&amp; 2y^2 &amp;-&amp; 5z^2 &amp;=&amp; 3  \\
+ 2x^2 &amp;+&amp; 5y^2 &amp;+&amp; z^2 &amp;=&amp; 9 \end{cases}\]</div>
+<hr />
+<p><strong>7.</strong> A network of one-way streets of a downtown section can be represented by the diagram below, with traffic flowing in the direction indicated. The average hourly volume of traffic entering and leaving this section during rush hour is given in the diagram.</p>
+<h3 id="diagram-to-be-inserted">DIAGRAM TO BE INSERTED<a class="headerlink" href="#diagram-to-be-inserted" title="Permanent link">&para;</a></h3>
+<p>(a) Do we have enough information to find the traffic volumes <span class="arithmatex">\(x_1\)</span>, <span class="arithmatex">\(x_2\)</span>, <span class="arithmatex">\(x_3\)</span>, <span class="arithmatex">\(x_4\)</span>, <span class="arithmatex">\(x_5\)</span>, <span class="arithmatex">\(x_6\)</span>, and <span class="arithmatex">\(x_7\)</span>?</p>
+<p>(b) Suppose <span class="arithmatex">\(x_6 = 50\)</span> and <span class="arithmatex">\(x_7 = 100\)</span>. What is <span class="arithmatex">\(x_1\)</span>, <span class="arithmatex">\(x_2\)</span>, <span class="arithmatex">\(x_3\)</span>, <span class="arithmatex">\(x_4\)</span>, and <span class="arithmatex">\(x_5\)</span>?</p>
+<p>(c) Can the road between junction A and B be closed for construction while still keeping the traffic flowing in the same directions on the other streets? Explain.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-2">MA1522 Linear Algebra for Computing Tutorial 2<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-2" title="Permanent link">&para;</a></h1>
+<hr />
+<p><strong>1.</strong> Let <span class="arithmatex">\(\mathbf{A}\)</span> and <span class="arithmatex">\(\mathbf{B}\)</span> be <span class="arithmatex">\(m \times n\)</span> and <span class="arithmatex">\(n \times p\)</span> matrices respectively.</p>
+<p>(a) Suppose the homogeneous linear system <span class="arithmatex">\(\mathbf{Bx = 0}\)</span> has infinitely many solutions. How many solutions does the system <span class="arithmatex">\(\mathbf{ABx = 0}\)</span> have?</p>
+<p>(b) Suppose <span class="arithmatex">\(\mathbf{Bx = 0}\)</span> has only the trivial solution. Can we tell how many solutions are there for <span class="arithmatex">\(\mathbf{ABx = 0}\)</span>?</p>
+<hr />
+<p><strong>2.</strong> (a) Let <span class="arithmatex">\(A = \begin{pmatrix} 1 &amp; 1 &amp; 0 &amp; 1  \\  0 &amp; 1 &amp; 1 &amp; 0  \\  0 &amp; 0 &amp; 1 &amp; 1 \end{pmatrix}\)</span>. Find a <span class="arithmatex">\(4 \times 3\)</span> matrix <span class="arithmatex">\(X\)</span> such that <span class="arithmatex">\(AX = I_3\)</span>.</p>
+<p><strong>Hint:</strong> Write <span class="arithmatex">\(X = \begin{pmatrix} x_1 &amp; x_2 &amp; x_3 \end{pmatrix}\)</span>, where <span class="arithmatex">\(x_i\)</span> is a <span class="arithmatex">\(4 \times 1\)</span> matrix, for <span class="arithmatex">\(i = 1, 2, 3\)</span>.</p>
+<p>(b) Let <span class="arithmatex">\(B = \begin{pmatrix} 1 &amp; 0 &amp; 1  \\  1 &amp; 1 &amp; 0  \\  0 &amp; 1 &amp; 1  \\  0 &amp; 0 &amp; 1 \end{pmatrix}\)</span>. Find a <span class="arithmatex">\(3 \times 4\)</span> matrix <span class="arithmatex">\(Y\)</span> such that <span class="arithmatex">\(YB = I_3\)</span>.</p>
+<hr />
+<p><strong>3.</strong> (i) Reduce the following matrices <span class="arithmatex">\(A\)</span> to its reduced row-echelon form <span class="arithmatex">\(R\)</span>.</p>
+<p>(ii) For each of the elementary row operation, write the corresponding elementary matrix.</p>
+<p>(iii) Write the matrices <span class="arithmatex">\(A\)</span> in the form <span class="arithmatex">\(E_1 E_2 \ldots E_n R\)</span> where <span class="arithmatex">\(E_1, E_2, \ldots, E_n\)</span> are elementary matrices and <span class="arithmatex">\(R\)</span> is the reduced row-echelon form of <span class="arithmatex">\(A\)</span>.</p>
+<p>(a) <span class="arithmatex">\(A = \begin{pmatrix} 5 &amp; -2 &amp; 6 &amp; 0 \\ -2 &amp; 1 &amp; 3 &amp; 1 \end{pmatrix}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(A = \begin{pmatrix} -1 &amp; 3 &amp; -4 \\ 2 &amp; 4 &amp; 1 \\ -4 &amp; 2 &amp; -9 \end{pmatrix}\)</span>.</p>
+<p>(c) <span class="arithmatex">\(A = \begin{pmatrix} 1 &amp; -1 &amp; 0 \\ 2 &amp; -2 &amp; 1 \\ 1 &amp; 2 &amp; 3 \end{pmatrix}\)</span>.</p>
+<hr />
+<p><strong>4.</strong> Determine if the following matrices are invertible. If the matrix is invertible, find its inverse.</p>
+<p>(a) <span class="arithmatex">\(\begin{pmatrix} -1 &amp; 3 \\ 3 &amp; -2 \end{pmatrix}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(\begin{pmatrix} -1 &amp; 3 &amp; -4 \\ 2 &amp; 4 &amp; 1 \\ -4 &amp; 2 &amp; -9 \end{pmatrix}\)</span>.</p>
+<hr />
+<p><strong>5.</strong> Write down the conditions so that the matrix <span class="arithmatex">\(\begin{pmatrix} 1 &amp; 1 &amp; 1 \\ a &amp; b &amp; c \\ a^2 &amp; b^2 &amp; c^2 \end{pmatrix}\)</span> is invertible.</p>
+<hr />
+<p><strong>6.</strong> (a) Suppose <span class="arithmatex">\(A\)</span> is a square matrix such that <span class="arithmatex">\(A^2 = 0\)</span>. Show that <span class="arithmatex">\(I - A\)</span> is invertible, with inverse <span class="arithmatex">\(I + A\)</span>.</p>
+<p>(b) Suppose <span class="arithmatex">\(A^3 = 0\)</span>. Is <span class="arithmatex">\(I - A\)</span> invertible?</p>
+<p>(c) A square matrix <span class="arithmatex">\(A\)</span> is said to be nilpotent if there is a positive integer <span class="arithmatex">\(n\)</span> such that <span class="arithmatex">\(A^n = 0\)</span>. Show that if <span class="arithmatex">\(A\)</span> is nilpotent, then <span class="arithmatex">\(I - A\)</span> is invertible.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-3">MA1522 Linear Algebra for Computing Tutorial 3<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-3" title="Permanent link">&para;</a></h1>
+<hr />
+<p><strong>1.</strong> Let <span class="arithmatex">\(\mathbf{A}\)</span> be the <span class="arithmatex">\(4 \times 4\)</span> matrix obtained from <span class="arithmatex">\(\mathbf{I}\)</span> by the following sequence of elementary row operations:</p>
+<div class="arithmatex">\[\mathbf{I} \xrightarrow{\frac{1}{2}R_2} \xrightarrow{R_1 - R_2} \xrightarrow{R_2 \leftrightarrow R_4} \xrightarrow{R_3 + 3R_1} \mathbf{A}\]</div>
+<p>Write <span class="arithmatex">\(\mathbf{A}^{-1}\)</span> as a product of four elementary matrices.</p>
+<hr />
+<p><strong>2.</strong> Find an LU factorization for the matrices <span class="arithmatex">\(\mathbf{A}\)</span>, and solve the equation <span class="arithmatex">\(\mathbf{A}x = b\)</span>.</p>
+<p>(a) <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 2 &amp; -1 &amp; 2 \\ -6 &amp; 0 &amp; -2 \\ 8 &amp; -1 &amp; 5 \end{pmatrix}\)</span> and <span class="arithmatex">\(b = \begin{pmatrix} 1 \\ 0 \\ 4 \end{pmatrix}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 2 &amp; -4 &amp; 4 &amp; -2 \\ 6 &amp; -9 &amp; 7 &amp; -3 \\ -1 &amp; -4 &amp; 8 &amp; 0 \end{pmatrix}\)</span> and <span class="arithmatex">\(b = \begin{pmatrix} 0 \\ 0 \\ 17 \end{pmatrix}\)</span>.</p>
+<hr />
+<p><strong>3.</strong> Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 2 &amp; -6 &amp; 6 \\ -4 &amp; 5 &amp; -7 \\ 3 &amp; 5 &amp; -1 \\ -6 &amp; 4 &amp; -8 \\ 8 &amp; -3 &amp; 9 \end{pmatrix}\)</span>.</p>
+<p>(a) Find an LU factorization of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p>(b) We can find a LU factorization in MATLAB using the command <code>lu</code>. Enter the following codes.</p>
+<div class="language-matlab highlight"><span class="filename">Matlab</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">A</span><span class="p">=[</span><span class="mi">2</span><span class="w"> </span><span class="o">-</span><span class="mi">6</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="o">-</span><span class="mi">4</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">;</span><span class="n">3</span><span class="w"> </span><span class="s">5</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="o">-</span><span class="mi">6</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">-</span><span class="mi">8</span><span class="p">;</span><span class="mi">8</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="w"> </span><span class="mi">9</span><span class="p">];</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">L</span><span class="w"> </span><span class="n">U</span><span class="p">]=</span><span class="nb">lu</span><span class="p">(</span><span class="n">sym</span><span class="p">(</span><span class="n">A</span><span class="p">)).</span>
+</span></code></pre></div>
+<p>Compare the results with the answer in (a).</p>
+<hr />
+<p><strong>4.</strong> Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} -x &amp; 1 &amp; 0 \\ 0 &amp; -x &amp; 1 \\ 2 &amp; -5 &amp; 4-x \end{pmatrix}\)</span>. Compute the determinant of <span class="arithmatex">\(\mathbf{A}\)</span> and find all the values of <span class="arithmatex">\(x\)</span> such that <span class="arithmatex">\(\mathbf{A}\)</span> is singular.</p>
+<hr />
+<p><strong>5.</strong> Show that <span class="arithmatex">\(<span class="arithmatex">\(\begin{vmatrix} a + px &amp; b + qx &amp; c + rx \\ p + ux &amp; q + vx &amp; r + wx \\ u + ax &amp; v + bx &amp; w + cx \end{vmatrix} = (1 + x^3) \begin{vmatrix} a &amp; b &amp; c \\ p &amp; q &amp; r \\ u &amp; v &amp; w \end{vmatrix}\)</span>\)</span></p>
+<hr />
+<p><strong>6.</strong> Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 5 &amp; 1 &amp; 2 \\ 0 &amp; 2 &amp; 6 &amp; 3 \\ 0 &amp; 0 &amp; 1 &amp; 2 \\ 0 &amp; 0 &amp; 1 &amp; 1 \end{pmatrix}\)</span> and <span class="arithmatex">\(\mathbf{B} = \begin{pmatrix} 1 &amp; 0 &amp; 1 &amp; 1 \\ 0 &amp; 1 &amp; 1 &amp; -1 \\ 0 &amp; 0 &amp; 1 &amp; 2 \\ 0 &amp; 0 &amp; 0 &amp; 3 \end{pmatrix}\)</span>. Compute</p>
+<p>(a) <span class="arithmatex">\(\det(3\mathbf{A}^T)\)</span>;</p>
+<p>(b) <span class="arithmatex">\(\det(3\mathbf{A}\mathbf{B}^{-1})\)</span>; and</p>
+<p>(c) <span class="arithmatex">\(\det((3\mathbf{B})^{-1})\)</span>.</p>
+<hr />
+<p><strong>7.</strong> Use Cramer's rule to solve <span class="arithmatex">\(<span class="arithmatex">\(\begin{cases} x + 5y + 3z = 1 \ 2y - 2z = 2 \ y + 3z = 0 \end{cases}\)</span>\)</span></p>
+<hr />
+<p><strong>8.</strong> Compute the adjoint of <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; -1 &amp; 2 \\ 0 &amp; 2 &amp; 1 \\ 3 &amp; 0 &amp; 6 \end{pmatrix}\)</span>, and use it to compute <span class="arithmatex">\(\mathbf{A}^{-1}\)</span>.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-4">MA1522 Linear Algebra for Computing Tutorial 4<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-4" title="Permanent link">&para;</a></h1>
+<hr />
+<p><strong>1.</strong> Let <span class="arithmatex">\(\mathbf{A} = \{(1 + t, 1 + 2t, 1 + 3t) \mid t \in \mathbb{R}\}\)</span> be a subset in <span class="arithmatex">\(\mathbb{R}^3\)</span>.</p>
+<p>(a) Describe <span class="arithmatex">\(\mathbf{A}\)</span> geometrically.</p>
+<p>(b) Show that <span class="arithmatex">\(\mathbf{A} = \{(x, y, z) \mid x + y - z = 1 \text{ and } x - 2y + z = 0\}\)</span>.</p>
+<p>(c) Write down a matrix equation <span class="arithmatex">\(\mathbf{M}x = b\)</span> where <span class="arithmatex">\(\mathbf{M}\)</span> is a <span class="arithmatex">\(3 \times 3\)</span> matrix and <span class="arithmatex">\(b\)</span> is a <span class="arithmatex">\(3 \times 1\)</span> matrix such that its solution set is <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<hr />
+<p><strong>2.</strong> Let <span class="arithmatex">\(u_1 = \begin{pmatrix} 2 \\ 1 \\ 0 \\ 3 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_2 = \begin{pmatrix} 3 \\ -1 \\ 5 \\ 2 \end{pmatrix}\)</span>, and <span class="arithmatex">\(u_3 = \begin{pmatrix} -1 \\ 0 \\ 2 \\ 1 \end{pmatrix}\)</span>.</p>
+<p>(a) If possible, express each of the following vectors as a linear combination of <span class="arithmatex">\(u_1\)</span>, <span class="arithmatex">\(u_2\)</span>, <span class="arithmatex">\(u_3\)</span>.</p>
+<p>(i) <span class="arithmatex">\(\begin{pmatrix} 2 \\ 3 \\ -7 \\ 3 \end{pmatrix}\)</span></p>
+<p>(ii) <span class="arithmatex">\(\begin{pmatrix} 0 \\ 0 \\ 0 \\ 0 \end{pmatrix}\)</span></p>
+<p>(iii) <span class="arithmatex">\(\begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \end{pmatrix}\)</span></p>
+<p>(iv) <span class="arithmatex">\(\begin{pmatrix} -4 \\ 6 \\ -13 \\ 4 \end{pmatrix}\)</span></p>
+<p>(b) Is it possible to find 2 vectors <span class="arithmatex">\(v_1\)</span> and <span class="arithmatex">\(v_2\)</span> such that they are not a multiple of each other, and both are not a linear combination of <span class="arithmatex">\(u_1\)</span>, <span class="arithmatex">\(u_2\)</span>, <span class="arithmatex">\(u_3\)</span>?</p>
+<hr />
+<p><strong>3.</strong> Let <span class="arithmatex">\(V = \left\{ \begin{pmatrix} x \\ y \\ z \end{pmatrix} \middle| x - y - z = 0 \right\}\)</span> be a subset of <span class="arithmatex">\(\mathbb{R}^3\)</span>.</p>
+<p>(a) Let <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 5 \\ 2 \\ 3 \end{pmatrix} \right\}\)</span>. Show that <span class="arithmatex">\(\text{span}(S) = V\)</span>.</p>
+<p>(b) Let <span class="arithmatex">\(T = S \cup \left\{\begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}\right\}\)</span>. Show that <span class="arithmatex">\(\text{span}(T) = \mathbb{R}^3\)</span>.</p>
+<hr />
+<p><strong>4.</strong> Which of the following sets <span class="arithmatex">\(S\)</span> spans <span class="arithmatex">\(\mathbb{R}^4\)</span>?</p>
+<p>(i) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 0 \\ 0 \\ 1 \end{pmatrix}, \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ 1 \\ 0 \end{pmatrix}\right\}\)</span>.</p>
+<p>(ii) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 2 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ -1 \\ 0 \end{pmatrix}, \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \end{pmatrix}\right\}\)</span>.</p>
+<p>(iii) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 6 \\ 4 \\ -2 \\ 4 \end{pmatrix}, \begin{pmatrix} 2 \\ 0 \\ 0 \\ 1 \end{pmatrix}, \begin{pmatrix} 3 \\ 2 \\ -1 \\ 2 \end{pmatrix}, \begin{pmatrix} 5 \\ 6 \\ -3 \\ 2 \end{pmatrix}, \begin{pmatrix} 0 \\ 4 \\ -2 \\ -1 \end{pmatrix}\right\}\)</span>.</p>
+<p>(iv) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 2 \\ -1 \\ 1 \end{pmatrix}, \begin{pmatrix} 0 \\ 0 \\ 1 \\ 1 \end{pmatrix}, \begin{pmatrix} 2 \\ 1 \\ 2 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 2 \\ 3 \\ 4 \end{pmatrix}\right\}\)</span>.</p>
+<hr />
+<p><strong>5.</strong> Determine whether <span class="arithmatex">\(\text{span}\{u_1, u_2, u_3\} \subseteq \text{span}\{v_1, v_2\}\)</span> and/or <span class="arithmatex">\(\text{span}\{v_1, v_2\} \subseteq \text{span}\{u_1, u_2, u_3\}\)</span> if</p>
+<p>(a) <span class="arithmatex">\(u_1 = \begin{pmatrix} 2 \\ -2 \\ 0 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_2 = \begin{pmatrix} -1 \\ 1 \\ -1 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_3 = \begin{pmatrix} 0 \\ 0 \\ 9 \end{pmatrix}\)</span>, <span class="arithmatex">\(v_1 = \begin{pmatrix} 1 \\ -1 \\ -5 \end{pmatrix}\)</span>, <span class="arithmatex">\(v_2 = \begin{pmatrix} 0 \\ 1 \\ 1 \end{pmatrix}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(u_1 = \begin{pmatrix} 1 \\ 6 \\ 4 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_2 = \begin{pmatrix} 2 \\ 4 \\ -1 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_3 = \begin{pmatrix} -1 \\ 2 \\ 5 \end{pmatrix}\)</span>, <span class="arithmatex">\(v_1 = \begin{pmatrix} 1 \\ -2 \\ -5 \end{pmatrix}\)</span>, <span class="arithmatex">\(v_2 = \begin{pmatrix} 0 \\ 8 \\ 9 \end{pmatrix}\)</span>.</p>
+<hr />
+<p><strong>6.</strong> Determine which of the following sets are subspaces. For those sets that are subspaces, express the set as a linear span. For those sets that are not, explain why.</p>
+<p>(a) <span class="arithmatex">\(S = \left\{\begin{pmatrix} p \\ q \\ p \\ q \end{pmatrix} \middle| \, p, q \in \mathbb{R}\right\}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(S = \left\{\begin{pmatrix} a \\ b \\ c \end{pmatrix} \middle| \, a \geq b \text{ or } b \geq c\right\}\)</span>.</p>
+<p>(c) <span class="arithmatex">\(S = \left\{\begin{pmatrix} x \\ y \\ z \\ w \end{pmatrix} \middle| \, 4x = 3y \text{ and } 2x = -3w\right\}\)</span>.</p>
+<p>(d) <span class="arithmatex">\(S = \left\{\begin{pmatrix} a \\ b \\ c \\ d \end{pmatrix} \middle| \, \begin{vmatrix} 1 &amp; 0 &amp; 1 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \\ 1 &amp; 0 &amp; 0 &amp; 1 \\ a &amp; b &amp; c &amp; d \end{vmatrix} = 0\right\}\)</span>.</p>
+<p>(e) <span class="arithmatex">\(S = \left\{\begin{pmatrix} w \\ x \\ y \\ z \end{pmatrix} \middle| \, w + x = y + z\right\}\)</span>.</p>
+<p>(f) <span class="arithmatex">\(S = \left\{\begin{pmatrix} a \\ b \\ c \\ d \end{pmatrix} \middle| \, ab = cd\right\}\)</span>.</p>
+<p>(g) <span class="arithmatex">\(S\)</span> is the solution set of <span class="arithmatex">\(\mathbf{A}x = 0\)</span> where <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 2 &amp; 2 &amp; -1 &amp; 0 &amp; 1 \\ -1 &amp; -1 &amp; 2 &amp; -3 &amp; 1 \\ 0 &amp; 0 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; -2 &amp; 0 &amp; -1 \end{pmatrix}\)</span>.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-5">MA1522 Linear Algebra for Computing Tutorial 5<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-5" title="Permanent link">&para;</a></h1>
+<hr />
+<p><strong>1.</strong> For each of the following sets of vectors <span class="arithmatex">\(S\)</span>,</p>
+<p>(i) Determine if <span class="arithmatex">\(S\)</span> is linearly independent.</p>
+<p>(ii) If <span class="arithmatex">\(S\)</span> is linearly dependent, express one of the vectors in <span class="arithmatex">\(S\)</span> as a linear combination of the others.</p>
+<p>(a) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}, \begin{pmatrix} 0 \\ 3 \\ 2 \end{pmatrix}, \begin{pmatrix} 2 \\ 4 \\ 3 \end{pmatrix}, \begin{pmatrix} 3 \\ 6 \\ 6 \end{pmatrix}\right\}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 3 \\ 4 \\ 2 \end{pmatrix}\right\}\)</span>.</p>
+<p>(c) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 3 \\ 4 \\ 2 \end{pmatrix}, \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix}\right\}\)</span>.</p>
+<p>(d) <span class="arithmatex">\(S = \left\{\begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 0 \\ 1 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 2 \\ -1 \end{pmatrix}\right\}\)</span>.</p>
+<hr />
+<p><strong>2.</strong> Suppose <span class="arithmatex">\(u\)</span>, <span class="arithmatex">\(v\)</span>, <span class="arithmatex">\(w\)</span> are linearly independent vectors in <span class="arithmatex">\(\mathbb{R}^n\)</span>. Determine which of the sets <span class="arithmatex">\(S_1\)</span> to <span class="arithmatex">\(S_5\)</span> are linearly independent.</p>
+<p>(a) <span class="arithmatex">\(S_1 = \{u, v\}\)</span>,</p>
+<p>(b) <span class="arithmatex">\(S_2 = \{u - v, v - w, w - u\}\)</span>,</p>
+<p>(c) <span class="arithmatex">\(S_3 = \{u - v, v - w, u + w\}\)</span>,</p>
+<p>(d) <span class="arithmatex">\(S_4 = \{u, u + v, u + v + w\}\)</span>.</p>
+<p>(e) <span class="arithmatex">\(S_5 = \{u + v, v + w, u + w, u + v + w\}\)</span>.</p>
+<hr />
+<p><strong>3.</strong> For each of the following subspaces <span class="arithmatex">\(V\)</span>, write down a basis for <span class="arithmatex">\(V\)</span>.</p>
+<p>(a) <span class="arithmatex">\(V = \left\{\begin{pmatrix} a + b \\ a + c \\ c + d \\ b + d \end{pmatrix} \middle| \, a, b, c, d \in \mathbb{R}\right\}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(V = \text{span}\left\{\begin{pmatrix} 1 \\ 0 \\ -1 \end{pmatrix}, \begin{pmatrix} -1 \\ 2 \\ 3 \end{pmatrix}, \begin{pmatrix} 0 \\ 3 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ -1 \\ 1 \end{pmatrix}\right\}\)</span>.</p>
+<p>(c) <span class="arithmatex">\(V\)</span> is the solution space of the following homogeneous linear system <span class="arithmatex">\(<span class="arithmatex">\(\begin{cases} a_1 &amp;&amp; &amp;+&amp; a_3 &amp;+&amp; a_4 &amp;-&amp; a_5 &amp;=&amp; 0 \\
+&amp;&amp; a_2 &amp;+&amp; a_3 &amp;+&amp; 2a_4 &amp;+&amp; a_5 &amp;=&amp; 0 \\
+a_1 &amp;+&amp; a_2 &amp;+&amp; 2a_3 &amp;+&amp; a_4 &amp;-&amp; 2a_5 &amp;=&amp; 0 \end{cases}\)</span>\)</span></p>
+<hr />
+<p><strong>4.</strong> For what values of <span class="arithmatex">\(a\)</span> will <span class="arithmatex">\(u_1 = \begin{pmatrix} a \\ 1 \\ -1 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_2 = \begin{pmatrix} -1 \\ a \\ 1 \end{pmatrix}\)</span>, <span class="arithmatex">\(u_3 = \begin{pmatrix} 1 \\ -1 \\ a \end{pmatrix}\)</span> form a basis for <span class="arithmatex">\(\mathbb{R}^3\)</span>?</p>
+<hr />
+<p><strong>5.</strong> Let <span class="arithmatex">\(U\)</span> and <span class="arithmatex">\(V\)</span> be subspaces of <span class="arithmatex">\(\mathbb{R}^n\)</span>. We define the sum <span class="arithmatex">\(U + V\)</span> to be the set of vectors <span class="arithmatex">\(\{u + v \mid u \in U \text{ and } v \in V\}\)</span>.</p>
+<p>Suppose <span class="arithmatex">\(U = \text{span}\left\{\begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 2 \\ 2 \\ 1 \end{pmatrix}\right\}\)</span>, <span class="arithmatex">\(V = \text{span}\left\{\begin{pmatrix} 1 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 2 \\ -1 \end{pmatrix}\right\}\)</span>.</p>
+<p>(a) Is <span class="arithmatex">\(U \cup V\)</span> a subspace of <span class="arithmatex">\(\mathbb{R}^4\)</span>?</p>
+<p>(b) Show that <span class="arithmatex">\(U + V\)</span> a subspace by showing that it can be written as a span of a set. What is the dimension?</p>
+<p>(c) Show that <span class="arithmatex">\(U + V\)</span> contains <span class="arithmatex">\(U\)</span> and <span class="arithmatex">\(V\)</span>. This shows that <span class="arithmatex">\(U + V\)</span> is a subspace containing <span class="arithmatex">\(U \cup V\)</span>.</p>
+<p>(d) What are the dimensions of <span class="arithmatex">\(U\)</span> and <span class="arithmatex">\(V\)</span>?</p>
+<p>(e) Show that <span class="arithmatex">\(U \cap V\)</span> a subspace by showing that it can be written as a span of a set. What is the dimension?</p>
+<p>(f) Verify that <span class="arithmatex">\(\dim(U + V) = \dim(U) + \dim(V) - \dim(U \cap V)\)</span>.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-6">MA1522 Linear Algebra for Computing Tutorial 6<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-6" title="Permanent link">&para;</a></h1>
+<h2 id="problem-1">Problem 1<a class="headerlink" href="#problem-1" title="Permanent link">&para;</a></h2>
+<p><strong>(a)</strong> Let <span class="arithmatex">\(\mathbf{u}_1 = \begin{pmatrix} 1 \\ 2 \\ -1 \end{pmatrix}\)</span>, <span class="arithmatex">\(\mathbf{u}_2 = \begin{pmatrix} 0 \\ 2 \\ 1 \end{pmatrix}\)</span>, <span class="arithmatex">\(\mathbf{u}_3 = \begin{pmatrix} 0 \\ -1 \\ 3 \end{pmatrix}\)</span>. Show that <span class="arithmatex">\(S = \{\mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3\}\)</span> forms a basis for <span class="arithmatex">\(\mathbb{R}^3\)</span>.</p>
+<p><strong>(b)</strong> Suppose <span class="arithmatex">\(\mathbf{w} = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}\)</span>. Find the coordinate vector of <span class="arithmatex">\(\mathbf{w}\)</span> relative to <span class="arithmatex">\(S\)</span>.</p>
+<p><strong>(c)</strong> Let <span class="arithmatex">\(T = \{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\)</span> be another basis for <span class="arithmatex">\(\mathbb{R}^3\)</span> where <span class="arithmatex">\(\mathbf{v}_1 = \begin{pmatrix} 1 \\ 5 \\ 4 \end{pmatrix}\)</span>, <span class="arithmatex">\(\mathbf{v}_2 = \begin{pmatrix} -1 \\ 3 \\ 7 \end{pmatrix}\)</span>, <span class="arithmatex">\(\mathbf{v}_3 = \begin{pmatrix} 2 \\ 2 \\ 4 \end{pmatrix}\)</span>. Find the transition matrix from <span class="arithmatex">\(T\)</span> to <span class="arithmatex">\(S\)</span>.</p>
+<p><strong>(d)</strong> Find the transition matrix from <span class="arithmatex">\(S\)</span> to <span class="arithmatex">\(T\)</span>.</p>
+<p><strong>(e)</strong> Use the vector <span class="arithmatex">\(\mathbf{w}\)</span> in Part (b). Find the coordinate vector of <span class="arithmatex">\(\mathbf{w}\)</span> relative to <span class="arithmatex">\(T\)</span>.</p>
+<h2 id="problem-2">Problem 2<a class="headerlink" href="#problem-2" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(V\)</span> be a subspace of <span class="arithmatex">\(\mathbb{R}^n\)</span> and <span class="arithmatex">\(S = \{\mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3\}\)</span> be a basis for a subspace <span class="arithmatex">\(V\)</span>. Define <span class="arithmatex">\(T = \{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\)</span> where <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{v}_1 = \mathbf{u}_1 + \mathbf{u}_2 + \mathbf{u}_3, \quad \mathbf{v}_2 = \mathbf{u}_2 + \mathbf{u}_3 \quad \text{and} \quad \mathbf{v}_3 = \mathbf{u}_2 - \mathbf{u}_3\)</span>\)</span></p>
+<p><strong>(a)</strong> Show that <span class="arithmatex">\(T\)</span> is a basis for <span class="arithmatex">\(V\)</span>.</p>
+<p><strong>(b)</strong> Find the transition matrix from <span class="arithmatex">\(S\)</span> to <span class="arithmatex">\(T\)</span>.</p>
+<h2 id="problem-3">Problem 3<a class="headerlink" href="#problem-3" title="Permanent link">&para;</a></h2>
+<p><strong>(a)</strong> Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; -1 &amp; 1 \\ 1 &amp; 1 &amp; -1 \\ -1 &amp; -1 &amp; 1 \end{pmatrix}\)</span> and <span class="arithmatex">\(\mathbf{b} = \begin{pmatrix} 2 \\ 1 \\ 0 \end{pmatrix}\)</span>. Is <span class="arithmatex">\(\mathbf{b}\)</span> in the column space of <span class="arithmatex">\(\mathbf{A}\)</span>? If it is, express it as a linear combination of the columns of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(b)</strong> Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 9 &amp; 1 \\ -1 &amp; 3 &amp; 1 \\ 1 &amp; 1 &amp; 1 \end{pmatrix}\)</span> and <span class="arithmatex">\(\mathbf{b} = \begin{pmatrix}5 &amp; 1 &amp; -1\end{pmatrix}\)</span>. Is <span class="arithmatex">\(\mathbf{b}\)</span> in the row space of <span class="arithmatex">\(\mathbf{A}\)</span>? If it is, express it as a linear combination of the rows of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(c)</strong> Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 2 &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; 2 &amp; 1 \\ 1 &amp; 2 &amp; 1 &amp; 3 \\ 0 &amp; 1 &amp; 2 &amp; 2 \end{pmatrix}\)</span>. Is the row space and column space of <span class="arithmatex">\(\mathbf{A}\)</span> the whole <span class="arithmatex">\(\mathbb{R}^4\)</span>?</p>
+<h2 id="problem-4">Problem 4<a class="headerlink" href="#problem-4" title="Permanent link">&para;</a></h2>
+<p>For each of the following matrices <span class="arithmatex">\(\mathbf{A}\)</span>,</p>
+<p>(i) Find a basis for the row space of <span class="arithmatex">\(\mathbf{A}\)</span>. (ii) Find a basis for the column space of <span class="arithmatex">\(\mathbf{A}\)</span>. (iii) Find a basis for the nullspace of <span class="arithmatex">\(\mathbf{A}\)</span>. (iv) Hence determine <span class="arithmatex">\(\text{rank}(\mathbf{A})\)</span>, <span class="arithmatex">\(\text{nullity}(\mathbf{A})\)</span> and verify the dimension theorem for matrices. (v) Is <span class="arithmatex">\(\mathbf{A}\)</span> full rank?</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 2 &amp; 5 &amp; 3 \\ 1 &amp; -4 &amp; -1 &amp; -9 \\ -1 &amp; 0 &amp; -3 &amp; 1 \\ 2 &amp; 1 &amp; 7 &amp; 0 \\ 0 &amp; 1 &amp; 1 &amp; 2 \end{pmatrix}\)</span></p>
+<p><strong>(b)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 3 &amp; 7 \\ 2 &amp; 1 &amp; 8 \\ 3 &amp; -5 &amp; -1 \\ 2 &amp; -2 &amp; 2 \\ 1 &amp; 1 &amp; 5 \end{pmatrix}\)</span></p>
+<h2 id="problem-5">Problem 5<a class="headerlink" href="#problem-5" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(W\)</span> be a subspace of <span class="arithmatex">\(\mathbb{R}^5\)</span> spanned by the following vectors <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{u}_1 = \begin{pmatrix} 1 \\ -2 \\ 0 \\ 0 \\ 3 \end{pmatrix}, \quad \mathbf{u}_2 = \begin{pmatrix} 2 \\ -5 \\ -3 \\ -2 \\ 6 \end{pmatrix}, \quad \mathbf{u}_3 = \begin{pmatrix} 0 \\ 5 \\ 15 \\ 10 \\ 0 \end{pmatrix}, \quad \mathbf{u}_4 = \begin{pmatrix} 2 \\ 1 \\ 15 \\ 8 \\ 6 \end{pmatrix}\)</span>\)</span></p>
+<p><strong>(a)</strong> Find a basis for <span class="arithmatex">\(W\)</span>.</p>
+<p><strong>(b)</strong> What is <span class="arithmatex">\(\dim(W)\)</span>?</p>
+<p><strong>(c)</strong> Extend the basis <span class="arithmatex">\(W\)</span> found in (a) to a basis for <span class="arithmatex">\(\mathbb{R}^5\)</span>.</p>
+<h2 id="problem-6">Problem 6<a class="headerlink" href="#problem-6" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(S = \left\{ \begin{pmatrix} 1 \\ 0 \\ 1 \\ 3 \end{pmatrix}, \begin{pmatrix} 2 \\ -1 \\ 0 \\ 1 \end{pmatrix}, \begin{pmatrix} -1 \\ 3 \\ 5 \\ 12 \end{pmatrix}, \begin{pmatrix} 0 \\ 1 \\ 2 \\ 5 \end{pmatrix}, \begin{pmatrix} 3 \\ -1 \\ 1 \\ 4 \end{pmatrix} \right\}\)</span> and <span class="arithmatex">\(V = \text{span}(S)\)</span>. Find a subset <span class="arithmatex">\(S' \subseteq S\)</span> such that <span class="arithmatex">\(S'\)</span> forms a basis for <span class="arithmatex">\(V\)</span>.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-7">MA1522 Linear Algebra for Computing Tutorial 7<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-7" title="Permanent link">&para;</a></h1>
+<h2 id="problem-1_1">Problem 1<a class="headerlink" href="#problem-1_1" title="Permanent link">&para;</a></h2>
+<p><strong>(a)</strong> Let <span class="arithmatex">\(a_1 x_1 + a_2 x_2 + \cdots + a_n x_n = b\)</span> be a linear equation. Express this linear system as <span class="arithmatex">\(\mathbf{a} \cdot \mathbf{x} = b\)</span> for some (column) vectors <span class="arithmatex">\(\mathbf{a}\)</span> and <span class="arithmatex">\(\mathbf{x}\)</span>.</p>
+<p><strong>(b)</strong> Find the solution set of the linear system <span class="arithmatex">\(<span class="arithmatex">\(\begin{cases}
+x_1 &amp;+&amp; 3x_2 &amp;-&amp; 2x_3 &amp;&amp;  &amp;=&amp; 0 \\
+2x_1 &amp;+&amp; 6x_2 &amp;-&amp; 5x_3 &amp;-&amp; 2x_4 &amp;=&amp; 0  \\
+&amp;&amp; &amp;&amp; 5x_3 &amp;+&amp; 10x_4 &amp;=&amp; 0  
+\end{cases}\)</span>\)</span></p>
+<p><strong>(c)</strong> Find a nonzero vector <span class="arithmatex">\(\mathbf{v} \in \mathbb{R}^4\)</span> such that <span class="arithmatex">\(\mathbf{a}_1 \cdot \mathbf{v} = 0\)</span>, <span class="arithmatex">\(\mathbf{a}_2 \cdot \mathbf{v} = 0\)</span>, and <span class="arithmatex">\(\mathbf{a}_3 \cdot \mathbf{v} = 0\)</span>, where <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{a}_1 = \begin{pmatrix} 1 \\ 3 \\ -2 \\ 0 \end{pmatrix}, \quad \mathbf{a}_2 = \begin{pmatrix} 2 \\ 6 \\ -5 \\ -2 \end{pmatrix}, \quad \mathbf{a}_3 = \begin{pmatrix} 0 \\ 0 \\ 5 \\ 10 \end{pmatrix}\)</span>\)</span></p>
+<p>This exercise demonstrates the fact that if <span class="arithmatex">\(\mathbf{A}\)</span> is a <span class="arithmatex">\(m \times n\)</span> matrix, then the solution set of the homogeneous linear system <span class="arithmatex">\(\mathbf{A}\mathbf{x} = \mathbf{0}\)</span> consists of all the vectors in <span class="arithmatex">\(\mathbb{R}^n\)</span> that are orthogonal to every row vector of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<h2 id="problem-2_1">Problem 2<a class="headerlink" href="#problem-2_1" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\)</span> be an orthonormal set. Suppose <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{x} = \mathbf{v}_1 - 2\mathbf{v}_2 - 2\mathbf{v}_3 \quad \text{and} \quad \mathbf{y} = 2\mathbf{v}_1 - 3\mathbf{v}_2 + \mathbf{v}_3\)</span>\)</span></p>
+<p>Determine the value for each of the following:</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(\mathbf{x} \cdot \mathbf{y}\)</span>.</p>
+<p><strong>(b)</strong> <span class="arithmatex">\(||\mathbf{x}||\)</span> and <span class="arithmatex">\(||\mathbf{y}||\)</span>.</p>
+<p><strong>(c)</strong> The angle <span class="arithmatex">\(\theta\)</span> between <span class="arithmatex">\(\mathbf{x}\)</span> and <span class="arithmatex">\(\mathbf{y}\)</span>.</p>
+<h2 id="problem-3_1">Problem 3<a class="headerlink" href="#problem-3_1" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(\mathbf{v}_1 = \begin{pmatrix} 1 \\ 2  \\ \ -1 \end{pmatrix}\)</span>, <span class="arithmatex">\(\mathbf{v}_2 = \begin{pmatrix} 1  \\ 0 \\ 1 \end{pmatrix}\)</span>, and <span class="arithmatex">\(\mathbf{V} = \begin{pmatrix} \mathbf{v}_1 &amp; \mathbf{v}_2 \end{pmatrix}\)</span>.</p>
+<p><strong>(a)</strong> Compute <span class="arithmatex">\(\mathbf{v}_1 \cdot \mathbf{v}_1\)</span>, <span class="arithmatex">\(\mathbf{v}_1 \cdot \mathbf{v}_2\)</span>, <span class="arithmatex">\(\mathbf{v}_2 \cdot \mathbf{v}_1\)</span> and <span class="arithmatex">\(\mathbf{v}_2 \cdot \mathbf{v}_2\)</span>.</p>
+<p><strong>(b)</strong> Compute <span class="arithmatex">\(\mathbf{V}^T \mathbf{V}\)</span>. What do the entries of <span class="arithmatex">\(\mathbf{V}^T \mathbf{V}\)</span> represent?</p>
+<h2 id="problem-4_1">Problem 4<a class="headerlink" href="#problem-4_1" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(W\)</span> be a subspace of <span class="arithmatex">\(\mathbb{R}^n\)</span>. The orthogonal complement of <span class="arithmatex">\(W\)</span>, denoted as <span class="arithmatex">\(W^{\perp}\)</span>, is defined to be <span class="arithmatex">\(<span class="arithmatex">\(W^{\perp} := \{ \mathbf{v} \in \mathbb{R}^n : \mathbf{v} \cdot \mathbf{w} = 0 \text{ for all } \mathbf{w} \in W \}\)</span>\)</span></p>
+<p>Let <span class="arithmatex">\(\mathbf{w}_1 = \begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \\ 1 \end{pmatrix}\)</span>, <span class="arithmatex">\(\mathbf{w}_2 = \begin{pmatrix} 1 \\ 2 \\ -1 \\ -2 \\ 0 \end{pmatrix}\)</span>, and <span class="arithmatex">\(\mathbf{w}_3 = \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \\ 0 \end{pmatrix}\)</span>, and <span class="arithmatex">\(W = \text{span}\{\mathbf{w}_1, \mathbf{w}_2, \mathbf{w}_3\}\)</span>.</p>
+<p><strong>(a)</strong> Show that <span class="arithmatex">\(S = \{\mathbf{w}_1, \mathbf{w}_2, \mathbf{w}_3\}\)</span> is linearly independent.</p>
+<p><strong>(b)</strong> Show that <span class="arithmatex">\(S\)</span> is orthogonal.</p>
+<p><strong>(c)</strong> Show that <span class="arithmatex">\(W^{\perp}\)</span> is a subspace of <span class="arithmatex">\(\mathbb{R}^5\)</span> by showing that it is a span of a set. What is the dimension? (Hint: See Question 1.)</p>
+<p><strong>(d)</strong> Obtain an orthonormal set <span class="arithmatex">\(T\)</span> by normalizing <span class="arithmatex">\(\mathbf{w}_1\)</span>, <span class="arithmatex">\(\mathbf{w}_2\)</span>, <span class="arithmatex">\(\mathbf{w}_3\)</span>.</p>
+<p><strong>(e)</strong> Let <span class="arithmatex">\(\mathbf{v} = \begin{pmatrix} 2 \\ 0 \\ 1 \\ 1 \\ -1 \end{pmatrix}\)</span>. Find the projection of <span class="arithmatex">\(\mathbf{v}\)</span> onto <span class="arithmatex">\(W\)</span>.</p>
+<p><strong>(f)</strong> Let <span class="arithmatex">\(\mathbf{v}_W\)</span> be the projection of <span class="arithmatex">\(\mathbf{v}\)</span> onto <span class="arithmatex">\(W\)</span>. Show that <span class="arithmatex">\(\mathbf{v} - \mathbf{v}_W\)</span> is in <span class="arithmatex">\(W^{\perp}\)</span>.</p>
+<p>This exercise demonstrates the fact that every vector <span class="arithmatex">\(\mathbf{v}\)</span> in <span class="arithmatex">\(\mathbb{R}^5\)</span> can be written as <span class="arithmatex">\(\mathbf{v} = \mathbf{v}_W + \mathbf{v}_{W^{\perp}}\)</span>, for some <span class="arithmatex">\(\mathbf{v}_W\)</span> in <span class="arithmatex">\(W\)</span> and <span class="arithmatex">\(\mathbf{v}_{W^{\perp}}\)</span> in <span class="arithmatex">\(W^{\perp}\)</span>. In other words, <span class="arithmatex">\(W + W^{\perp} = \mathbb{R}^5\)</span>.</p>
+<h2 id="problem-5_1">Problem 5<a class="headerlink" href="#problem-5_1" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(S = \{\mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3, \mathbf{u}_4\}\)</span> where <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{u}_1 = \begin{pmatrix} 1 \\ 2 \\ 2 \\ -1 \end{pmatrix}, \quad \mathbf{u}_2 = \begin{pmatrix} 1 \\ 1 \\ -1 \\ 1 \end{pmatrix}, \quad \mathbf{u}_3 = \begin{pmatrix} -1 \\ 1 \\ -1 \\ -1 \end{pmatrix}, \quad \mathbf{u}_4 = \begin{pmatrix} -2 \\ 1 \\ 1 \\ 2 \end{pmatrix}\)</span>\)</span></p>
+<p><strong>(a)</strong> Check that <span class="arithmatex">\(S\)</span> is an orthogonal basis for <span class="arithmatex">\(\mathbb{R}^4\)</span>.</p>
+<p><strong>(b)</strong> Is it possible to find a nonzero vector <span class="arithmatex">\(\mathbf{w}\)</span> in <span class="arithmatex">\(\mathbb{R}^4\)</span> such that <span class="arithmatex">\(S \cup {\mathbf{w}}\)</span> is an orthogonal set?</p>
+<p><strong>(c)</strong> Obtain an orthonormal set <span class="arithmatex">\(T\)</span> by normalizing <span class="arithmatex">\(\mathbf{u}_1\)</span>, <span class="arithmatex">\(\mathbf{u}_2\)</span>, <span class="arithmatex">\(\mathbf{u}_3\)</span>, <span class="arithmatex">\(\mathbf{u}_4\)</span>.</p>
+<p><strong>(d)</strong> Let <span class="arithmatex">\(\mathbf{v} = \begin{pmatrix} 0 \\ 1 \\ 2 \\ 3 \end{pmatrix}\)</span>. Find <span class="arithmatex">\([\mathbf{v}]_S\)</span> and <span class="arithmatex">\([\mathbf{v}]_T\)</span>.</p>
+<p><strong>(e)</strong> Suppose <span class="arithmatex">\(\mathbf{w}\)</span> is a vector in <span class="arithmatex">\(\mathbb{R}^4\)</span> such that <span class="arithmatex">\([\mathbf{w}]_S = \begin{pmatrix} 1 \\ 2 \\ 1 \\ 1 \end{pmatrix}\)</span>. Find <span class="arithmatex">\([\mathbf{w}]_T\)</span>.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-8">MA1522 Linear Algebra for Computing Tutorial 8<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-8" title="Permanent link">&para;</a></h1>
+<h2 id="problem-1_2">Problem 1<a class="headerlink" href="#problem-1_2" title="Permanent link">&para;</a></h2>
+<p>Apply Gram-Schmidt Process to convert</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(\left\{ \begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ -1 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ -1 \\ -1 \end{pmatrix}, \begin{pmatrix} 1 \\ 2 \\ 0 \\ 1 \end{pmatrix} \right\}\)</span> into an orthonormal basis for <span class="arithmatex">\(\mathbb{R}^4\)</span>.</p>
+<p><strong>(b)</strong> <span class="arithmatex">\(\left\{ \begin{pmatrix} 1 \\ 2 \\ 2 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 2 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 2 \\ 1 \end{pmatrix} \right\}\)</span> into an orthonormal set. Is the set obtained an orthonormal basis? Why?</p>
+<h2 id="problem-2_2">Problem 2<a class="headerlink" href="#problem-2_2" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 0 &amp; 1 &amp; 1 &amp; 0 \\ 1 &amp; -1 &amp; 1 &amp; -1 \\ 1 &amp; 0 &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; 1 &amp; 1 \end{pmatrix}\)</span> and <span class="arithmatex">\(\mathbf{b} = \begin{pmatrix} 6 \\ 3 \\ -1 \\ 1 \end{pmatrix}\)</span>.</p>
+<p><strong>(a)</strong> Is the linear system <span class="arithmatex">\(\mathbf{A}\mathbf{x} = \mathbf{b}\)</span> inconsistent?</p>
+<p><strong>(b)</strong> Find a least squares solution to the system. Is the solution unique?</p>
+<p><strong>(c)</strong> Use your answer in (b), compute the projection of <span class="arithmatex">\(\mathbf{b}\)</span> onto the column space of <span class="arithmatex">\(\mathbf{A}\)</span>. Is the solution unique?</p>
+<h2 id="problem-3-application">Problem 3 (Application)<a class="headerlink" href="#problem-3-application" title="Permanent link">&para;</a></h2>
+<p>A line <span class="arithmatex">\(p(x) = a_1 x + a_0\)</span> is said to be the least squares approximating line for a given set of data points <span class="arithmatex">\((x_1, y_1), (x_2, y_2), \ldots, (x_m, y_m)\)</span> if the sum <span class="arithmatex">\(<span class="arithmatex">\(S = [y_1 - p(x_1)]^2 + [y_2 - p(x_2)]^2 + \cdots + [y_m - p(x_m)]^2\)</span>\)</span> is minimized. Writing <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{x} = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_m \end{pmatrix}, \quad \mathbf{y} = \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_m \end{pmatrix}, \quad \text{and} \quad p(\mathbf{x}) = \begin{pmatrix} p(x_1) \\ p(x_2) \\ \vdots \\ p(x_m) \end{pmatrix} = \begin{pmatrix} a_1 x_1 + a_0 \\ a_1 x_2 + a_0 \\ \vdots \\ a_1 x_m + a_0 \end{pmatrix}\)</span>\)</span></p>
+<p>the problem is now rephrased as finding <span class="arithmatex">\(a_0, a_1\)</span> such that <span class="arithmatex">\(<span class="arithmatex">\(S = ||\mathbf{y} - p(\mathbf{x})||^2\)</span>\)</span> is minimized. Observe that if we let <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{N} = \begin{pmatrix} 1 &amp; x_1 \\ 1 &amp; x_2 \\ \vdots &amp; \vdots \\ 1 &amp; x_m \end{pmatrix} \quad \text{and} \quad \mathbf{a} = \begin{pmatrix} a_0 \\ a_1 \end{pmatrix}\)</span>\)</span></p>
+<p>then <span class="arithmatex">\(\mathbf{N}\mathbf{a} = p(\mathbf{x})\)</span>. And so our aim is to find <span class="arithmatex">\(\mathbf{a}\)</span> that minimizes <span class="arithmatex">\(||\mathbf{y} - \mathbf{N}\mathbf{a}||^2\)</span>.</p>
+<p>It is known the equation representing the dependency of the resistance of a cylindrically shaped conductor (a wire) at <span class="arithmatex">\(20°C\)</span> is given by <span class="arithmatex">\(<span class="arithmatex">\(R = \rho \frac{L}{A}\)</span>\)</span> where <span class="arithmatex">\(R\)</span> is the resistance measured in Ohms <span class="arithmatex">\(\Omega\)</span>, <span class="arithmatex">\(L\)</span> is the length of the material in meters <span class="arithmatex">\(m\)</span>, <span class="arithmatex">\(A\)</span> is the cross-sectional area of the material in meter squared <span class="arithmatex">\(m^2\)</span>, and <span class="arithmatex">\(\rho\)</span> is the resistivity of the material in Ohm meters <span class="arithmatex">\(\Omega m\)</span>.</p>
+<p>A student wants to measure the resistivity of a certain material. Keeping the cross-sectional area constant at <span class="arithmatex">\(0.002 m^2\)</span>, he connected the power sources along the material at various lengths and measured the resistance and obtained the following data.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(L\)</span></th>
+<th><span class="arithmatex">\(0.01\)</span></th>
+<th><span class="arithmatex">\(0.012\)</span></th>
+<th><span class="arithmatex">\(0.015\)</span></th>
+<th><span class="arithmatex">\(0.02\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(R\)</span></td>
+<td><span class="arithmatex">\(2.75 \times 10^{-4}\)</span></td>
+<td><span class="arithmatex">\(3.31 \times 10^{-4}\)</span></td>
+<td><span class="arithmatex">\(3.92 \times 10^{-4}\)</span></td>
+<td><span class="arithmatex">\(4.95 \times 10^{-4}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>It is known that the Ohm meter might not be calibrated. Taking that into account, the student wants to find a linear graph <span class="arithmatex">\(R = \frac{\rho}{0.002} L + R_0\)</span> from the data obtained to compute the resistivity of the material.</p>
+<p><strong>(a)</strong> Relabeling, we let <span class="arithmatex">\(R = y\)</span>, <span class="arithmatex">\(\frac{\rho}{0.002} = a_1\)</span> and <span class="arithmatex">\(R_0 = a_0\)</span>. Is it possible to find a graph <span class="arithmatex">\(y = a_1 x + a_0\)</span> satisfying the points?</p>
+<p><strong>(b)</strong> Find the least square approximating line for the data points and hence find the resistivity of the material. Would this material make a good wire?</p>
+<h2 id="problem-4-application">Problem 4 (Application)<a class="headerlink" href="#problem-4-application" title="Permanent link">&para;</a></h2>
+<p>Suppose the equation governing the relation between data pairs is not known. We may want to then find a polynomial <span class="arithmatex">\(<span class="arithmatex">\(p(x) = a_0 + a_1 x + a_2 x^2 + \cdots + a_n x^n\)</span>\)</span> of degree <span class="arithmatex">\(n\)</span>, <span class="arithmatex">\(n \leq m - 1\)</span>, that best approximates the data pairs <span class="arithmatex">\((x_1, y_1), (x_2, y_2), \ldots, (x_m, y_m)\)</span>. A least square approximating polynomial of degree <span class="arithmatex">\(n\)</span> is such that <span class="arithmatex">\(<span class="arithmatex">\(||\mathbf{y} - p(\mathbf{x})||^2\)</span>\)</span> is minimized. If we write <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{x} = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_m \end{pmatrix}, \quad \mathbf{y} = \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_m \end{pmatrix}, \quad \mathbf{N} = \begin{pmatrix} 1 &amp; x_1 &amp; x_1^2 &amp; \cdots &amp; x_1^n \\ 1 &amp; x_2 &amp; x_2^2 &amp; \cdots &amp; x_2^n \\ \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ 1 &amp; x_m &amp; x_m^2 &amp; \cdots &amp; x_m^n \end{pmatrix} \quad \text{and} \quad \mathbf{a} = \begin{pmatrix} a_0 \\ a_1 \\ \vdots \\ a_n \end{pmatrix}\)</span>\)</span></p>
+<p>then <span class="arithmatex">\(p(\mathbf{x}) = \mathbf{N}\mathbf{a}\)</span>, and the task is to find <span class="arithmatex">\(\mathbf{a}\)</span> such that <span class="arithmatex">\(||\mathbf{y} - \mathbf{N}\mathbf{a}||^2\)</span> is minimized. Observe that <span class="arithmatex">\(\mathbf{N}\)</span> is a matrix minor of the Vandermonde matrix. If at least <span class="arithmatex">\(n + 1\)</span> of the <span class="arithmatex">\(x\)</span>-values <span class="arithmatex">\(x_1, x_2, \ldots, x_m\)</span> are distinct, the columns of <span class="arithmatex">\(\mathbf{N}\)</span> are linearly independent, and thus <span class="arithmatex">\(\mathbf{a}\)</span> is uniquely determined by <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{a} = (\mathbf{N}^T \mathbf{N})^{-1} \mathbf{N}^T \mathbf{y}\)</span>\)</span></p>
+<p>We shall now find a quartic polynomial <span class="arithmatex">\(<span class="arithmatex">\(p(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\)</span>\)</span> that is a least square approximating polynomial for the following data points</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th><span class="arithmatex">\(4\)</span></th>
+<th><span class="arithmatex">\(4.5\)</span></th>
+<th><span class="arithmatex">\(5\)</span></th>
+<th><span class="arithmatex">\(5.5\)</span></th>
+<th><span class="arithmatex">\(6\)</span></th>
+<th><span class="arithmatex">\(6.5\)</span></th>
+<th><span class="arithmatex">\(7\)</span></th>
+<th><span class="arithmatex">\(8\)</span></th>
+<th><span class="arithmatex">\(8.5\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(y\)</span></td>
+<td><span class="arithmatex">\(0.8651\)</span></td>
+<td><span class="arithmatex">\(0.4828\)</span></td>
+<td><span class="arithmatex">\(2.590\)</span></td>
+<td><span class="arithmatex">\(-4.389\)</span></td>
+<td><span class="arithmatex">\(-7.858\)</span></td>
+<td><span class="arithmatex">\(3.103\)</span></td>
+<td><span class="arithmatex">\(7.456\)</span></td>
+<td><span class="arithmatex">\(0.0965\)</span></td>
+<td><span class="arithmatex">\(4.326\)</span></td>
+</tr>
+</tbody>
+</table>
+<h2 id="problem-5_2">Problem 5<a class="headerlink" href="#problem-5_2" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; 1 \\ 0 &amp; 1 &amp; 1 \end{pmatrix}\)</span>.</p>
+<p><strong>(a)</strong> Find a <span class="arithmatex">\(QR\)</span> factorization of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(b)</strong> Use your answer in (a) to find the least square solution to <span class="arithmatex">\(\mathbf{A}\mathbf{x} = \mathbf{b}\)</span>, where <span class="arithmatex">\(\mathbf{b} = \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \end{pmatrix}\)</span>.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-9">MA1522 Linear Algebra for Computing Tutorial 9<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-9" title="Permanent link">&para;</a></h1>
+<h2 id="problem-1_3">Problem 1<a class="headerlink" href="#problem-1_3" title="Permanent link">&para;</a></h2>
+<p>A father wishes to distribute an amount of money among his three sons Jack, Jim, and John. He wishes to distribute such that the following conditions are all satisfied.</p>
+<p>(i) The amount Jack receives plus twice the amount Jim receives is $300. (ii) The amount Jim receives plus the amount John receives is $300. (iii) Jack receives $300 more than twice of what John receives.</p>
+<p><strong>(a)</strong> Is it possible for the following conditions to all be satisfied?</p>
+<p><strong>(b)</strong> If it is not possible, find a least square solution. (Make sure that your least square solution is feasible. For example, one cannot give a negative amount of money to anybody.)</p>
+<h2 id="problem-2_3">Problem 2<a class="headerlink" href="#problem-2_3" title="Permanent link">&para;</a></h2>
+<p><strong>(a)</strong> Suppose <span class="arithmatex">\(\mathbf{A}\)</span> is a <span class="arithmatex">\(m \times n\)</span> matrix where <span class="arithmatex">\(m &gt; n\)</span>. Let <span class="arithmatex">\(\mathbf{A} = \mathbf{Q}\mathbf{R}\)</span> be a <span class="arithmatex">\(QR\)</span> factorization of <span class="arithmatex">\(\mathbf{A}\)</span>. Explain how you might use this to write <span class="arithmatex">\(<span class="arithmatex">\(\mathbf{A} = \mathbf{Q}'\mathbf{R}'\)</span>\)</span> where <span class="arithmatex">\(\mathbf{Q}'\)</span> is an <span class="arithmatex">\(m \times m\)</span> orthogonal matrix, and <span class="arithmatex">\(\mathbf{R}'\)</span> a <span class="arithmatex">\(m \times n\)</span> matrix with <span class="arithmatex">\(m - n\)</span> zero rows at the bottom. This is known as the full <span class="arithmatex">\(QR\)</span> factorization of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(b)</strong> In MATLAB, enter the following.</p>
+<div class="language-matlab highlight"><span class="filename">Matlab</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">A</span><span class="p">=</span><span class="n">sym</span><span class="p">([</span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="n">1</span><span class="w"> </span><span class="s">1</span><span class="w"> </span><span class="s">0</span><span class="p">;</span><span class="n">1</span><span class="w"> </span><span class="s">1</span><span class="w"> </span><span class="s">1</span><span class="p">;</span><span class="n">0</span><span class="w"> </span><span class="s">1</span><span class="w"> </span><span class="s">1])</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">Q</span><span class="w"> </span><span class="n">R</span><span class="p">]=</span><span class="nb">qr</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</span></code></pre></div>
+<p>What is <span class="arithmatex">\(\mathbf{Q}\)</span> and <span class="arithmatex">\(\mathbf{R}\)</span>? Compare this with the answer in tutorial 8 question 5(a).</p>
+<p><strong>(c)</strong> Explain how you might use the command <code>qr</code> in MATLAB to find a <span class="arithmatex">\(QR\)</span> factorization of a <span class="arithmatex">\(m \times n\)</span> matrix <span class="arithmatex">\(\mathbf{A}\)</span>?</p>
+<h2 id="problem-3-cayley-hamilton-theorem">Problem 3 (Cayley-Hamilton theorem)<a class="headerlink" href="#problem-3-cayley-hamilton-theorem" title="Permanent link">&para;</a></h2>
+<p>Consider <span class="arithmatex">\(<span class="arithmatex">\(p(X) = X^3 - 4X^2 - X + 4I\)</span>\)</span></p>
+<p><strong>(a)</strong> Compute <span class="arithmatex">\(p(X)\)</span> for <span class="arithmatex">\(X = \begin{pmatrix} 1 &amp; 1 &amp; 2 \\ 1 &amp; 2 &amp; 1 \\ 2 &amp; 1 &amp; 1 \end{pmatrix}\)</span>.</p>
+<p><strong>(b)</strong> Find the characteristic polynomial of <span class="arithmatex">\(X\)</span>.</p>
+<p><strong>(c)</strong> Show that <span class="arithmatex">\(X\)</span> is invertible. Express the inverse of <span class="arithmatex">\(X\)</span> as a function of <span class="arithmatex">\(X\)</span>.</p>
+<p>This question demonstrates the Cayley-Hamilton theorem, which states that if <span class="arithmatex">\(p(x)\)</span> is the characteristic polynomial of <span class="arithmatex">\(X\)</span>, then <span class="arithmatex">\(p(X) = 0\)</span>. This also shows that if <span class="arithmatex">\(0\)</span> is not an eigenvalue of <span class="arithmatex">\(X\)</span>, then the constant term of the characteristic polynomial <span class="arithmatex">\(p(x)\)</span> is nonzero, and we can use that to compute the inverse of <span class="arithmatex">\(X\)</span>.</p>
+<h2 id="problem-4_2">Problem 4<a class="headerlink" href="#problem-4_2" title="Permanent link">&para;</a></h2>
+<p>For each of the following matrices <span class="arithmatex">\(\mathbf{A}\)</span>, determine if <span class="arithmatex">\(\mathbf{A}\)</span> is diagonalizable. If <span class="arithmatex">\(\mathbf{A}\)</span> is diagonalizable, find an invertible <span class="arithmatex">\(\mathbf{P}\)</span> that diagonalizes <span class="arithmatex">\(\mathbf{A}\)</span> and determine <span class="arithmatex">\(\mathbf{P}^{-1}\mathbf{A}\mathbf{P}\)</span>.</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; -3 &amp; 3 \\ 3 &amp; -5 &amp; 3 \\ 6 &amp; -6 &amp; 4 \end{pmatrix}\)</span></p>
+<p><strong>(b)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 9 &amp; 8 &amp; 6 &amp; 3 \\ 0 &amp; -1 &amp; 3 &amp; -4 \\ 0 &amp; 0 &amp; 2 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 3 \end{pmatrix}\)</span></p>
+<p><strong>(c)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 0 &amp; 0 \\ 1 &amp; 1 &amp; 0 \\ 0 &amp; 1 &amp; 1 \end{pmatrix}\)</span></p>
+<p><strong>(d)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 0 &amp; 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \\ 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \end{pmatrix}\)</span></p>
+<p><strong>(e)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} -1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; -1 \\ -4 &amp; 2 &amp; 3 \end{pmatrix}\)</span></p>
+<h2 id="problem-5_3">Problem 5<a class="headerlink" href="#problem-5_3" title="Permanent link">&para;</a></h2>
+<p><strong>(a)</strong> Show that <span class="arithmatex">\(\lambda\)</span> is an eigenvalue of <span class="arithmatex">\(\mathbf{A}\)</span> if and only if it is an eigenvalue of <span class="arithmatex">\(\mathbf{A}^T\)</span>.</p>
+<p><strong>(b)</strong> Suppose <span class="arithmatex">\(\mathbf{A}\)</span> is diagonalizable. Is <span class="arithmatex">\(\mathbf{A}^T\)</span> diagonalizable? Justify your answer.</p>
+<p><strong>(c)</strong> Suppose <span class="arithmatex">\(\mathbf{v}\)</span> is an eigenvector of <span class="arithmatex">\(\mathbf{A}\)</span> associated to eigenvalue <span class="arithmatex">\(\lambda\)</span>. Show that <span class="arithmatex">\(\mathbf{v}\)</span> is an eigenvector of <span class="arithmatex">\(\mathbf{A}^k\)</span> associated to eigenvalue <span class="arithmatex">\(\lambda^k\)</span> for any positive integer <span class="arithmatex">\(k\)</span>.</p>
+<p><strong>(d)</strong> If <span class="arithmatex">\(\mathbf{A}\)</span> is invertible, show that <span class="arithmatex">\(\mathbf{v}\)</span> is an eigenvector of <span class="arithmatex">\(\mathbf{A}^k\)</span> associated to eigenvalue <span class="arithmatex">\(\lambda^k\)</span> for any negative integer <span class="arithmatex">\(k\)</span>.</p>
+<p><strong>(e)</strong> A square matrix is said to be nilpotent if there is a positive integer <span class="arithmatex">\(k\)</span> such that <span class="arithmatex">\(\mathbf{A}^k = \mathbf{0}\)</span>. Show that if <span class="arithmatex">\(\mathbf{A}\)</span> is nilpotent, then <span class="arithmatex">\(0\)</span> is the only eigenvalue.</p>
+<p><strong>(f)</strong> Let <span class="arithmatex">\(\mathbf{A}\)</span> be a <span class="arithmatex">\(n \times n\)</span> matrix with one eigenvalue <span class="arithmatex">\(\lambda\)</span> with algebraic multiplicity <span class="arithmatex">\(n\)</span>. Show that <span class="arithmatex">\(\mathbf{A}\)</span> is diagonalizable if and only if <span class="arithmatex">\(\mathbf{A}\)</span> is a scalar matrix, <span class="arithmatex">\(\mathbf{A} = \lambda \mathbf{I}\)</span>.</p>
+<p><strong>(g)</strong> Show that the only diagonalizable nilpotent matrix is the zero matrix.</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-10">MA1522 Linear Algebra for Computing Tutorial 10<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-10" title="Permanent link">&para;</a></h1>
+<h2 id="problem-1_4">Problem 1<a class="headerlink" href="#problem-1_4" title="Permanent link">&para;</a></h2>
+<p>A population of ants is put into a maze with 3 compartments labeled a, b, and c. If the ant is in compartment a, an hour later, there is a 20% chance it will go to compartment b, and a 40% chance it will go to compartment c. If it is in compartment b, an hour later, there is a 10% chance it will go to compartment a, and a 30% chance it will go to compartment c. If it is in compartment c, an hour later, there is a 50% chance it will go to compartment a, and a 20% chance it will go to compartment b. Suppose 100 ants have been placed in compartment a.</p>
+<p><strong>(a)</strong> Find the transition probability matrix <span class="arithmatex">\(\mathbf{A}\)</span>. Show that it is a stochastic matrix.</p>
+<p><strong>(b)</strong> By diagonalizing <span class="arithmatex">\(\mathbf{A}\)</span>, find the number of ants in each compartment after 3 hours.</p>
+<p><strong>(c)</strong> (MATLAB) We can use MATLAB to diagonalize the matrix <span class="arithmatex">\(\mathbf{A}\)</span>. Type</p>
+<div class="language-matlab highlight"><span class="filename">Matlab</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">P</span><span class="w"> </span><span class="n">D</span><span class="p">]=</span><span class="nb">eig</span><span class="p">(</span><span class="n">sym</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+</span></code></pre></div>
+<p>The matrix <span class="arithmatex">\(\mathbf{P}\)</span> will be an invertible matrix, and <span class="arithmatex">\(\mathbf{D}\)</span> will be a diagonal matrix. Compare the answer with what you have obtained in (b).</p>
+<p><strong>(d)</strong> In the long run (assuming no ants died), where will the majority of the ants be?</p>
+<p><strong>(e)</strong> Suppose initially the numbers of ants in compartments a, b and c are <span class="arithmatex">\(\alpha\)</span>, <span class="arithmatex">\(\beta\)</span>, and <span class="arithmatex">\(\gamma\)</span> respectively. What is the population distribution in the long run (assuming no ants died)?</p>
+<h2 id="problem-2_4">Problem 2<a class="headerlink" href="#problem-2_4" title="Permanent link">&para;</a></h2>
+<p>By diagonalizing <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 0 &amp; 3 \\ 0 &amp; 4 &amp; 0 \\ 0 &amp; 0 &amp; 4 \end{pmatrix}\)</span>, find a matrix <span class="arithmatex">\(\mathbf{B}\)</span> such that <span class="arithmatex">\(\mathbf{B}^2 = \mathbf{A}\)</span>.</p>
+<h2 id="problem-3_2">Problem 3<a class="headerlink" href="#problem-3_2" title="Permanent link">&para;</a></h2>
+<p>For each of the following symmetric matrices <span class="arithmatex">\(\mathbf{A}\)</span>, find an orthogonal matrix <span class="arithmatex">\(\mathbf{P}\)</span> that orthogonally diagonalizes <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 3 &amp; 1 \\ 1 &amp; 3 \end{pmatrix}\)</span></p>
+<p><strong>(b)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 2 &amp; 2 &amp; -2 \\ 2 &amp; -1 &amp; 4 \\ -2 &amp; 4 &amp; -1 \end{pmatrix}\)</span></p>
+<h2 id="problem-4-matlab">Problem 4 (MATLAB)<a class="headerlink" href="#problem-4-matlab" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; -2 &amp; 0 &amp; 0 \\ -2 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; -2 \\ 0 &amp; 0 &amp; -2 &amp; 1 \end{pmatrix}\)</span>.</p>
+<p><strong>(a)</strong> Find an orthogonal matrix <span class="arithmatex">\(\mathbf{P}\)</span> that orthogonally diagonalizes <span class="arithmatex">\(\mathbf{A}\)</span>, and compute <span class="arithmatex">\(\mathbf{P}^T \mathbf{A} \mathbf{P}\)</span>.</p>
+<p><strong>(b)</strong> We will use MATLAB to orthogonally diagonalize <span class="arithmatex">\(\mathbf{A}\)</span>. Type</p>
+<div class="language-matlab highlight"><span class="filename">Matlab</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">A</span><span class="p">=[</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="n">0</span><span class="w"> </span><span class="s">0</span><span class="w"> </span><span class="s">1</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="p">;</span><span class="n">0</span><span class="w"> </span><span class="s">0</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">P</span><span class="w"> </span><span class="n">D</span><span class="p">]=</span><span class="nb">eig</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">sym</span><span class="p">(</span><span class="n">P</span><span class="p">),</span><span class="w"> </span><span class="n">sym</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Compare the result with your answer in (a).</p>
+<h2 id="problem-5_4">Problem 5<a class="headerlink" href="#problem-5_4" title="Permanent link">&para;</a></h2>
+<p>Find the SVD of the following matrices <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 3 &amp; 2 \\ 2 &amp; 3 \\ 2 &amp; -2 \end{pmatrix}\)</span></p>
+<p><strong>(b)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 3 &amp; 2 &amp; 2 \\ 2 &amp; 3 &amp; -2 \end{pmatrix}\)</span></p>
+<p><strong>(c)</strong> <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} 1 &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 2 \end{pmatrix}\)</span></p>
+<h2 id="problem-6-matlab">Problem 6 (MATLAB)<a class="headerlink" href="#problem-6-matlab" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(\mathbf{A} = \begin{pmatrix} -18 &amp; 13 &amp; -4 &amp; 4 \\ 2 &amp; 19 &amp; -4 &amp; 12 \\ -14 &amp; 11 &amp; -12 &amp; 8 \\ -2 &amp; 21 &amp; 4 &amp; 8 \end{pmatrix}\)</span>.</p>
+<p><strong>(a)</strong> Find a SVD of <span class="arithmatex">\(\mathbf{A}\)</span>.</p>
+<p><strong>(b)</strong> In MATLAB, type</p>
+<div class="language-matlab highlight"><span class="filename">Matlab</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">U</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="n">V</span><span class="p">]=</span><span class="nb">svd</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Compare the result with your answer in (a).</p>
+<h1 id="ma1522-linear-algebra-for-computing-tutorial-11">MA1522 Linear Algebra for Computing Tutorial 11<a class="headerlink" href="#ma1522-linear-algebra-for-computing-tutorial-11" title="Permanent link">&para;</a></h1>
+<h2 id="problem-1_5">Problem 1<a class="headerlink" href="#problem-1_5" title="Permanent link">&para;</a></h2>
+<p>For each of the following: (i) Determine whether the following are linear transformations. (ii) Write down the standard matrix for each of the linear transformations. (iii) Find a basis for the range for each of the linear transformations. (iv) Find a basis for the kernel for each of the linear transformations.</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(T_1 : \mathbb{R}^2 \to \mathbb{R}^2\)</span> such that <span class="arithmatex">\(T_1\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} x + y \\ y - x \end{pmatrix}\)</span> for <span class="arithmatex">\(\begin{pmatrix} x \\ y \end{pmatrix} \in \mathbb{R}^2\)</span>.</p>
+<p><strong>(b)</strong> <span class="arithmatex">\(T_2 : \mathbb{R}^2 \to \mathbb{R}^2\)</span> such that <span class="arithmatex">\(T_2\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 2x \\ 0 \end{pmatrix}\)</span> for <span class="arithmatex">\(\begin{pmatrix} x \\ y \end{pmatrix} \in \mathbb{R}^2\)</span>.</p>
+<p><strong>(c)</strong> <span class="arithmatex">\(T_3 : \mathbb{R}^2 \to \mathbb{R}^3\)</span> such that <span class="arithmatex">\(T_3\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} x + y \\ 0 \\ 0 \end{pmatrix}\)</span> for <span class="arithmatex">\(\begin{pmatrix} x \\ y \end{pmatrix} \in \mathbb{R}^2\)</span>.</p>
+<p><strong>(d)</strong> <span class="arithmatex">\(T_4 : \mathbb{R}^3 \to \mathbb{R}^3\)</span> such that <span class="arithmatex">\(T_4\begin{pmatrix} x \\ y \\ z \end{pmatrix} = \begin{pmatrix} 1 \\ y - x \\ y - z \end{pmatrix}\)</span> for <span class="arithmatex">\(\begin{pmatrix} x \ y \ z \end{pmatrix} \in \mathbb{R}^3\)</span>.</p>
+<p><strong>(e)</strong> <span class="arithmatex">\(T_5 : \mathbb{R}^5 \to \mathbb{R}\)</span> such that <span class="arithmatex">\(T_5\begin{pmatrix} x_1 \\ \vdots \\ x_5 \end{pmatrix} = x_3 + 2x_4 - x_5\)</span> for <span class="arithmatex">\(\begin{pmatrix} x_1 \\ \vdots \\ x_5 \end{pmatrix} \in \mathbb{R}^5\)</span>.</p>
+<p><strong>(f)</strong> <span class="arithmatex">\(T_6 : \mathbb{R}^n \to \mathbb{R}\)</span> such that <span class="arithmatex">\(T_6(\mathbf{x}) = \mathbf{x} \cdot \mathbf{x}\)</span> for <span class="arithmatex">\(\mathbf{x} \in \mathbb{R}^n\)</span>.</p>
+<h2 id="problem-2_5">Problem 2<a class="headerlink" href="#problem-2_5" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(F : \mathbb{R}^3 \to \mathbb{R}^3\)</span> and <span class="arithmatex">\(G : \mathbb{R}^3 \to \mathbb{R}^3\)</span> be linear transformations such that</p>
+<div class="arithmatex">\[F\left( \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} \right) = \begin{pmatrix} x_1 - 2x_2 \\ x_1 + x_2 - 3x_3 \\ 5x_2 - x_3 \end{pmatrix} \quad \text{and} \quad G\left( \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} \right) = \begin{pmatrix} x_3 - x_1 \\ x_2 + 5x_1 \\ x_1 + x_2 + x_3 \end{pmatrix}\]</div>
+<p>and let <span class="arithmatex">\(\mathbf{A}_F\)</span> and <span class="arithmatex">\(\mathbf{B}_G\)</span> be the standard matrix of <span class="arithmatex">\(F\)</span> and <span class="arithmatex">\(G\)</span>, respectively.</p>
+<p><strong>(a)</strong> Find <span class="arithmatex">\(\mathbf{A}_F\)</span> and <span class="arithmatex">\(\mathbf{B}_G\)</span>.</p>
+<p><strong>(b)</strong> Define <span class="arithmatex">\((F + G)(\mathbf{x}) := F(\mathbf{x}) + G(\mathbf{x})\)</span>, for all <span class="arithmatex">\(\mathbf{x} \in \mathbb{R}^3\)</span>. Is <span class="arithmatex">\((F + G)\)</span> a linear transformation? If it is, find its standard matrix.</p>
+<p><strong>(c)</strong> Write down the formula for <span class="arithmatex">\(F(G(\mathbf{x}))\)</span> and find its standard matrix.</p>
+<p><strong>(d)</strong> Find a linear transformation <span class="arithmatex">\(H : \mathbb{R}^3 \to \mathbb{R}^3\)</span> such that <span class="arithmatex">\(H(G(\mathbf{x})) = \mathbf{x}\)</span>, for all <span class="arithmatex">\(\mathbf{x} \in \mathbb{R}^3\)</span>.</p>
+<h2 id="problem-3_3">Problem 3<a class="headerlink" href="#problem-3_3" title="Permanent link">&para;</a></h2>
+<p>For each of the following linear transformations, (i) determine whether there is enough information for us to find the formula of <span class="arithmatex">\(T\)</span>; and (ii) find the formula and the standard matrix for <span class="arithmatex">\(T\)</span> if possible.</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(T : \mathbb{R}^3 \to \mathbb{R}^4\)</span> such that <span class="arithmatex">\(<span class="arithmatex">\(T\left( \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} \right) = \begin{pmatrix} 1 \\ 3 \\ 0 \\ 1 \end{pmatrix}, \quad T\left( \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} \right) = \begin{pmatrix} 2 \\ 2 \\ -1 \\ 4 \end{pmatrix}, \quad T\left( \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix} \right) = \begin{pmatrix} 0 \\ 4 \\ 1 \\ 6 \end{pmatrix}\)</span>\)</span></p>
+<p><strong>(b)</strong> <span class="arithmatex">\(T : \mathbb{R}^2 \to \mathbb{R}^2\)</span> such that <span class="arithmatex">\(<span class="arithmatex">\(T\left( \begin{pmatrix} 1 \\ -1 \end{pmatrix} \right) = \begin{pmatrix} 2 \\ 0 \end{pmatrix}, \quad T\left( \begin{pmatrix} 1 \\ 1 \end{pmatrix} \right) = \begin{pmatrix} 0 \\ 2 \end{pmatrix}, \quad T\left( \begin{pmatrix} 2 \\ 0 \end{pmatrix} \right) = \begin{pmatrix} 2 \\ 2 \end{pmatrix}\)</span>\)</span></p>
+<p><strong>(c)</strong> <span class="arithmatex">\(T : \mathbb{R}^3 \to \mathbb{R}\)</span> such that <span class="arithmatex">\(<span class="arithmatex">\(T\left( \begin{pmatrix} 1 \\ -1 \\ 0 \end{pmatrix} \right) = -1, \quad T\left( \begin{pmatrix} 0 \\ 1 \\ -1 \end{pmatrix} \right) = 1, \quad T\left( \begin{pmatrix} -1 \\ 0 \\ 1 \end{pmatrix} \right) = 0\)</span>\)</span></p>
+<h2 id="problem-4_3">Problem 4<a class="headerlink" href="#problem-4_3" title="Permanent link">&para;</a></h2>
+<p>For each of the following linear transformations <span class="arithmatex">\(T\)</span>, determine its rank and nullity, and whether it is one-to-one, and/or onto.</p>
+<p><strong>(a)</strong> <span class="arithmatex">\(T : \mathbb{R}^4 \to \mathbb{R}^6\)</span> such that the rank is 4.</p>
+<p><strong>(b)</strong> <span class="arithmatex">\(T : \mathbb{R}^6 \to \mathbb{R}^4\)</span> such that the nullity is 2.</p>
+<p><strong>(c)</strong> <span class="arithmatex">\(T : \mathbb{R}^4 \to \mathbb{R}^6\)</span> such that the reduced row-echelon form of its standard matrix has 3 nonzero rows.</p>
+<p><strong>(d)</strong> <span class="arithmatex">\(T : \mathbb{R}^3 \to \mathbb{R}^3\)</span> such that <span class="arithmatex">\(T\)</span> is one-to-one.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy", "content.code.select"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.50899def.min.js"></script>
+      
+        <script src="../../assets/javascripts/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+    
+  </body>
+</html>
