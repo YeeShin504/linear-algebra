@@ -19,7 +19,7 @@
 import pytest
 from sympy import S
 
-from symbolic import Matrix
+from ma1522 import Matrix
 
 
 class TestAugLine:

@@ -1,6 +1,8 @@
 import pytest
+
 import sympy as sym
-from utils import _powerset, _is_zero
+
+from ma1522.utils import _powerset, _is_zero
 
 
 class TestUtils:

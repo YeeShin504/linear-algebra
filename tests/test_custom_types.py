@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
-from symbolic import Matrix
-from custom_types import (
+from ma1522 import Matrix
+from ma1522.custom_types import (
     Shape,
     PartGen,
     ScalarFactor,

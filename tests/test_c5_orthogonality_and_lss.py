@@ -16,7 +16,7 @@ import pytest
 
 import sympy as sym
 
-from symbolic import Matrix, VecDecomp
+from ma1522 import Matrix, VecDecomp
 
 
 class TestChapter5:

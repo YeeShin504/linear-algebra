@@ -3,10 +3,14 @@ site_description: Python scripts for NUS MA1522 Linear Algebra for Computing
 site_author: Yee Shin Teng
 repo_url: https://github.com/YeeShin504/linear-algebra
 repo_name: YeeShin504/linear-algebra
+watch: [mkdocs.yml, README.md, src, docs]
 
 nav:
   - Home: index.md
-  - API Reference: api/
+  - API Reference:
+      - custom_types: api/custom_types.md
+      - symbolic: api/symbolic.md
+      - utils: api/utils.md
   - Tutorial: Tutorials/Tutorial.md
   - Example Notebook: scrap.ipynb
 
@@ -46,33 +50,54 @@ theme:
         name: Switch to system preference
 
 plugins:
+  - autorefs:
+      resolve_closest: true
   - search
   - tags
-  - mkdocs-jupyter
-  - gen-files:
-      scripts:
-        - docs/assets/python/gen_ref_pages.py
-  - literate-nav:
-      nav_file: SUMMARY.md
+  # - mkdocs-jupyter:
+  #     jupyter_execute_notebooks: off
+  # - gen-files:
+  #     scripts:
+  #       - docs/assets/python/gen_ref_pages.py
+  # - literate-nav:
+  #     nav_file: SUMMARY.md
   - mkdocstrings:
       handlers:
         python:
+          paths: [src]
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://docs.sympy.org/latest/objects.inv
+            - https://mpmath.org/doc/current/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
           options:
+            allow_inspection: false
+            backlinks: true
+            docstring_options:
+              ignore_init_summary: true
+            docstring_section_style: list
             docstring_style: google
+            find_stubs_package: true
+            heading_level: 2
+            inherited_members: true
+            line_length: 88
+            members_order: __all__
+            merge_init_into_class: true
+            # parameter_headings: true
+            # relative_crossrefs: true
             show_bases: true
             show_signature_annotations: true
             show_source: true
-            find_stubs_package: true
-            allow_inspection: false
-          paths: [src]
-  - autorefs:
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            summary: true
 
 markdown_extensions:
   - admonition
-  - codehilite
+  - codehilite:
+      guess_lang: false
+      use_pygments: true
+      css_class: codehilite
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight:

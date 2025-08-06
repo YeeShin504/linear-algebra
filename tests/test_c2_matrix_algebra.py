@@ -8,7 +8,7 @@
 import pytest
 import sympy as sym
 
-from symbolic import Matrix
+from ma1522 import Matrix
 
 
 class TestMatrixInverse:

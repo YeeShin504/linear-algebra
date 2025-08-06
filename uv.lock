@@ -550,7 +550,7 @@ wheels = [
 
 [[package]]
 name = "ma1522-linear-algebra"
-version = "0.2.0"
+version = "0.3.0"
 source = { virtual = "." }
 dependencies = [
     { name = "numpy" },
@@ -562,6 +562,7 @@ dependencies = [
 dev = [
     { name = "build" },
     { name = "ipykernel" },
+    { name = "mkdocs-autorefs" },
     { name = "mkdocs-gen-files" },
     { name = "mkdocs-jupyter" },
     { name = "mkdocs-literate-nav" },
@@ -583,6 +584,7 @@ requires-dist = [
 dev = [
     { name = "build", specifier = ">=1.2.2.post1" },
     { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "mkdocs-autorefs", specifier = ">=1.4.2" },
     { name = "mkdocs-gen-files", specifier = ">=0.5.0" },
     { name = "mkdocs-jupyter", specifier = ">=0.25.1" },
     { name = "mkdocs-literate-nav", specifier = ">=0.6.2" },

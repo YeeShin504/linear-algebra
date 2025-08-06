@@ -14,8 +14,8 @@
 import pytest
 import sympy as sym
 
-from symbolic import Matrix
-from custom_types import Shape
+from ma1522 import Matrix
+from ma1522.custom_types import Shape
 
 
 class TestFromLatex:

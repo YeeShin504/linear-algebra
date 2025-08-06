@@ -15,7 +15,7 @@ import pytest
 
 import sympy as sym
 
-from symbolic import Matrix
+from ma1522 import Matrix
 
 
 class TestChapter6:
@@ -27,10 +27,10 @@ class TestChapter6:
         assert poly.all_coeffs() == [1, -5, -2]
 
     def test_cpoly_2(self):
-        res = (Matrix.diag(-1, 4, sym.Rational(1, 2)).cpoly()).args
+        res = Matrix.diag(-1, 4, sym.Rational(1, 2)).cpoly()
         roots = set()
-        for arg in res:
-            roots.add(sym.solve(arg)[0])
+        for expr in res:  # type: ignore
+            roots.add(sym.solve(expr)[0])
         assert roots == set((4, sym.Rational(1, 2), -1))
 
     def test_is_diagonalizable(self):

@@ -11,7 +11,7 @@
 import pytest
 import sympy as sym
 
-from symbolic import Matrix, PartGen, ScalarFactor
+from ma1522 import Matrix, PartGen, ScalarFactor
 
 
 class TestBasicManipulators:

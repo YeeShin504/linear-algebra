@@ -1,16 +1,17 @@
 from __future__ import annotations
 import dataclasses
 from itertools import chain, combinations
-from typing import Iterable, List, Literal, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import sympy as sym
 
 if TYPE_CHECKING:
-    from custom_types import Printable
+    from typing import Iterable, Literal
     from sympy.printing.latex import LatexPrinter
+    from custom_types import Printable
 
 
-def _powerset(args: Iterable) -> List:
+def _powerset(args: Iterable) -> list:
     """Generates the powerset of an iterable.
 
     Args:
@@ -62,6 +63,7 @@ def _gen_latex_repr(obj: Printable, printer: LatexPrinter | None = None) -> str:
     Returns:
         A LaTeX string representation of the object.
     """
+
     def text(txt: str) -> str:
         return "\\text{" + txt + "}"
 
@@ -117,7 +119,7 @@ def _unwrap_latex(expr: str | None) -> str:
     )
 
 
-def is_IPython() -> bool:
+def _is_IPython() -> bool:
     """Checks if the code is running in an IPython environment.
     Used to determine the printing options for the objects.
 
@@ -139,7 +141,7 @@ def is_IPython() -> bool:
         return False  # IPython module does not exist
 
 
-def display(*args, opt: Optional[Literal["math"]] = None, **kwargs) -> None:
+def display(*args, opt: Literal["math"] | None = None, **kwargs) -> None:
     """Displays objects in a rich format, depending on the environment.
 
     This function displays objects using IPython's display mechanism if available,
@@ -150,7 +152,7 @@ def display(*args, opt: Optional[Literal["math"]] = None, **kwargs) -> None:
         opt: If "math", displays the object as a math expression.
         **kwargs: Additional keyword arguments to pass to the display function.
     """
-    if is_IPython():
+    if _is_IPython():
         import IPython.display
 
         if opt == "math":
