@@ -419,22 +419,37 @@ class Matrix(sym.MutableDenseMatrix):
         #     return res
 
     def _shape(self, shape: Shape) -> Matrix:
-        if self.rows != self.cols:
-            raise sym.NonSquareMatrixError()
+        # if self.rows != self.cols:
+        #     raise sym.NonSquareMatrixError()
         match shape:
             case Shape.DIAGONAL:
-                return Matrix.diag(*self.diagonal())
+                res = Matrix.diag(*self.diagonal())
+                if self.rows > self.cols:
+                    res = res.col_join(Matrix.zeros(self.rows - self.cols, self.cols))
+                elif self.rows < self.cols:
+                    res = res.row_join(
+                        Matrix.zeros(self.rows, self.cols - self.rows), aug_line=False
+                    )
+                return res
             case Shape.SCALAR:
+                if self.rows != self.cols:
+                    raise sym.NonSquareMatrixError(
+                        "Scalar shape is only defined for square matrices."
+                    )
                 return self.diagonal()[0] * self.elem()
             case Shape.UPPER:
                 return self.upper_triangular()
             case Shape.LOWER:
                 return self.lower_triangular()
             case Shape.STRICT_UPPER:
-                return self._shape(Shape.UPPER) - self._shape(Shape.SCALAR)
+                return self._shape(Shape.UPPER) - self._shape(Shape.DIAGONAL)
             case Shape.STRICT_LOWER:
-                return self._shape(Shape.LOWER) - self._shape(Shape.SCALAR)
+                return self._shape(Shape.LOWER) - self._shape(Shape.DIAGONAL)
             case Shape.SYMMETRIC:
+                if self.rows != self.cols:
+                    raise sym.NonSquareMatrixError(
+                        "Symmetric shape is only defined for square matrices."
+                    )
                 return self._shape(Shape.UPPER) + self._shape(Shape.STRICT_UPPER).T
 
     @staticmethod
@@ -524,7 +539,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         res = Matrix(entries).reshape(r, c)
         if shape:
-            return Matrix._shape(res, shape)
+            return res._shape(shape)
         else:
             return res
 
@@ -569,7 +584,7 @@ class Matrix(sym.MutableDenseMatrix):
             (Matrix): A Matrix with random entries of the specified size.
 
         Raises:
-            sympy.matrices.exceptions.NonSquareMatrixError: If `shape` is defined on a non-square matrix.
+            sympy.matrices.exceptions.NonSquareMatrixError: If `shape` is ill-defined on a non-square matrix.
 
         Examples:
             >>> Matrix.create_rand_matrix(2, 3, seed=42)
@@ -584,7 +599,7 @@ class Matrix(sym.MutableDenseMatrix):
         """
         res = Matrix(sym.randMatrix(*args, r=r, c=c, **kwargs))
         if shape:
-            return Matrix._shape(res, shape)
+            return res._shape(shape)
         else:
             return res
 
