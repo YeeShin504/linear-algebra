@@ -11,7 +11,10 @@ from .utils import _gen_latex_repr
 
 if TYPE_CHECKING:
     from typing import Literal
+
     import numpy as np
+    from sympy.core.core import Expr
+
     from symbolic import Matrix
 
 
@@ -153,14 +156,14 @@ PRINTER = LatexPrinter()
 # Base class that all LaTeX objects should inherit
 @dataclasses.dataclass
 class Printable:
-    """Base class for objects that can be printed as LaTeX."""
+    r"""Base class for objects that can be printed as $\rm\LaTeX$."""
 
     def _latex(self, printer=None) -> str:
-        """Generates a LaTeX representation of the object."""
+        r"""Generates a $\rm\LaTeX$ representation of the object."""
         return _gen_latex_repr(self, printer)
 
     def _repr_latex_(self) -> str:
-        """Returns the LaTeX representation for IPython."""
+        r"""Returns the $\rm\LaTeX$ representation for IPython."""
         return f"${self._latex(PRINTER)}$"
 
     def __iter__(self):
@@ -188,7 +191,16 @@ class Printable:
 
 @dataclasses.dataclass
 class PartGen(Printable):
-    """Represents a matrix as a sum of a particular and general solution."""
+    """
+    Represents a matrix as the sum of a particular solution and a general solution.
+
+    This dataclass is used to express the general solution to a linear system as the sum of a particular solution
+    (with all free variables set to zero) and a general solution (the homogeneous part).
+
+    Attributes:
+        part_sol (Matrix): The particular solution matrix.
+        gen_sol (Matrix): The general (homogeneous) solution matrix.
+    """
 
     part_sol: Matrix
     gen_sol: Matrix
@@ -208,7 +220,17 @@ class PartGen(Printable):
 
 @dataclasses.dataclass
 class ScalarFactor(Printable):
-    """Represents a matrix factored into a diagonal and a full matrix."""
+    """
+    Represents a matrix factored into a diagonal matrix and a full matrix.
+
+    This dataclass is used to express a matrix as the product of a diagonal matrix (containing scalar factors)
+    and a matrix with the common divisors factored out. The order of multiplication is specified by the 'order' attribute.
+
+    Attributes:
+        diag (Matrix): The diagonal matrix containing the scalar factors.
+        full (Matrix): The matrix with common divisors factored out.
+        order (Literal["FD", "DF"]): The order of multiplication, either 'FD' (full @ diag) or 'DF' (diag @ full).
+    """
 
     diag: Matrix
     full: Matrix
@@ -229,7 +251,17 @@ class ScalarFactor(Printable):
 
 @dataclasses.dataclass
 class PLU(Printable):
-    """Represents a PLU decomposition of a matrix."""
+    """
+    Represents a PLU decomposition of a matrix.
+
+    This dataclass stores the permutation matrix (P), lower triangular matrix (L), and upper triangular matrix (U)
+    such that the original matrix can be written as P @ L @ U.
+
+    Attributes:
+        P (Matrix): The permutation matrix.
+        L (Matrix): The lower triangular matrix.
+        U (Matrix): The upper triangular matrix.
+    """
 
     P: Matrix
     L: Matrix
@@ -244,7 +276,15 @@ class PLU(Printable):
 
 @dataclasses.dataclass
 class RREF(Printable):
-    """Represents the reduced row echelon form of a matrix."""
+    """
+    Represents the reduced row echelon form (RREF) of a matrix.
+
+    This dataclass stores the RREF of a matrix and the tuple of pivot column indices.
+
+    Attributes:
+        rref (Matrix): The matrix in reduced row echelon form.
+        pivots (tuple[int, ...]): The indices of the pivot columns.
+    """
 
     rref: Matrix
     pivots: tuple[int, ...]
@@ -253,41 +293,17 @@ class RREF(Printable):
         return self.rref
 
 
-# class Inverse(NamedTuple):
-#     left: Optional[Matrix]
-#     right: Optional[Matrix]
-
-#     def _latex(self, printer=None) -> str:
-#         return _gen_latex_repr(self, printer)
-
-#     def _ipython_display_(self) -> None:
-#         from IPython.display import display, Math
-
-#         display(Math(self._latex(PRINTER)))
-#         # IPython.display.display(IPython.display.Latex("$" + self._latex(PRINTER) + "$"))
-
-
-# @dataclasses.dataclass
-# class Inverse(Printable):
-#     """Represents the inverse of a matrix."""
-#     both: Matrix | PartGen
-
-
-# @dataclasses.dataclass
-# class LeftInverse(Printable):
-#     """Represents the left inverse of a matrix."""
-#     left: Matrix | PartGen
-
-
-# @dataclasses.dataclass
-# class RightInverse(Printable):
-#     """Represents the right inverse of a matrix."""
-#     right: Matrix | PartGen
-
-
 @dataclasses.dataclass
 class VecDecomp(Printable):
-    """Represents a vector decomposition into projection and normal components."""
+    """
+    Represents a vector decomposition into projection and normal components.
+
+    This dataclass is used to express a vector as the sum of its projection onto a subspace and its orthogonal component.
+
+    Attributes:
+        proj (Matrix): The projection component.
+        norm (Matrix): The orthogonal (normal) component.
+    """
 
     proj: Matrix
     norm: Matrix
@@ -298,7 +314,15 @@ class VecDecomp(Printable):
 
 @dataclasses.dataclass
 class QR(Printable):
-    """Represents a QR decomposition of a matrix."""
+    """
+    Represents a QR decomposition of a matrix.
+
+    This dataclass stores the orthogonal matrix (Q) and the upper triangular matrix (R) such that the original matrix = Q @ R.
+
+    Attributes:
+        Q (Matrix): The orthogonal matrix.
+        R (Matrix): The upper triangular matrix.
+    """
 
     Q: Matrix
     R: Matrix
@@ -310,9 +334,38 @@ class QR(Printable):
         return self.Q @ self.R
 
 
+# @dataclasses.dataclass
+# class Eigen(Printable):
+#     """
+#     Represents the eigen decomposition of a matrix.
+
+#     This dataclass stores the eigen components of a matrix, given its eigenvalues.
+
+#     Attributes:
+#         value (Expr): The eigenvalue associated with the eigenvector space.
+#         algebraic_multiplicity (int): The algebraic multiplicity of the eigenvalue.
+#         space (list[Matrix]): A list of vectors that forms a basis for the eigenspace associated with the eigenvalue.
+#     """
+
+#     value: Expr
+#     algMult: int
+#     space: list[Matrix]
+
+#     def eval(self) -> Matrix:
+#         return Matrix.from_list(self.space)
+
+
 @dataclasses.dataclass
 class PDP(Printable):
-    """Represents a PDP diagonalization of a matrix."""
+    """
+    Represents a PDP diagonalization of a matrix.
+
+    This dataclass stores the matrices P and D such that the original matrix = P @ D @ P^{-1}.
+
+    Attributes:
+        P (Matrix): The matrix of eigenvectors.
+        D (Matrix): The diagonal matrix of eigenvalues.
+    """
 
     P: Matrix
     D: Matrix
@@ -327,7 +380,16 @@ class PDP(Printable):
 
 @dataclasses.dataclass
 class SVD(Printable):
-    """Represents a Singular Value Decomposition of a matrix."""
+    """
+    Represents a symbolic Singular Value Decomposition (SVD) of a matrix.
+
+    This dataclass stores the matrices U, S, and V such that the original matrix = U @ S @ V.T.
+
+    Attributes:
+        U (Matrix): The left singular vectors.
+        S (Matrix): The diagonal matrix of singular values.
+        V (Matrix): The right singular vectors.
+    """
 
     U: Matrix
     S: Matrix
@@ -343,7 +405,16 @@ class SVD(Printable):
 
 
 class NumSVD(NamedTuple):
-    """Represents a numerical Singular Value Decomposition of a matrix."""
+    """
+    Represents a numerical Singular Value Decomposition (SVD) of a matrix.
+
+    This named tuple stores the numerical matrices U, S, and V from a numerical SVD computation.
+
+    Attributes:
+        U (np.typing.NDArray): The left singular vectors.
+        S (np.typing.NDArray): The diagonal matrix of singular values.
+        V (np.typing.NDArray): The right singular vectors.
+    """
 
     U: np.typing.NDArray
     S: np.typing.NDArray
