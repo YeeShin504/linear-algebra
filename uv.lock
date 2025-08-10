@@ -568,6 +568,7 @@ dev = [
     { name = "mkdocs-literate-nav" },
     { name = "mkdocs-material" },
     { name = "mkdocstrings", extra = ["python"] },
+    { name = "mkdocstrings-python-xref" },
     { name = "pygments" },
     { name = "pytest" },
     { name = "ruff" },
@@ -590,6 +591,7 @@ dev = [
     { name = "mkdocs-literate-nav", specifier = ">=0.6.2" },
     { name = "mkdocs-material", specifier = ">=9.6.16" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.18" },
+    { name = "mkdocstrings-python-xref", specifier = ">=1.16.3" },
     { name = "pygments", specifier = ">=2.19.1" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "ruff", specifier = ">=0.9.2" },
@@ -887,6 +889,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/bf/ed/b886f8c714fd7cccc39b79646b627dbea84cd95c46be43459ef46852caf0/mkdocstrings_python-1.16.12.tar.gz", hash = "sha256:9b9eaa066e0024342d433e332a41095c4e429937024945fea511afe58f63175d", size = 206065, upload-time = "2025-06-03T12:52:49.276Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/dd/a24ee3de56954bfafb6ede7cd63c2413bb842cc48eb45e41c43a05a33074/mkdocstrings_python-1.16.12-py3-none-any.whl", hash = "sha256:22ded3a63b3d823d57457a70ff9860d5a4de9e8b1e482876fc9baabaf6f5f374", size = 124287, upload-time = "2025-06-03T12:52:47.819Z" },
+]
+
+[[package]]
+name = "mkdocstrings-python-xref"
+version = "1.16.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "griffe" },
+    { name = "mkdocstrings-python" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/6a/50b9ec7c74692835f47affd0ec1f370fdf63454e2a5e3958bd9f89b45409/mkdocstrings_python_xref-1.16.3.tar.gz", hash = "sha256:2a0363be26ff974f30b7cda90491a18f81854579689dd2110b7b25b75836d3d3", size = 13831, upload-time = "2025-06-15T15:19:44.9Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2d/5f/dcbec0f4be84fb7781c637227e1353e89f83f8bca00f05a839542b3db0a5/mkdocstrings_python_xref-1.16.3-py3-none-any.whl", hash = "sha256:bb5d30bec9cda90b606c0411deca0edaded06462740641b92d866ddce8cc6dee", size = 14450, upload-time = "2025-06-15T15:19:48.909Z" },
 ]
 
 [[package]]

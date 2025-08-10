@@ -6,7 +6,7 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 
 ### Key Features
 
-1. Import matrices from LaTeX directly. LaTeX expression can be obtained from Canvas by right-clicking on the equations.
+1. Import matrices from $\rm\LaTeX$ directly. $\rm\LaTeX$ expression can be obtained from Canvas by right-clicking on the equations.
 2. Step-by-step workings for most algorithms (including LU Factorisation and SVD)
 
 ## Installation and Usage
@@ -50,7 +50,7 @@ It is recommended to use a virtual environment for managing dependencies.
 
 Create a Jupyter Notebook `test.ipynb`. Within the notebook, run the following code.
 ```python
-from symbolic import *
+from ma1522 import *
 
 # Create Matrix objects
 A = Matrix([[1, 2, 3],

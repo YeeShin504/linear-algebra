@@ -8,7 +8,7 @@ import sympy as sym
 if TYPE_CHECKING:
     from typing import Iterable, Literal
     from sympy.printing.latex import LatexPrinter
-    from custom_types import Printable
+    from ma1522.custom_types import Printable
 
 
 def _powerset(args: Iterable) -> list:

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Iterable
 from typing import TYPE_CHECKING
 from warnings import warn
 
 import sympy as sym
+from sympy.parsing.sympy_parser import parse_expr
+
 import numpy as np
 import mpmath as mp
 from latex2sympy2 import latex2sympy
@@ -144,15 +147,16 @@ def sympy_commands():
     print(commands)
 
 
-# sym.init_printing(use_unicode=True)
-# np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
+sym.init_printing(use_unicode=True)
+np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
 
 
 class Matrix(sym.MutableDenseMatrix):
     r"""A symbolic matrix class extending [`MutableDenseMatrix`][sympy.matrices.dense.MutableDenseMatrix] with enhanced linear algebra operations.
 
     The inherited methods from [`MutableDenseMatrix`][sympy.matrices.dense.MutableDenseMatrix]
-    can be found in the [SymPy Matrices Documentation](https://docs.sympy.org/latest/modules/matrices/matrices.html).
+    can be found in the [SymPy Matrices Documentation](https://docs.sympy.org/latest/modules/matrices/matrices.html). A summary of the
+    inherited attributes and methods is also available on the [Inherited Methods Summary](inherited.md) page.
 
     This class provides comprehensive linear algebra functionality with support for:
         - Matrix creation from various sources (lists, $\rm\LaTeX$, random values)
@@ -197,11 +201,22 @@ class Matrix(sym.MutableDenseMatrix):
         [               0, 5/2 + sqrt(33)/2]]))
     """
 
-    def __init__(self, *args, aug_pos: set[int] | int | None = None, **kwargs) -> None:
-        if isinstance(aug_pos, int):
+    def __init__(
+        self,
+        *args,
+        aug_pos: Iterable[int] | int | None = None,
+        **kwargs,
+    ) -> None:
+        if aug_pos is None:
+            self._aug_pos = set()
+        elif isinstance(aug_pos, int):
             self._aug_pos = set([aug_pos])
+        elif isinstance(aug_pos, Iterable) and all(isinstance(i, int) for i in aug_pos):
+            self._aug_pos = set(aug_pos)
         else:
-            self._aug_pos = aug_pos if aug_pos else set()
+            raise TypeError(
+                f"Invalid type for aug_pos: {type(aug_pos)}. Expected Iterable[int]."
+            )
 
     def __str__(self) -> str:
         res = super().__str__()
@@ -362,6 +377,44 @@ class Matrix(sym.MutableDenseMatrix):
         if norm and isinstance(mat, Matrix):
             return mat.normalized(factor=False)  # type: ignore
         return mat
+
+    @staticmethod
+    def from_str(matrix_str: str, row_sep: str = ";", col_sep: str = " ") -> Matrix:
+        """Parses a string representation of a matrix into a Matrix.
+
+        This method enables quick creation of a Matrix object from a string format similar to
+        the one used in MATLAB. It supports both row and column separators and
+        uses SymPy's [`parse_expr`][sympy.parsing.sympy_parser.parse_expr] to convert
+        the entries of the matrix from a string format into a Matrix object.
+
+        Args:
+            matrix_str (str): The string representation of the matrix.
+            row_sep (str, optional): The separator for rows in the string.
+            col_sep (str): The separator for columns in the string.
+
+        Returns:
+            (Matrix): A Matrix object representing the parsed matrix.
+
+        Raises:
+            SyntaxError: If the string cannot be parsed into a matrix.
+
+        Examples:
+            >>> Matrix.from_str("[1 2; 3 4]")
+            Matrix([
+            [1, 2]
+            [3, 4]
+            ])
+        """
+
+        matrix_str = (
+            matrix_str.strip().removeprefix("[").removesuffix("]")
+        )  # remove surrounding brackets
+        rows = matrix_str.strip().split(row_sep)
+        matrix = []
+        for row in rows:
+            cols = row.strip().split(col_sep)
+            matrix.append([parse_expr(col.strip()) for col in cols])
+        return Matrix(matrix)
 
     @staticmethod
     def from_list(vectors: list[Matrix], row_join: bool = True) -> Matrix:
@@ -606,22 +659,26 @@ class Matrix(sym.MutableDenseMatrix):
     # Override
     @staticmethod
     def eye(*args, **kwargs) -> Matrix:
-        return Matrix(sym.eye(*args, **kwargs))
+        aug_pos = kwargs.pop("aug_pos", None)
+        return Matrix(sym.eye(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @staticmethod
     def zeros(*args, **kwargs) -> Matrix:
-        return Matrix(sym.zeros(*args, **kwargs))
+        aug_pos = kwargs.pop("aug_pos", None)
+        return Matrix(sym.zeros(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @staticmethod
     def ones(*args, **kwargs) -> Matrix:
-        return Matrix(sym.ones(*args, **kwargs))
+        aug_pos = kwargs.pop("aug_pos", None)
+        return Matrix(sym.ones(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @staticmethod
     def diag(*args, **kwargs) -> Matrix:
-        return Matrix(sym.diag(*args, **kwargs))
+        aug_pos = kwargs.pop("aug_pos", None)
+        return Matrix(sym.diag(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @property
@@ -695,9 +752,28 @@ class Matrix(sym.MutableDenseMatrix):
         return Matrix(new_mat, aug_pos=aug)
 
     # Override
+    def subs(self, *args, **kwargs) -> Matrix:
+        """Substitutes values in the matrix entries.
+
+        This method overrides SymPy's [`subs`][sympy.matrices.matrixbase.MatrixBase.subs]
+        method to ensure that the augmentation lines are preserved after substitution.
+
+        Args:
+            *args: Positional arguments for substitution.
+            **kwargs: Keyword arguments for substitution.
+
+        Returns:
+            (Matrix): A new matrix with substituted values, preserving augmentation lines.
+        """
+        new_mat = super().subs(*args, **kwargs)
+        aug = self._aug_pos.copy() if hasattr(self, "_aug_pos") else set()
+        return Matrix(new_mat, aug_pos=aug)
+
+    # Override
     def simplify(
         self,
         rational: bool = True,
+        suppress_warnings: bool = False,
         tolerance: float = 1e-4,
         simplify: bool = True,
         expand: bool = True,
@@ -723,6 +799,8 @@ class Matrix(sym.MutableDenseMatrix):
         Args:
             rational (bool, optional): If True, applies rational simplification
                 to the matrix entries using [`sym.nsimplify`][sympy.simplify.simplify.nsimplify].
+            suppress_warnings (bool, optional): If True, suppresses warnings about non-zero residues
+                after rational simplification.
             tolerance (float, optional): The tolerance for rational simplification.
             simplify (bool, optional): If True, applies general symbolic simplification using [`sym.simplify`][sympy.simplify.simplify.simplify].
             expand (bool, optional): If True, applies expansion to the matrix entries. If False, applies factoring instead.
@@ -744,7 +822,7 @@ class Matrix(sym.MutableDenseMatrix):
         if rational:
             temp = sym.nsimplify(temp, tolerance=tolerance, rational=True)
             residues = (temp - self).norm()
-            if residues != 0:
+            if residues != 0 and not suppress_warnings:
                 res = residues.evalf()
                 warn(
                     f"""
@@ -906,6 +984,22 @@ class Matrix(sym.MutableDenseMatrix):
         part_sol = self.subs(set_0)
         gen_sol = self - part_sol
         return PartGen(part_sol, gen_sol)
+
+    def sep_unk(self) -> dict[Expr, Matrix]:
+        """Separates the matrix into matrices with each free symbol set to 1.
+
+        Returns:
+            (dict[Expr, Matrix]): Returns a dictionary where the sum of the key*value pairs
+                reconstructs the original matrix. Each key is a free symbol, and each value is a
+                matrix with that symbol set to 1 and all other free symbols set to 0.
+        """
+        syms = self.free_symbols
+        res: dict[Expr, Matrix] = defaultdict(Matrix)
+        for s in syms:
+            sub = dict(((symbol, 0) for symbol in syms if symbol != sym))
+            sub[s] = 1  # type: ignore
+            res[s] = self.subs(sub)
+        return res
 
     def scalar_factor(self, column: bool = True) -> ScalarFactor:
         r"""Factorizes a matrix into the form $\mathbf{A} = \mathbf{FD}$, where $\mathbf{D}$ is a diagonal matrix
@@ -1124,7 +1218,7 @@ class Matrix(sym.MutableDenseMatrix):
         return Matrix(super().col_join(other), aug_pos=aug)
 
     def scale_row(
-        self, idx: int, scalar: Expr | float | int, verbosity: int = 0
+        self, idx: int, scalar: Expr | float | int, verbosity: int = 2
     ) -> Matrix:
         """
         Scales a row of the matrix by a scalar and simplifies the result.
@@ -1155,7 +1249,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[1, 2], [3, 4]])
-            >>> mat.scale_row(0, 2)
+            >>> mat.scale_row(0, 2, verbosity=0)
             Matrix([
             [2, 4]
             [3, 4]
@@ -1165,8 +1259,9 @@ class Matrix(sym.MutableDenseMatrix):
         if scalar == 0:
             warn("Matrix rows should not be scaled by 0", UserWarning)
 
+        scalar = sym.sympify(scalar)
         self[idx, :] *= scalar  # type: ignore
-        self.simplify()
+        self.simplify(suppress_warnings=True)
 
         if verbosity >= 1:
             display(
@@ -1179,7 +1274,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         return self
 
-    def swap_row(self, idx_1: int, idx_2: int, verbosity: int = 0) -> Matrix:
+    def swap_row(self, idx_1: int, idx_2: int, verbosity: int = 2) -> Matrix:
         """Swaps two rows of the matrix.
 
         This method swaps the contents of two rows in the matrix. The operation is performed
@@ -1207,7 +1302,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[1, 2], [3, 4]])
-            >>> mat.swap_row(0, 1)
+            >>> mat.swap_row(0, 1, verbosity=0)
             Matrix([
             [3, 4]
             [1, 2]
@@ -1225,7 +1320,7 @@ class Matrix(sym.MutableDenseMatrix):
         return self
 
     def reduce_row(
-        self, idx_1: int, scalar: Expr | float | int, idx_2: int, verbosity: int = 0
+        self, idx_1: int, scalar: Expr | float | int, idx_2: int, verbosity: int = 2
     ) -> Matrix:
         """Reduces a row by subtracting a scalar multiple of another row.
 
@@ -1255,15 +1350,16 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[1, 2], [3, 4]])
-            >>> mat.reduce_row(0, 2, 1)
+            >>> mat.reduce_row(0, 2, 1, verbosity=0)
             Matrix([
             [-5, -6]
             [ 3,  4]
             ])
         """
 
+        scalar = sym.sympify(scalar)
         self[idx_1, :] = self[idx_1, :] - scalar * self[idx_2, :]  # type: ignore
-        self.simplify()
+        self.simplify(suppress_warnings=True)
 
         if verbosity >= 1:
             display(
@@ -1462,7 +1558,7 @@ class Matrix(sym.MutableDenseMatrix):
             # Swap the current row with the pivot row if necessary
             if pivot_row != cur_row_pos:
                 U.swap_row(cur_row_pos, pivot_row, verbosity=verbosity)
-                P_elem = I.copy().swap_row(cur_row_pos, pivot_row)
+                P_elem = I.copy().swap_row(cur_row_pos, pivot_row, verbosity=0)
                 P = P @ P_elem
                 L = P_elem @ L @ P_elem
 
@@ -1504,7 +1600,9 @@ class Matrix(sym.MutableDenseMatrix):
                                     cur_row_pos,
                                     verbosity=verbosity,  # type: ignore
                                 )
-                                elem = I.copy().reduce_row(row_idx, -term, cur_row_pos)  # type: ignore
+                                elem = I.copy().reduce_row(
+                                    row_idx, -term, cur_row_pos, verbosity=0
+                                )  # type: ignore
                                 L = L @ elem
 
                         # Cases where pivot row contains symbols such that scalar is a
@@ -1523,7 +1621,9 @@ class Matrix(sym.MutableDenseMatrix):
                             # if (n != 0) and (not _is_zero(d)):
                             if (not _is_zero(n)) and (not _is_zero(d)):
                                 U.scale_row(row_idx, scalar, verbosity=verbosity)
-                                elem = I.copy().scale_row(row_idx, 1 / scalar)
+                                elem = I.copy().scale_row(
+                                    row_idx, 1 / scalar, verbosity=0
+                                )
                                 L = L @ elem
 
                     except Exception as error:
@@ -1572,7 +1672,7 @@ class Matrix(sym.MutableDenseMatrix):
             U = (
                 self.row_join(rhs, aug_line=False)
                 .subs(case)
-                .ref(verbosity=0, matrices=1, follow_GE=False)
+                .ref(verbosity=0, follow_GE=False)
                 .U
             )
             display(U)
@@ -1662,6 +1762,7 @@ class Matrix(sym.MutableDenseMatrix):
             return [x.subs(sol) for sol in solution]
         else:
             # If no solution is found (e.g., inconsistent system or empty list), raise an error
+            display(self.row_join(rhs, aug_line=True).rref())
             raise ValueError(
                 "No solution found for the linear system. The system may be inconsistent."
             )
@@ -1706,7 +1807,7 @@ class Matrix(sym.MutableDenseMatrix):
             (PartGen): If `matrices = 2`, returns a dataclass containing the particular and general solutions of the inverse.
 
         Raises:
-            ValueError: If no valid inverse (left or right) is found, an exception is raised.
+            ValueError: If no valid inverse (left or right or both) is found, an exception is raised.
 
         Examples:
             >>> mat = Matrix([[1, 2], [3, 4]])
@@ -1717,11 +1818,12 @@ class Matrix(sym.MutableDenseMatrix):
         """
 
         if option is None:
-            if self.rank() == self.cols:
+            rank = self.rank()
+            if rank == self.cols:
                 if verbosity:
                     print("Left inverse found!")
                 option = "left"
-            if self.rank() == self.rows:
+            if rank == self.rows:
                 if verbosity:
                     print("Right inverse found!")
                 option = "right"
@@ -1729,7 +1831,9 @@ class Matrix(sym.MutableDenseMatrix):
                     # square matrix inverse works on both sides
                     option = "both"
             else:
-                raise ValueError("No inverse found! Try pseudo-inverse: .pinv()")
+                raise ValueError(
+                    f"No inverse found! Rank: {rank}, Rows: {self.rows}, Columns: {self.cols}. Try pseudo-inverse: .pinv()"
+                )
 
         if option == "both" and self.rows != self.cols:
             raise ValueError(
@@ -1738,13 +1842,17 @@ class Matrix(sym.MutableDenseMatrix):
 
         if (option is not None) and (verbosity >= 1):
             if option == "left":
-                aug = self.T.copy().row_join(Matrix.eye(self.cols))
+                aug = self.T.copy().row_join(
+                    Matrix.eye(self.cols, aug_pos=range(self.cols))
+                )
                 print("Before RREF: [self^T | eye]")
                 display(aug)
                 print("\nAfter RREF:")
                 display(aug.rref())
             else:
-                aug = self.copy().row_join(Matrix.eye(self.rows))
+                aug = self.copy().row_join(
+                    Matrix.eye(self.rows, aug_pos=range(self.rows))
+                )
                 print("Before RREF: [self | eye]")
                 display(aug)
                 print("\nAfter RREF:")
@@ -1822,6 +1930,7 @@ class Matrix(sym.MutableDenseMatrix):
             """The classical adjoint of the matrix is computed rather than the conjugate transpose.
             Please use self.adj() instead to remove ambiguity.""",
             DeprecationWarning,
+            stacklevel=2,
         )
         return self.adjugate()
 
@@ -1850,6 +1959,88 @@ class Matrix(sym.MutableDenseMatrix):
             - SymPy's [`adjugate`][sympy.matrices.matrixbase.MatrixBase.adjugate]
         """
         return self.adjugate(method=method)
+
+    # override
+    def cramer_solve(
+        self, rhs: Matrix, det_method: str = "laplace", verbosity: int = 2
+    ) -> Matrix:
+        """Solves the linear system using Cramer's Rule.
+
+        This method applies Cramer's Rule to solve the linear system represented by the matrix and the right-hand side vector.
+        It computes the determinant of the matrix and uses it to find the solution vector.
+
+        Args:
+            rhs (Matrix): The right-hand side vector in the equation `Ax = rhs`.
+            det_method (str, optional): The method to use for computing the determinant. Options include:
+
+                - `'laplace'`: Uses the Laplace expansion method.
+                - `'berkowitz'`: Uses the Berkowitz algorithm.
+                - `'bird'`: Uses the Bird's algorithm.
+                - `'bareiss'`: Uses the Bareiss algorithm.
+                - `'lu'`: Uses LU decomposition.
+
+            verbosity (int, optional): Level of verbosity for displaying intermediate steps:
+
+                - 0: No output.
+                - 1: Display basic information.
+                - 2: Display detailed information.
+
+        Returns:
+            (Matrix): The solution vector `x` that satisfies `self @ x = rhs`.
+
+        Raises:
+            sympy.matrices.exceptions.NonSquareMatrixError: If the matrix is not square.
+            sympy.matrices.exceptions.ShapeError: If the matrix and the right-hand side vector have incompatible dimensions.
+            ValueError: If the determinant is zero, indicating that the system has no unique solution.
+
+        Examples:
+            >>> A = Matrix([[1, 2], [3, 4]])
+            >>> b = Matrix([[5], [11]])
+            >>> A.cramer_solve(b, verbosity=0)
+            Matrix([
+            [1],
+            [2]])
+
+        See Also:
+            - [`solve`][..]: For solving linear systems using other methods.
+            - SymPy's [`Matrix.det`][sympy.matrices.matrixbase.MatrixBase.det] for computing the determinant.
+            - SymPy's [`Matrix.cramer_solve`][sympy.matrices.matrixbase.MatrixBase.cramer_solve]
+        """
+        if self.rows != rhs.rows:
+            raise sym.ShapeError(
+                "The right-hand side vector must have the same number of rows as the matrix."
+            )
+        if rhs.cols != 1:
+            raise sym.ShapeError(
+                "The right-hand side vector must be a column vector (1 column)."
+            )
+        if self.rows != self.cols:
+            raise sym.NonSquareMatrixError(
+                "Cramer's Rule can only be applied to square matrices."
+            )
+        det = self.det(method=det_method)
+        if det == 0:
+            raise ValueError("Determinant is zero, no unique solution exists.")
+
+        entries = []
+        for i in range(self.cols):
+            # Create a copy of the matrix and replace the i-th column with the rhs vector
+            modified_matrix = self.copy()
+            modified_matrix[:, i] = rhs[:, 0]
+            if verbosity >= 2:
+                print(f"Modified matrix for column {i + 1}:")
+                display(modified_matrix)
+            det_i = modified_matrix.det(method=det_method) / det
+            if verbosity >= 1:
+                display(
+                    "\\text{Determinant for column }"
+                    + str(i + 1)
+                    + ": "
+                    + sym.latex(det_i),
+                    opt="math",
+                )
+            entries.append(det_i)
+        return Matrix(entries)
 
     def column_constraints(self, use_ref: bool = False, verbosity: int = 1) -> Matrix:
         r"""Computes the column constraints for the matrix by appending a symbolic vector.
@@ -2028,6 +2219,55 @@ class Matrix(sym.MutableDenseMatrix):
                     f"Check if Number of rows ({self.rows}) == Number of pivot columns ({len(pivots)})"  # type: ignore
                 )
             return self.rows == len(pivots)
+
+    def get_linearly_independent_vectors(
+        self, colspace: bool = True, verbosity: int = 2
+    ) -> Matrix:
+        """Returns a matrix containing the linearly independent vectors from the column space or row space.
+
+        This method computes the reduced row echelon form (RREF) of the matrix and selects the non-zero rows
+        as linearly independent vectors. The result is a matrix whose columns (or rows) are linearly independent.
+
+        Args:
+            colspace (bool, optional): If `True`, returns linearly independent vectors from the column space.
+                If `False`, returns from the row space.
+
+            verbosity (int, optional): Level of output verbosity.
+
+                - 0: No output.
+                - 1: Print a summary of the RREF and selection.
+
+        Returns:
+            (Matrix): A matrix whose columns (if colspace=True) or rows (if colspace=False) are linearly independent vectors.
+
+        Examples:
+            >>> mat = Matrix([[1, 2], [2, 4]])
+            >>> mat.get_linearly_independent_vectors(colspace=True, verbosity=0)
+            Matrix([
+            [1]
+            [2]
+            ])
+        """
+        if colspace:
+            rref = self.rref(pivots=True)
+            assert isinstance(rref, RREF), "RREF should return a RREF dataclass"
+            if verbosity >= 1:
+                print("Before RREF: [self]")
+                display(self)
+                print("\nAfter RREF:")
+                display(rref)
+                print("Select columns of self corresponding to pivot positions.")
+            return self.select_cols(*rref.pivots)
+        else:
+            rref = self.T.rref(pivots=True)
+            assert isinstance(rref, RREF), "RREF should return a RREF dataclass"
+            if verbosity >= 1:
+                print("Before RREF: [self^T]")
+                display(self.T)
+                print("\nAfter RREF:")
+                display(rref)
+                print("Select rows of self corresponding to pivot positions.")
+            return self.select_rows(*rref.pivots)
 
     def simplify_basis(self, colspace: bool = True, verbosity: int = 2) -> Matrix:
         """Returns a simplified basis for the column space or row space of the matrix.
@@ -2211,8 +2451,8 @@ class Matrix(sym.MutableDenseMatrix):
 
         return Matrix.from_list(aug.nullspace())
 
-    def is_same_subspace(self, other: Matrix, verbosity: int = 2) -> bool:
-        """Checks if two subspaces are the same by verifying if each subspace is a subspace of the other.
+    def is_same_subspace(self, other: Matrix | None = None, verbosity: int = 2) -> bool:
+        r"""Checks if two subspaces are the same by verifying if each subspace is a subspace of the other.
 
         This method determines whether the subspaces spanned by the columns of the current matrix (`self`)
         and the provided matrix (`other`) are the same. It does so by checking if the row-reduced echelon forms
@@ -2220,7 +2460,8 @@ class Matrix(sym.MutableDenseMatrix):
         span each other.
 
         Args:
-            other (Matrix): The second matrix representing the other subspace to compare with the current matrix.
+            other (Matrix, optional): The second matrix representing the other subspace to compare with the current matrix.
+                If `None`, the identity matrix is used to check if it spans $\mathbb{R}^\text{self.rows}}$
             verbosity (int, optional): Level of verbosity for displaying intermediate steps:
 
                 - 0: No output.
@@ -2240,6 +2481,17 @@ class Matrix(sym.MutableDenseMatrix):
             >>> mat1.is_same_subspace(mat2, verbosity=0)
             True
         """
+        if other is None:
+            rref = self.rref(pivots=True)
+            assert isinstance(rref, RREF), "RREF should return a RREF dataclass"
+            if verbosity >= 1:
+                print("Check rref(self) does not have zero rows")
+            if verbosity >= 2:
+                print("Before RREF: self")
+                display(self)
+                print("\nAfter RREF:")
+                display(rref.rref)
+            return len(rref.pivots) == self.rows  # no zero rows
 
         if self.rows != other.rows:
             raise sym.ShapeError(
@@ -2262,12 +2514,28 @@ class Matrix(sym.MutableDenseMatrix):
             display(other.copy().row_join(self))
             print("\nAfter RREF:")
             display(sub_rref)
+            if max(sub_pivots) >= other.cols:
+                print(
+                    f"Span(self) is not a subspace of span(other). Pivot columns: {sub_pivots}"
+                )
+            else:
+                print(
+                    f"Span(self) is a subspace of span(other). Pivot columns: {sub_pivots}"
+                )
 
             print("\nCheck if span(other) is subspace of span(self)")
             print("\nBefore RREF: [self | other]")
             display(self.copy().row_join(other))
             print("\nAfter RREF:")
             display(super_rref)
+            if max(super_pivots) >= self.cols:
+                print(
+                    f"Span(other) is not a subspace of span(self). Pivot columns: {super_pivots}"
+                )
+            else:
+                print(
+                    f"Span(other) is a subspace of span(self). Pivot columns: {super_pivots}"
+                )
 
         return (max(sub_pivots) < other.cols) and (max(super_pivots) < self.cols)
 
@@ -3060,7 +3328,7 @@ class Matrix(sym.MutableDenseMatrix):
                     print("\n")
 
         P, D = super().diagonalize(reals_only, *args, **kwargs)
-        P = Matrix(P, aug_pos=set())  # Remove any augmented positions
+        P.rm_aug_line()  # Remove augmented line if exists
         return PDP(P, D)
 
     def is_orthogonally_diagonalizable(self, verbosity: int = 2) -> bool:

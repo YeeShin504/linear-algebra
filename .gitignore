@@ -9,3 +9,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Generated docs
+site/
+
+# Generated coverage reports
+htmlcov/
+.coverage/

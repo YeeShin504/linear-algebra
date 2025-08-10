@@ -13,9 +13,8 @@ if TYPE_CHECKING:
     from typing import Literal
 
     import numpy as np
-    from sympy.core.core import Expr
 
-    from symbolic import Matrix
+    from ma1522.symbolic import Matrix
 
 
 class Shape(Enum):
@@ -36,7 +35,7 @@ class Shape(Enum):
     
     A matrix where all off-diagonal entries are zero. Only elements on the
     main diagonal ($i,j$ where $i = j$) can be non-zero. The diagonal entries
-    can have different values (unlike SCALAR matrices).
+    can have different values and need not be square (unlike SCALAR matrices).
     
     Example:
         $$
@@ -51,7 +50,7 @@ class Shape(Enum):
     SCALAR = "SCALAR"
     r"""Scalar matrix (diagonal matrix with equal diagonal entries).
     
-    A diagonal matrix where all diagonal entries are equal to the same scalar value,
+    A square matrix where all diagonal entries are equal to the same scalar value,
     and all off-diagonal entries are zero. This is also known as a scalar matrix
     or scalar multiple of the identity matrix.
     

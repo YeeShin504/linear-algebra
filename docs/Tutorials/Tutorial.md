@@ -1,6 +1,6 @@
 # Tutorial: Getting Started
 
-This guide is designed for undergraduate students who are new to Python and want to use this library for linear algebra computations. The `symbolic.Matrix` class is built on top of SymPy, a powerful Python library for symbolic mathematics, and is tailored for the NUS MA1522 course (AY 24/25 Sem 1).
+This guide is designed for undergraduate students who are new to Python and want to use this library for linear algebra computations. The[ `symbolic.Matrix`](../api/symbolic.md#ma1522.symbolic.matrix) class is built on top of SymPy, a powerful Python library for symbolic mathematics, and is tailored for the NUS MA1522 course (AY 24/25 Sem 1).
 
 ## 1. Installation and Setup
 
@@ -40,8 +40,7 @@ Now, create a new notebook and you're ready to go!
 Let's start by importing the necessary functions and creating our first matrices.
 
 ```python
-from symbolic import Matrix
-from utils import display
+from ma1522 import Matrix, display
 ```
 
 ### From a List of Lists
@@ -55,9 +54,9 @@ A = Matrix([[1, 2, 3],
 display(A)
 ```
 
-### From LaTeX
+### From $\rm\LaTeX$
 
-A key feature of this library is the ability to create a matrix directly from a LaTeX string. This is incredibly useful for copying matrices from online resources or textbooks.
+A key feature of this library is the ability to create a matrix directly from a $\rm\LaTeX$ string. This is incredibly useful for copying matrices from online resources or textbooks.
 
 ```python
 latex_expr = r'\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}'
@@ -247,4 +246,4 @@ display(Matrix.from_list(row_space, row_join=False))
 
 ---
 
-This tutorial covers the core functionalities of the `symbolic.Matrix` class. For more details on specific functions, you can refer to the code references.
+This tutorial covers the core functionalities of the `symbolic.Matrix` class. For more details on specific functions, you can refer to the [api references](../api/symbolic.md).
