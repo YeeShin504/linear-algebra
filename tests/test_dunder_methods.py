@@ -22,7 +22,7 @@ class TestDunderMethods:
         assert mat1 == mat2
         assert mat1 != mat3
 
-        mat_aug = Matrix([[1, 2], [3, 4]], aug_pos={1})
-        assert str(mat_aug) == "Matrix([[1, 2], [3, 4]]), aug_pos: {1}"
+        mat_aug = Matrix([[1, 2], [3, 4]], aug_pos={0})
+        assert str(mat_aug) == "Matrix([[1, 2], [3, 4]]), aug_pos: {0}"
         assert repr(mat_aug) == "Matrix([ \n[1 | 2]\n[3 | 4]\n])"
         assert mat1 != mat_aug

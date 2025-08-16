@@ -21,7 +21,7 @@ class TestTutorial01:
     def test_question_3b(self):
         mat = Matrix([[1, 1, -1, -2], [2, 1, -1, 1], [-1, 1, -3, 1]])
         aug = Matrix([0, -2, 4])
-        sol = mat.solve(aug)
+        sol = mat.solve(aug)[0]
         unk = sol[-1]
         assert sol == Matrix([-3 * unk - 2, 19 * unk / 2 + 2, 9 * unk / 2, unk])  # type: ignore
 
@@ -31,7 +31,7 @@ class TestTutorial01:
         aug = aug_mat.select_cols(3)  # Select the augmented column
 
         with pytest.raises(ValueError):
-            mat.solve(aug)
+            mat.solve(aug)[0]
 
     def test_question_4(self):
         # TODO: Implement better evaluate all cases
@@ -79,7 +79,7 @@ class TestTutorial01:
         mat = aug_mat.select_cols(*range(7))
         aug = aug_mat.select_cols(7)
 
-        sol = mat.solve(aug)
+        sol = mat.solve(aug)[0]
         y = sol[5]
         z = sol[6]
         assert sol.subs({y: 50, z: 100}) == Matrix([100, 550, 700, 650, 50, 50, 100])  # type: ignore

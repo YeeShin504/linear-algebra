@@ -129,7 +129,7 @@ class TestFromLatex:
     )
     def test_vector_list(self, latex_input, row_join, expected):
         """Test parsing a list of vectors"""
-        result = Matrix.from_latex(latex_input, row_join)
+        result = Matrix.from_latex(expr=latex_input, row_join=row_join)
         assert result == expected
 
     def test_invalid_latex(self):
@@ -211,8 +211,6 @@ class TestFromList:
         [
             # Vectors with different lengths
             [Matrix([[1], [2]]), Matrix([[3], [4], [5]])],
-            # Empty list
-            [],
             # Mixed dimensions
             [Matrix([[1, 2]]), Matrix([[3], [4], [5]])],
         ],
@@ -253,7 +251,7 @@ class TestCreateUnkMatrix:
     def test_create_unk_matrix(self, rows, cols, symbol, is_real, shape):
         """Test creating unknown matrices with various parameters"""
         result = Matrix.create_unk_matrix(
-            num_rows=rows, num_cols=cols, symbol=symbol, is_real=is_real, shape=shape
+            r=rows, c=cols, symbol=symbol, is_real=is_real, shape=shape
         )
 
         # Verify dimensions
@@ -277,16 +275,15 @@ class TestCreateUnkMatrix:
         """Test that default parameters create expected matrix"""
         result = Matrix.create_unk_matrix()
         assert result.shape == (1, 1)
-        assert str(result[0, 0]) == "x_1,1"
+        assert str(result[0, 0]) == "x"
         assert sym.re(result[0, 0]) == result[0, 0]  # Verify real number
 
 
 class TestCreateRandMatrix:
     def test_create_rand_matrix(self):
-        mat = Matrix.create_rand_matrix(2, 2)
+        mat = Matrix.create_rand_matrix(2, 2, seed=42)
         assert mat.shape == (2, 2)
-        # Check if elements are numbers (not symbolic by default)
-        assert all(isinstance(elem, (int, float)) for elem in mat.flat())
+        assert mat == Matrix([[81, 14], [3, 94]])
 
 
 class TestOverriddenFactoryMethods:

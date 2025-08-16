@@ -70,7 +70,7 @@ class TestChapter5:
         mat = Matrix([[1, 1], [1, 0]])
         ortho_mat = mat.gram_schmidt(factor=True)
         assert ortho_mat.full.is_vec_orthogonal() is True  # type: ignore
-        assert ortho_mat.full.select_cols(0).dot(ortho_mat.select_cols(1)) == 0  # type: ignore
+        assert ortho_mat.full.select_cols(0).dot(ortho_mat.full.select_cols(1)) == 0  # type: ignore
 
     def test_QRdecomposition(self):
         mat = Matrix([[1, 1], [1, 0]])

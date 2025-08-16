@@ -30,7 +30,8 @@ class TestBasicManipulators:
 
     def test_identify(self):
         mat = Matrix([[1.0000000000001, 2.0], [3.0, 4.0]])
-        identified_mat = mat.identify(tolerance=1e-10)
+        with pytest.warns(RuntimeWarning):
+            identified_mat = mat.identify(tol=1e-10)
         assert (identified_mat - Matrix([[1, 2], [3, 4]])).norm() < 1e-9
 
     def test_select_cols(self):

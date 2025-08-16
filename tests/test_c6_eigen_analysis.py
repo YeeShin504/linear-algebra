@@ -29,7 +29,7 @@ class TestChapter6:
     def test_cpoly_2(self):
         res = Matrix.diag(-1, 4, sym.Rational(1, 2)).cpoly()
         roots = set()
-        for expr in res:  # type: ignore
+        for expr in res.args:  # type: ignore
             roots.add(sym.solve(expr)[0])
         assert roots == set((4, sym.Rational(1, 2), -1))
 
@@ -46,9 +46,9 @@ class TestChapter6:
 
     def test_is_orthogonally_diagonalizable(self):
         mat = Matrix([[1, 2], [2, 1]])
-        assert mat.is_orthogonally_diagonalizable is True
+        assert mat.is_orthogonally_diagonalizable() is True
         mat = Matrix([[1, 2], [3, 4]])
-        assert mat.is_orthogonally_diagonalizable is False
+        assert mat.is_orthogonally_diagonalizable() is False
 
     def test_orthogonally_diagonalize(self):
         mat = Matrix([[1, 2], [2, 1]])
