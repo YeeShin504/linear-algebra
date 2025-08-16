@@ -64,6 +64,15 @@ B = Matrix.from_latex(latex_expr)
 display(B)
 ```
 
+### From String Representation
+
+You can also create a matrix from a string representation, similar to how you might define it in MATLAB.
+
+```python
+C = Matrix.from_str('1 a 3; 4 5 6; 7 8 9', row_sep=';', col_sep=' ')
+display(C)
+```
+
 ### Special Matrices
 
 You can also create special matrices easily.
@@ -246,4 +255,6 @@ display(Matrix.from_list(row_space, row_join=False))
 
 ---
 
-This tutorial covers the core functionalities of the `symbolic.Matrix` class. For more details on specific functions, you can refer to the [api references](../api/symbolic.md).
+This tutorial covers the core functionalities of the `symbolic.Matrix` class. 
+Selected questions and suggested methods to solve them are provided in the [Tutorials](../Tutorials) section.
+For more details on specific functions, you can refer to the [api references](../api).

@@ -22,13 +22,12 @@ nav:
       - Tutorial 3: Tutorials/Tut03.ipynb
       - Tutorial 4: Tutorials/Tut04.ipynb
       - Tutorial 5: Tutorials/Tut05.ipynb
-    # - Tutorial 6: Tutorials/Tut06.ipynb
-    # - Tutorial 7: Tutorials/Tut07.ipynb
-    # - Tutorial 8: Tutorials/Tut08.ipynb
-    # - Tutorial 9: Tutorials/Tut09.ipynb
-    # - Tutorial 10: Tutorials/Tut10.ipynb
-    # - Tutorial 11: Tutorials/Tut11.ipynb
-  # - Example Notebook: scrap.ipynb
+      - Tutorial 6: Tutorials/Tut06.ipynb
+      - Tutorial 7: Tutorials/Tut07.ipynb
+      - Tutorial 8: Tutorials/Tut08.ipynb
+      - Tutorial 9: Tutorials/Tut09.ipynb
+      - Tutorial 10: Tutorials/Tut10.ipynb
+      - Tutorial 11: Tutorials/Tut11.ipynb
 
 theme:
   name: material
