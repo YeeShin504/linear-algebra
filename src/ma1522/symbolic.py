@@ -15,7 +15,7 @@ import re
 
 # import IPython.display
 
-from .utils import _powerset, _is_zero, _textify, display
+from .utils import _powerset, _is_zero, _standardise_symbol, _textify, display
 
 from .custom_types import (
     Shape,
@@ -180,8 +180,8 @@ class Matrix(sym.MutableDenseMatrix):
         >>> A = Matrix([[1, 2], [3, 4]])
         >>> A.rref()
         RREF(rref=Matrix([
-            [1, 0]
-            [0, 1]
+        [1, 0]
+        [0, 1]
         ]), pivots=(0, 1))
 
         Creating from LaTeX:
@@ -191,14 +191,15 @@ class Matrix(sym.MutableDenseMatrix):
         ⎣3  4⎦
 
         Eigenvalue decomposition:
-        >>> A.diagonalize()
-        >>> P, D = A.diagonalize()
+        >>> P, D = A.diagonalize(verbosity=0)
         >>> P, D
         (Matrix([
-        [-sqrt(33)/6 - 1/2, -1/2 + sqrt(33)/6],
-        [                1,                 1]]), Matrix([
-        [5/2 - sqrt(33)/2,                0],
-        [               0, 5/2 + sqrt(33)/2]]))
+        [-sqrt(33)/6 - 1/2, -1/2 + sqrt(33)/6]
+        [                1,                 1]
+        ]), Matrix([
+        [5/2 - sqrt(33)/2,                0]
+        [               0, 5/2 + sqrt(33)/2]
+        ]))
     """
 
     def __init__(
@@ -246,10 +247,8 @@ class Matrix(sym.MutableDenseMatrix):
         return "Matrix([" + "\n".join(res_row_list) + "\n])"
 
     def __eq__(self, other) -> bool:
-        if not hasattr(self, "_aug_pos"):
-            self._aug_pos = set()
-        if not hasattr(other, "_aug_pos"):
-            other._aug_pos = set()
+        if not hasattr(self, "_aug_pos") or not hasattr(other, "_aug_pos"):
+            return super().__eq__(other)
 
         return super().__eq__(other) and (self._aug_pos == other._aug_pos)
 
@@ -291,7 +290,11 @@ class Matrix(sym.MutableDenseMatrix):
     ###################
     @staticmethod
     def from_latex(
-        expr: str, verbosity: int = 1, row_join: bool = True, norm: bool = False
+        expr: str,
+        verbosity: int = 1,
+        row_join: bool = True,
+        norm: bool = False,
+        aug_pos: Iterable[int] | int | None = None,
     ) -> Matrix:
         r"""Converts a $\rm\LaTeX$ matrix/vector expression into a Matrix object.
 
@@ -315,7 +318,11 @@ class Matrix(sym.MutableDenseMatrix):
             row_join (bool): If True, vector lists are treated as columns.
                 If False, vectors are treated as rows.
 
-            norm (bool): If True, normalizes vectors to unit length (default False).
+            norm (bool): If True, normalizes vectors to unit length.
+
+            aug_pos (Iterable[int] | int | None): If provided, specifies the column indices
+                where augmentation lines should be drawn in the output matrix. This is useful for displaying
+                augmented matrices in a visually clear manner. If `None`, no augmentation lines are drawn.
 
         Returns:
             (Matrix): The parsed matrix with optional normalization.
@@ -362,7 +369,6 @@ class Matrix(sym.MutableDenseMatrix):
                 vector = vector.expand()
                 vector_list.append(vector)
             mat = Matrix.from_list(vector_list, row_join)
-        # elif isinstance(res, sym.matrices.expressions.matmul.MatMul):
         elif isinstance(res, sym.MatMul):
             # If the matrix is a product of matrices, evaluate the product directly
             mat = Matrix(res.doit())
@@ -373,13 +379,22 @@ class Matrix(sym.MutableDenseMatrix):
             # If the result is neither a list nor a matrix expression, return the raw result
             mat = res
 
+        if aug_pos is not None:
+            mat = Matrix(mat, aug_pos=aug_pos)
+
         # Step 4: Normalisation
         if norm and isinstance(mat, Matrix):
             return mat.normalized(factor=False)  # type: ignore
         return mat
 
     @staticmethod
-    def from_str(matrix_str: str, row_sep: str = ";", col_sep: str = " ") -> Matrix:
+    def from_str(
+        matrix_str: str,
+        row_sep: str = ";",
+        col_sep: str = " ",
+        aug_pos: Iterable[int] | int | None = None,
+        is_real: bool = True,
+    ) -> Matrix:
         """Parses a string representation of a matrix into a Matrix.
 
         This method enables quick creation of a Matrix object from a string format similar to
@@ -391,6 +406,10 @@ class Matrix(sym.MutableDenseMatrix):
             matrix_str (str): The string representation of the matrix.
             row_sep (str, optional): The separator for rows in the string.
             col_sep (str): The separator for columns in the string.
+            aug_pos (Iterable[int] | int | None, optional): If provided, specifies the column indices
+                where augmentation lines should be drawn in the output matrix. This is useful for displaying
+                augmented matrices in a visually clear manner. If `None`, no augmentation lines are drawn.
+            is_real (bool, optional): If True, the symbols in the matrix are considered real-valued. Otherwise, they are complex.
 
         Returns:
             (Matrix): A Matrix object representing the parsed matrix.
@@ -414,10 +433,23 @@ class Matrix(sym.MutableDenseMatrix):
         for row in rows:
             cols = row.strip().split(col_sep)
             matrix.append([parse_expr(col.strip()) for col in cols])
-        return Matrix(matrix)
+
+        if aug_pos is not None:
+            matrix = Matrix(matrix, aug_pos=aug_pos)
+        else:
+            matrix = Matrix(matrix)
+
+        symbols = matrix.free_symbols
+        new_symbols = _standardise_symbol(symbols, is_real=is_real)
+        matrix = matrix.subs({s: n for s, n in zip(symbols, new_symbols)})
+        return matrix
 
     @staticmethod
-    def from_list(vectors: list[Matrix], row_join: bool = True) -> Matrix:
+    def from_list(
+        vectors: list[Matrix],
+        row_join: bool = True,
+        aug_pos: Iterable[int] | int | None = None,
+    ) -> Matrix:
         """Creates a Matrix object from a list of vectors.
 
         This method takes a list of vectors (each represented as a Matrix object)
@@ -429,6 +461,10 @@ class Matrix(sym.MutableDenseMatrix):
 
             row_join (bool, optional): If True, the vectors are joined horizontally.
                 If False, the vectors are stacked vertically.
+
+            aug_pos (Iterable[int] | int | None, optional): If provided, specifies the column indices
+                where augmentation lines should be drawn in the output matrix. This is useful for displaying
+                augmented matrices in a visually clear manner. If `None`, no augmentation lines are drawn.
 
         Returns:
             (Matrix): A matrix constructed from the list of vectors.
@@ -455,21 +491,15 @@ class Matrix(sym.MutableDenseMatrix):
         """
         if not vectors:
             return Matrix([])
-        res = vectors.pop(0)
+        res = Matrix(vectors.pop(0))
         for vec in vectors:
             if row_join:
                 res = res.row_join(vec, aug_line=False)
             else:
                 res = res.col_join(vec)
+        if aug_pos is not None:
+            return Matrix(res, aug_pos=aug_pos)
         return res
-
-        # res = Matrix([[elem for elem in vector] for vector in vectors])
-        # if row_join:
-        #     # If `row_join=True`, transpose the matrix (vectors treated as rows)
-        #     return res.T
-        # else:
-        #     # If `row_join=False`, return the matrix as-is (vectors treated as columns)
-        #     return res
 
     def _shape(self, shape: Shape) -> Matrix:
         # if self.rows != self.cols:
@@ -510,7 +540,7 @@ class Matrix(sym.MutableDenseMatrix):
         r: int = 1,
         c: int = 1,
         symbol: str | None = None,
-        is_real: bool = True,
+        is_real: bool | None = True,
         shape: Shape | None = None,
     ) -> Matrix:
         r"""Creates a symbolic matrix with unknown entries.
@@ -530,8 +560,7 @@ class Matrix(sym.MutableDenseMatrix):
             r (int, optional): The number of rows in the matrix.
             c (int, optional): The number of columns in the matrix.
             symbol (str, optional): The base name for the symbols used in the matrix entries.
-            is_real (bool, optional): If True, the symbols are real-valued;
-                otherwise, they are complex.
+            is_real (bool, optional): If True, the symbols are real-valued. Otherwise, they are complex.
             shape (Shape, optional): If provided, the matrix will be reshaped to this
                 specific shape. Supported shapes include:
 
@@ -658,26 +687,22 @@ class Matrix(sym.MutableDenseMatrix):
 
     # Override
     @staticmethod
-    def eye(*args, **kwargs) -> Matrix:
-        aug_pos = kwargs.pop("aug_pos", None)
+    def eye(*args, aug_pos: Iterable[int] | int | None = None, **kwargs) -> Matrix:
         return Matrix(sym.eye(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @staticmethod
-    def zeros(*args, **kwargs) -> Matrix:
-        aug_pos = kwargs.pop("aug_pos", None)
+    def zeros(*args, aug_pos: Iterable[int] | int | None = None, **kwargs) -> Matrix:
         return Matrix(sym.zeros(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @staticmethod
-    def ones(*args, **kwargs) -> Matrix:
-        aug_pos = kwargs.pop("aug_pos", None)
+    def ones(*args, aug_pos: Iterable[int] | int | None = None, **kwargs) -> Matrix:
         return Matrix(sym.ones(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
     @staticmethod
-    def diag(*args, **kwargs) -> Matrix:
-        aug_pos = kwargs.pop("aug_pos", None)
+    def diag(*args, aug_pos: Iterable[int] | int | None = None, **kwargs) -> Matrix:
         return Matrix(sym.diag(*args, **kwargs), aug_pos=aug_pos)
 
     # Override
@@ -815,7 +840,11 @@ class Matrix(sym.MutableDenseMatrix):
         Examples:
             >>> mat = Matrix([[sym.symbols('x') + 1, sym.symbols('x') + 2], [sym.symbols('x') + 3, sym.symbols('x') + 4]])
             >>> mat.simplify(rational=False, expand=True)
-            Matrix([[x + 1, x + 2], [x + 3, x + 4]])
+            >>> mat
+            Matrix([
+            [x + 1, x + 2]
+            [x + 3, x + 4]
+            ])
         """
 
         temp = self.copy()
@@ -828,7 +857,8 @@ class Matrix(sym.MutableDenseMatrix):
                     f"""
                     Non-zero Approximation Error: {res}
                     Rational approximation might have failed. Try lower tolerance.""",
-                    UserWarning,
+                    RuntimeWarning,
+                    stacklevel=2,
                 )
         if simplify:
             temp = sym.simplify(temp, *args, **kwargs)
@@ -844,7 +874,9 @@ class Matrix(sym.MutableDenseMatrix):
         temp = Matrix(temp, aug_pos=aug)  # prevent SymPy from losing _aug_pos
         self.__dict__.update(temp.__dict__)
 
-    def identify(self, tol: float | None = None, *args, **kwargs) -> Matrix:
+    def identify(
+        self, tol: float | None = None, suppress_warnings: bool = False, *args, **kwargs
+    ) -> Matrix:
         r"""Identifies the matrix by applying a transformation function to each entry.
 
         This method applies a transformation to each element of the matrix using
@@ -860,6 +892,8 @@ class Matrix(sym.MutableDenseMatrix):
         Args:
             tol (float, optional): A tolerance value that is passed to the
                 [`identify`][mpmath.identify] function. If None, no tolerance is applied.
+            suppress_warnings (bool, optional): If True, suppresses warnings about non-zero residues
+                after identification.
             *args: Additional positional arguments passed to the
                 [`identify`][mpmath.identify] function.
             **kwargs: Additional keyword arguments passed to the
@@ -874,7 +908,7 @@ class Matrix(sym.MutableDenseMatrix):
             >>> mat = Matrix([[math.sqrt(4), math.e], [1/math.sqrt(2), 0.0]])
             >>> mat.identify()
             Matrix([
-            [        1, E]
+            [        2, E]
             [sqrt(2)/2, 0]
             ])
 
@@ -887,9 +921,9 @@ class Matrix(sym.MutableDenseMatrix):
 
         temp = self.applyfunc(lambda x: mp.identify(x, tol=tol, *args, **kwargs))
         residues = (temp - self).norm()
-        if residues != 0:
+        if residues != 0 and not suppress_warnings:
             res = residues.evalf()
-            warn(f"Non-zero Identification Error: {res}", UserWarning)
+            warn(f"Non-zero Identification Error: {res}", RuntimeWarning, stacklevel=2)
         return temp
 
     def select_cols(self, *args: int) -> Matrix:
@@ -969,15 +1003,16 @@ class Matrix(sym.MutableDenseMatrix):
             >>> x = symbols('x')
             >>> mat = Matrix([[x + 2, 3], [3*x, x - 2]])
             >>> PG = mat.sep_part_gen()
-            >>> PG.part_sol
+            >>> PG.part_sol # Particular solution
             Matrix([
-            [2,  3],
-            [0, -2]]) # Particular solution
-            >>> PG.gen_sol
+            [2,  3]
+            [0, -2]
+            ])
+            >>> PG.gen_sol # General solution
             Matrix([
             [  x, 0]
             [3*x, x]
-            ])  # General solution
+            ])
         """
 
         set_0 = dict(((symbol, 0) for symbol in self.free_symbols))
@@ -1017,7 +1052,7 @@ class Matrix(sym.MutableDenseMatrix):
                 - `order` (str): The order of the factorization, either "FD" (for column factorization) or "DF" (for row factorization).
 
         Examples:
-            >>> mat = Matrix([[6, 9], [12, 18]])
+            >>> mat = Matrix([[6, 9], [12, 15]])
             >>> SF = mat.scalar_factor(column=True)
             >>> SF.full, SF.diag
             (Matrix([
@@ -1029,23 +1064,37 @@ class Matrix(sym.MutableDenseMatrix):
             ]))
         """
 
+        def prettify(scalar: Expr) -> Expr:
+            num, den = sym.fraction(scalar)
+            if den == 1:
+                # return non-fractions as it is
+                return num
+            # for scalar in the form sqrt(x * k**2) / x, return k / sqrt(x)
+            # most notable case is sqrt(x) / x, which should return 1/sqrt(x)
+            k = sym.sqrt(num / sym.sqrt(den), evaluate=True)  # type: ignore
+            if k.is_integer:  # type: ignore
+                with sym.evaluate(False):
+                    return k / sym.sqrt(den)  # type: ignore
+            else:
+                return scalar
+
         scalars = []
         F = self.copy()
         if column:
             for i in range(self.cols):
                 g = sym.gcd(tuple(self.col(i)))
                 F[:, i] /= g
-                scalars.append(g)
+                scalars.append(prettify(g))
             D = Matrix.diag(*scalars)
-            assert self == F @ D
+            assert self == (F @ D).doit(), "Matrix factorization failed."
             return ScalarFactor(diag=D, full=F, order="FD")
         else:
             for i in range(self.rows):
                 g = sym.gcd(tuple(self.row(i)))
                 F[i, :] /= g
-                scalars.append(g)
+                scalars.append(prettify(g))
             D = Matrix.diag(*scalars)
-            assert self == D @ F
+            assert self == (D @ F).doit(), "Matrix factorization failed."
             return ScalarFactor(diag=D, full=F, order="DF")
 
     #############################
@@ -1081,6 +1130,8 @@ class Matrix(sym.MutableDenseMatrix):
             [1 | 2]
             [3 | 4]
             ])
+
+            >>> mat = Matrix([[1, 2], [3, 4]])
             >>> mat.aug_line().row_join(mat)
             Matrix([
             [1, 2 | 1, 2]
@@ -1257,7 +1308,7 @@ class Matrix(sym.MutableDenseMatrix):
         """
 
         if scalar == 0:
-            warn("Matrix rows should not be scaled by 0", UserWarning)
+            warn("Matrix rows should not be scaled by 0", UserWarning, stacklevel=2)
 
         scalar = sym.sympify(scalar)
         self[idx, :] *= scalar  # type: ignore
@@ -1572,7 +1623,8 @@ class Matrix(sym.MutableDenseMatrix):
                     if tries > max_tries:
                         warn(
                             f"ERROR: Max tries exceeded to reduce row {row_idx + 1} with row {cur_row_pos + 1}",
-                            UserWarning,
+                            RuntimeWarning,
+                            stacklevel=2,
                         )
                         break
                     try:
@@ -1720,19 +1772,18 @@ class Matrix(sym.MutableDenseMatrix):
             return rref_mat
 
     # Override
-    def solve(self, rhs: Matrix) -> Matrix | list[Matrix]:
+    def solve(self, rhs: Matrix) -> list[Matrix]:
         """Solves the linear system `Ax = rhs` for `x`.
 
         This method uses SymPy's [`solve`][sympy.solvers.solvers.solve] method to find a solution vector `x` such that `self @ x = rhs`.
-        If a unique solution exists, it is returned. If multiple solutions exist, a list of solution matrices is returned.
+        A list of solution matrices is returned.
         If no solution exists (e.g., the system is inconsistent), a [ValueError][] is raised.
 
         Args:
             rhs (Matrix): The right-hand side matrix or vector in the equation `Ax = rhs`.
 
         Returns:
-            (Matrix): The solution vector or matrix `x` that satisfies `Ax = rhs`.
-            (list[Matrix]): If multiple solutions exist, a list of solution matrices is returned.
+            (list[Matrix]): A list of the solution vectors or matrices `x` that satisfies `Ax = rhs`.
 
         Raises:
             ValueError: If no solution is found for the linear system, an exception is raised.
@@ -1741,9 +1792,10 @@ class Matrix(sym.MutableDenseMatrix):
             >>> A = Matrix([[1, 2], [3, 4]])
             >>> b = Matrix([[5], [11]])
             >>> A.solve(b)
-            Matrix([
-            [1],
-            [2]])
+            [Matrix([
+            [1]
+            [2]
+            ])]
 
         See Also:
             - [`sympy.solve`][sympy.solvers.solvers.solve]: For solving equations in general.
@@ -1752,20 +1804,16 @@ class Matrix(sym.MutableDenseMatrix):
         """
         # Use sympy's solve function directly
         x = Matrix.create_unk_matrix(r=self.cols, c=1)
-        solution = sym.solve(self @ x - rhs, x.free_symbols)
+        solution = sym.solve(self @ x - rhs, x.free_symbols, dict=True)
 
-        if isinstance(solution, dict):
-            # If a single solution is found, substitute the values into the unknown matrix
-            return x.subs(solution)
-        elif isinstance(solution, list) and len(solution) > 0:
-            # If multiple solutions are found, return all solutions found
-            return [x.subs(sol) for sol in solution]
-        else:
+        if len(solution) == 0:
             # If no solution is found (e.g., inconsistent system or empty list), raise an error
             display(self.row_join(rhs, aug_line=True).rref())
             raise ValueError(
                 "No solution found for the linear system. The system may be inconsistent."
             )
+        else:
+            return [x.subs(sol) for sol in solution]
 
     #############################
     # CHAPTER 2: MATRIX ALGEBRA #
@@ -1813,8 +1861,9 @@ class Matrix(sym.MutableDenseMatrix):
             >>> mat = Matrix([[1, 2], [3, 4]])
             >>> mat.inverse()
             Matrix([
-            [ -2,    1],
-            [3/2, -1/2]])
+            [ -2,    1]
+            [3/2, -1/2]
+            ])
         """
 
         if option is None:
@@ -1998,8 +2047,9 @@ class Matrix(sym.MutableDenseMatrix):
             >>> b = Matrix([[5], [11]])
             >>> A.cramer_solve(b, verbosity=0)
             Matrix([
-            [1],
-            [2]])
+            [1]
+            [2]
+            ])
 
         See Also:
             - [`solve`][..]: For solving linear systems using other methods.
@@ -2033,7 +2083,7 @@ class Matrix(sym.MutableDenseMatrix):
             det_i = modified_matrix.det(method=det_method) / det
             if verbosity >= 1:
                 display(
-                    "\\text{Determinant for column }"
+                    _textify("Determinant for column ")
                     + str(i + 1)
                     + ": "
                     + sym.latex(det_i),
@@ -2138,12 +2188,10 @@ class Matrix(sym.MutableDenseMatrix):
 
             >>> mat = Matrix([[3], [4]])
             >>> mat.normalized(factor=True)
-            ScalarFactor(diag=Matrix([
-            [0,   0]
-            [0, 1/5]
+            ScalarFactor(diag=Matrix([[1/5]
             ]), full=Matrix([
-            [0, 3]
-            [0, 4]
+            [3]
+            [4]
             ]), order='FD')
         """
 
@@ -2221,7 +2269,7 @@ class Matrix(sym.MutableDenseMatrix):
             return self.rows == len(pivots)
 
     def get_linearly_independent_vectors(
-        self, colspace: bool = True, verbosity: int = 2
+        self, colspace: bool = True, verbosity: int = 1
     ) -> Matrix:
         """Returns a matrix containing the linearly independent vectors from the column space or row space.
 
@@ -2367,7 +2415,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[1, 2], [2, 4]])
-            >>> mat.extend_basis()
+            >>> mat.extend_basis(verbosity=0)
             Matrix([
             [1, 1]
             [2, 0]
@@ -2379,7 +2427,6 @@ class Matrix(sym.MutableDenseMatrix):
         aug = self.copy().row_join(span_subspace)
         rref = aug.rref(pivots=True)
         assert isinstance(rref, RREF), "RREF should return a RREF dataclass"
-        rref_mat, pivots = rref.rref, rref.pivots
 
         if verbosity == 1:
             print("rref([self | span_subspace])")
@@ -2387,9 +2434,12 @@ class Matrix(sym.MutableDenseMatrix):
             print("Before RREF: [self | span_subspace]")
             display(aug)
             print("\nAfter RREF:")
-            display(rref_mat)
+            display(rref)
+            print(
+                "Select columns of rref([self | span_subspace]) corresponding to pivot positions."
+            )
 
-        return aug.select_cols(*pivots)
+        return aug.select_cols(*rref.pivots)
 
     def intersect_subspace(self, other: Matrix, verbosity: int = 2) -> Matrix:
         """Computes the intersection of two subspaces by finding the nullspace of their orthogonal complements.
@@ -2415,8 +2465,9 @@ class Matrix(sym.MutableDenseMatrix):
             >>> mat2 = Matrix([[1, 1], [0, 0]])
             >>> mat1.intersect_subspace(mat2, verbosity=0)
             Matrix([
-            [1],
-            [0]])
+            [1]
+            [0]
+            ])
         """
 
         # Construct 2 matrices A and B, whose solution space (ie nullspace) is
@@ -2451,13 +2502,64 @@ class Matrix(sym.MutableDenseMatrix):
 
         return Matrix.from_list(aug.nullspace())
 
+    def is_subspace_of(self, other: Matrix, verbosity: int = 2) -> bool:
+        r"""Checks if the current matrix is a subspace of another matrix.
+
+        This method determines whether the subspace spanned by the columns of the current matrix (`self`)
+        is a subspace of the provided matrix (`other`). It does so by checking if the row-reduced echelon form
+        (RREF) of the augmented matrix `[other | self]`.
+
+        Args:
+            other (Matrix, optional): The second matrix representing the other subspace to compare with the current matrix.
+                If `None`, the identity matrix is used to check if it spans $\mathbb{R}^\text{self.rows}}$
+            verbosity (int, optional): Level of verbosity for displaying intermediate steps:
+
+                - 0: No output.
+                - 1: Display the steps.
+                - 2: Display the relevant matrices.
+
+        Returns:
+            (bool): `True` if the subspace spanned by `self` is a subspace of `other`, `False` otherwise.
+
+        Raises:
+            sympy.matrices.exceptions.ShapeError: If the number of rows in the current matrix and the target matrix are different.
+
+        Examples:
+            >>> mat1 = Matrix([[1, 0], [0, 1]])
+            >>> mat2 = Matrix([[1], [0]])
+            >>> mat2.is_subspace_of(mat1, verbosity=0)
+            True
+        """
+        if self.rows != other.rows:
+            raise sym.ShapeError(
+                f"The matrices have incompatible number of rows ({self.rows}, {other.rows})"
+            )
+
+        aug = other.copy().row_join(self)
+        sub = aug.rref(pivots=True)
+        assert isinstance(sub, RREF), "RREF should return a RREF dataclass"
+        if verbosity == 1:
+            print("Check rref([other | self])")
+        if verbosity >= 2:
+            print("Check if span(self) is subspace of span(other)")
+            print("\nBefore RREF: [other | self]")
+            display(aug)
+            print("\nAfter RREF:")
+            display(sub)
+            if max(sub.pivots) >= other.cols:
+                print("Span(self) is not a subspace of span(other).\n")
+            else:
+                print("Span(self) is a subspace of span(other).\n")
+
+        return max(sub.pivots) < other.cols
+
     def is_same_subspace(self, other: Matrix | None = None, verbosity: int = 2) -> bool:
         r"""Checks if two subspaces are the same by verifying if each subspace is a subspace of the other.
 
         This method determines whether the subspaces spanned by the columns of the current matrix (`self`)
-        and the provided matrix (`other`) are the same. It does so by checking if the row-reduced echelon forms
-        (RREF) of the augmented matrices `[self | other]` and `[other | self]` reveal that both subspaces
-        span each other.
+        and the provided matrix (`other`) are the same. It does so by calling the `is_subspace_of` method
+        twice: first to check if `self` is a subspace of `other`, and then to check if `other` is a subspace of `self`.
+        If both checks return `True`, then the subspaces are considered the same.
 
         Args:
             other (Matrix, optional): The second matrix representing the other subspace to compare with the current matrix.
@@ -2498,57 +2600,22 @@ class Matrix(sym.MutableDenseMatrix):
                 f"The matrices have incompatible number of rows ({self.rows}, {other.rows})"
             )
 
-        sub = other.copy().row_join(self).rref(pivots=True)
-        assert isinstance(sub, RREF), "RREF should return a RREF dataclass"
-        sub_rref, sub_pivots = sub.rref, sub.pivots
-        super = self.copy().row_join(other).rref(pivots=True)
-        assert isinstance(super, RREF), "RREF should return a RREF dataclass"
-        super_rref, super_pivots = super.rref, super.pivots
+        if verbosity >= 1:
+            print("Check if span(self) is subspace of span(other), and vice versa.")
+        return self.is_subspace_of(
+            other=other, verbosity=verbosity
+        ) and other.is_subspace_of(other=self, verbosity=verbosity)
 
-        if verbosity == 1:
-            print("Check rref([other | self])")
-            print("Check rref([self | other])")
-        elif verbosity >= 2:
-            print("Check if span(self) is subspace of span(other)")
-            print("\nBefore RREF: [other | self]")
-            display(other.copy().row_join(self))
-            print("\nAfter RREF:")
-            display(sub_rref)
-            if max(sub_pivots) >= other.cols:
-                print(
-                    f"Span(self) is not a subspace of span(other). Pivot columns: {sub_pivots}"
-                )
-            else:
-                print(
-                    f"Span(self) is a subspace of span(other). Pivot columns: {sub_pivots}"
-                )
-
-            print("\nCheck if span(other) is subspace of span(self)")
-            print("\nBefore RREF: [self | other]")
-            display(self.copy().row_join(other))
-            print("\nAfter RREF:")
-            display(super_rref)
-            if max(super_pivots) >= self.cols:
-                print(
-                    f"Span(other) is not a subspace of span(self). Pivot columns: {super_pivots}"
-                )
-            else:
-                print(
-                    f"Span(other) is a subspace of span(self). Pivot columns: {super_pivots}"
-                )
-
-        return (max(sub_pivots) < other.cols) and (max(super_pivots) < self.cols)
-
-    def coords_relative(self, to: Matrix, verbosity: int = 2) -> Matrix:
+    def coords_relative(self, basis: Matrix, verbosity: int = 2) -> Matrix:
         """Computes the coordinates of the current vector relative to a given basis.
 
-        This method finds the coordinate vector `c` such that `self = to @ c`,
-        where `to` is a matrix whose columns form a basis, and `self` is a column vector. The method
+        This method finds the coordinate vector `c` such that `self = basis @ c`,
+        where `basis` is a matrix whose columns form a basis, and `self` is a column vector. The method
         achieves this by augmenting the target matrix with the current matrix, performing
         Reduced Row Echelon Form (RREF), and extracting the appropriate part of the resulting matrix.
 
         Args:
-            to (Matrix): The matrix whose columns form the target basis.
+            basis (Matrix): The matrix whose columns form the target basis.
 
             verbosity (int, optional): Level of output verbosity.
 
@@ -2561,27 +2628,28 @@ class Matrix(sym.MutableDenseMatrix):
 
         Raises:
             sympy.matrices.exceptions.ShapeError: If `self` is not a column vector
-                or if the number of rows in `self` and `to` do not match.
-            Exception: If the system is inconsistent and no solution exists.
+                or if the number of rows in `self` and `basis` do not match.
+            ValueError: If the system is inconsistent and no solution exists.
 
         Examples:
             >>> v = Matrix([[3], [7]])
             >>> B = Matrix([[1, 2], [1, 3]])
             >>> v.coords_relative(B, verbosity=0)
             Matrix([
-            [-5],
-            [ 4]])
+            [-5]
+            [ 4]
+            ])
         """
         if self.cols != 1:
             raise sym.ShapeError(
                 f"self should be a vector with 1 column. ({self.cols})"
             )
-        if self.rows != to.rows:
+        if self.rows != basis.rows:
             raise sym.ShapeError(
-                f"The matrices have incompatible number of rows ({self.rows}, {to.rows})"
+                f"The matrices have incompatible number of rows ({self.rows}, {basis.rows})"
             )
 
-        M = to.copy().row_join(self)
+        M = basis.copy().row_join(self)
         rref = M.rref(pivots=True)
         assert isinstance(rref, RREF), "RREF should return a RREF dataclass"
         rref_mat, pivots = rref.rref, rref.pivots
@@ -2594,10 +2662,10 @@ class Matrix(sym.MutableDenseMatrix):
             print("\nAfter RREF:")
             display(rref_mat)
 
-        if to.cols in pivots:
-            raise Exception("No solution found due to inconsistent system.")
+        if basis.cols in pivots:
+            raise ValueError("No solution found due to inconsistent system.")
 
-        sol = to.solve(self)
+        sol = basis.solve(self)[0]  # solution should be unique
         assert isinstance(sol, Matrix), "Solution should be a Matrix (vector) object"
         return sol
 
@@ -2666,9 +2734,9 @@ class Matrix(sym.MutableDenseMatrix):
 
         Args:
             verbosity (int, optional): Level of verbosity for displaying intermediate steps.
+
                 - 0: No output.
                 - 1: Display the matrix before and after row-reduction (RREF).
-                Default is 0.
             *args: Additional positional arguments passed to SymPy's [`nullspace`][sympy.matrices.matrixbase.MatrixBase.nullspace] method.
             **kwargs: Additional keyword arguments passed to SymPy's [`nullspace`][sympy.matrices.matrixbase.MatrixBase.nullspace] method.
 
@@ -2697,10 +2765,30 @@ class Matrix(sym.MutableDenseMatrix):
 
         if self.rank() == self.cols:
             if verbosity >= 1:
-                warn("No nullspace detected!", UserWarning)
+                warn(
+                    "Only trivial nullspace (0-vector) detected!",
+                    UserWarning,
+                    stacklevel=2,
+                )
             return []
         else:
             return super().nullspace(*args, **kwargs)
+
+    def nullity(self) -> int:
+        """Computes the nullity of the matrix, which is the dimension of its null space.
+
+        The nullity is defined as the number of free variables in the solution to the homogeneous equation `self @ x = 0`.
+        It can be computed as `nullity = cols - rank`, where `cols` is the number of columns in the matrix and `rank` is its rank.
+
+        Returns:
+            (int): The nullity of the matrix.
+
+        Examples:
+            >>> mat = Matrix([[1, 2], [3, 6]])
+            >>> mat.nullity()
+            1
+        """
+        return self.cols - self.rank()
 
     #######################################################
     # CHAPTER 5: ORTHOGONALITY AND LEAST SQUARES SOLUTION #
@@ -2718,6 +2806,10 @@ class Matrix(sym.MutableDenseMatrix):
         Args:
             verbosity (int, optional): Level of verbosity for debugging.
 
+                - 0: No output.
+                - 1: Display the matrix before and after row-reduction (RREF).
+
+
         Returns:
             (Matrix): A matrix whose columns form a basis for the orthogonal complement.
 
@@ -2725,8 +2817,9 @@ class Matrix(sym.MutableDenseMatrix):
             >>> mat = Matrix([[1, 0], [0, 0]])
             >>> mat.orthogonal_complement()
             Matrix([
-            [0],
-            [1]])
+            [0]
+            [1]
+            ])
         """
 
         return Matrix.from_list(self.transpose().nullspace(verbosity))
@@ -2757,7 +2850,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         res = self.T @ self
         if verbosity >= 1:
-            print("self^T @ self")
+            print("Check if [self^T @ self] is a diagonal matrix")
             display(res)
         return res.is_diagonal()
 
@@ -2871,26 +2964,27 @@ class Matrix(sym.MutableDenseMatrix):
     def norm_comp(self, to: Matrix, verbosity: int = 0) -> Matrix:
         """Computes the component of the current vector (or matrix) orthogonal to the subspace spanned by the columns of another matrix.
 
-                This method returns the part of `self` that is perpendicular to the subspace defined by the columns of `to`.
-                It is equivalent to the normal component from the orthogonal decomposition.
+        This method returns the part of `self` that is perpendicular to the subspace defined by the columns of `to`.
+        It is equivalent to the normal component from the orthogonal decomposition.
 
-                Args:
-                    to (Matrix): The matrix whose columns form the subspace to which the orthogonal component is computed.
-                    verbosity (int, optional): Level of verbosity for displaying intermediate results.
+        Args:
+            to (Matrix): The matrix whose columns form the subspace to which the orthogonal component is computed.
+            verbosity (int, optional): Level of verbosity for displaying intermediate results.
 
-                        - 0: No output (default).
-                        - 1: Display the normal component.
+                - 0: No output (default).
+                - 1: Display the normal component.
 
-                Returns:
-                    (Matrix): The component of `self` orthogonal to the subspace spanned by `to`.
+        Returns:
+            (Matrix): The component of `self` orthogonal to the subspace spanned by `to`.
 
-                Examples:
-                    >>> v = Matrix([[3], [4]])
-                    >>> B = Matrix([[1], [0]])
-                    >>> v.norm_comp(B)
-                    Matrix([
-        [0],
-        [4]])
+        Examples:
+            >>> v = Matrix([[3], [4]])
+            >>> B = Matrix([[1], [0]])
+            >>> v.norm_comp(B)
+            Matrix([
+            [0]
+            [4]
+            ])
         """
 
         return self.orthogonal_decomposition(to=to, verbosity=verbosity).norm
@@ -2903,7 +2997,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Args:
             factor (bool): If `True`, the resulting orthogonal vectors will be scaled to have integer factors.
-            verbosity (int): Level of verbosity (default is `1`):
+            verbosity (int): Level of verbosity:
 
                 - 0: No output.
                 - 1: Display intermediate results for each step of the process.
@@ -2931,7 +3025,7 @@ class Matrix(sym.MutableDenseMatrix):
             latex_eq = f"v_{i + 1} = {sym.latex(u)}"
             for _, v in enumerate(orthogonal_set, start=1):
                 if v.norm() != 0:
-                    latex_eq += f"- ({sym.latex(v.dot(u))}/{sym.latex(v.dot(v))}) {sym.latex(v)}"
+                    latex_eq += f"- \\left(\\frac{{{sym.latex(v.dot(u))}}}{{{sym.latex(v.dot(v))}}}\\right) {sym.latex(v)}"
                     u -= (v.dot(u) / v.dot(v)) * v
 
             if verbosity >= 1:
@@ -2946,13 +3040,14 @@ class Matrix(sym.MutableDenseMatrix):
                 warn(
                     "Vectors are linearly dependent. Note that there is no QR factorisation",
                     UserWarning,
+                    stacklevel=2,
                 )
             orthogonal_set.append(u)
 
         return Matrix.from_list(orthogonal_set).normalized(factor=factor)
 
     # Override
-    def QRdecomposition(self, full: bool = False) -> QR:
+    def QRdecomposition(self, full: bool = False, verbosity: int = 0) -> QR:
         """Computes the QR decomposition of the matrix. Optionally computes the full QR decomposition.
 
         A full QR decomposition returns an **orthogonal (square) matrix** `Q` and an upper triangular matrix `R`
@@ -2961,6 +3056,10 @@ class Matrix(sym.MutableDenseMatrix):
 
         Args:
             full (bool): If `True`, computes the full QR decomposition.
+            verbosity (int, optional): Level of verbosity for displaying intermediate results:
+
+                - 0: No output.
+                - 1: Display intermediate results for each step of the process.
 
         Returns:
             (QR): A dataclass containing:
@@ -2981,7 +3080,16 @@ class Matrix(sym.MutableDenseMatrix):
 
         See Also:
             - SymPy's [`Matrix.QRdecomposition`][sympy.matrices.matrixbase.MatrixBase.QRdecomposition]
+            - [`gram_schmidt`][..] for performing the Gram-Schmidt process to find an orthogonal basis.
         """
+        if verbosity >= 1:
+            print("Finding orthogonal basis via Gram-Schmidt process:")
+            Q = self.gram_schmidt(factor=False, verbosity=verbosity)
+            assert isinstance(Q, Matrix), "Result should be a Matrix object"
+            print("Q matrix:")
+            display(Q)
+            print("R matrix: Q.T @ self")
+            display(Q.T @ self)
 
         # Modified SymPy's implementation to compute full QR decomposition if required.
         Q, R = super().QRdecomposition()
@@ -3023,12 +3131,15 @@ class Matrix(sym.MutableDenseMatrix):
         Examples:
             >>> A = Matrix([[1, 0], [0, 0]])
             >>> b = Matrix([1, 2])
-            >>> A.solve_least_squares(b, verbsosity=0, matrices=1)
+            >>> A.solve_least_squares(b, verbosity=0, matrices=1)
+            ... # in this case, least squares solution is not unique,
+            ... # so it returns a general solution.
             Exception Encountered: Matrix must be non-singular.
             Attempting custom solve...
             Matrix([
-            [1],
-            [y]]) # in this case, least squares solution is not unique, so it returns a general solution.
+            [1]
+            [y]
+            ])
         """
 
         if verbosity == 0:
@@ -3041,10 +3152,10 @@ class Matrix(sym.MutableDenseMatrix):
 
         ATA, ATb = self.T @ self, self.T @ rhs
         sol = Matrix.create_unk_matrix(ATb.rows, 1)
-        sol = sol.subs(sym.solve(ATA @ sol - ATb))
+        sol = sol.subs(sym.solve(ATA @ sol - ATb, dict=True)[0])
 
         if verbosity >= 1:
-            print("Before RREF: [self.T self | self.T rhs]")
+            print("Before RREF: [self.T @ self | self.T @ rhs]")
             aug_matrix = ATA.copy().row_join(ATb)
             display(aug_matrix)
             print("\nAfter RREF")
@@ -3127,8 +3238,9 @@ class Matrix(sym.MutableDenseMatrix):
             >>> x = Matrix([1, 2])
             >>> mat.apply_vander(x)
             Matrix([
-            [1, 1],
-            [1, 2]])
+            [1, 1]
+            [1, 2]
+            ])
         """
         # Validate the size of the vector x
         if x.cols != 1:
@@ -3210,6 +3322,10 @@ class Matrix(sym.MutableDenseMatrix):
         Args:
             reals_only (bool, optional): If True, diagonalization will focus on real eigenvalues.
             verbosity (int, optional): Controls the level of output during the diagonalization process.
+
+                - 0: No output.
+                - 1: Displays the characteristic polynomial, eigenvalues, algebraic multiplicities, and eigenspaces.
+
             *args: Additional positional arguments passed to SymPy's
                 [`is_diagonalizable`][sympy.matrices.matrixbase.MatrixBase.is_diagonalizable] method.
             **kwargs: Additional arguments passed to SymPy's
@@ -3233,6 +3349,7 @@ class Matrix(sym.MutableDenseMatrix):
         if verbosity >= 1:
             print("Characteristic Polynomial is: ")
             display(self.cpoly())
+            print("\nCheck if algebraic multiplicity equals number of eigenvectors.\n")
             print("Eigenvectors are:")
             for val, mult, space in self.eigenvects():
                 if (val.is_real and reals_only) or not reals_only:
@@ -3358,7 +3475,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         """
         if verbosity:
-            print("Check if matrix is symmetric:")
+            print(f"Check if matrix is symmetric: {self.is_symmetric()}")
         if verbosity >= 2:
             print("\nCheck if self == self^T:")
             display(self == self.T)
@@ -3427,7 +3544,7 @@ class Matrix(sym.MutableDenseMatrix):
                         factor=True, verbosity=verbosity
                     )
                     if isinstance(gram_result, ScalarFactor):
-                        result.append(gram_result.full)
+                        result.append(gram_result.eval())
                     elif isinstance(gram_result, Matrix):
                         result.append(gram_result)
                     else:
@@ -3468,6 +3585,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[0.5, 0.1], [0.5, 0.9]])
+            >>> mat.simplify(rational=True) # Convert floats to symbolic fractions
             >>> mat.is_stochastic(verbosity=0)
             True
 
@@ -3500,8 +3618,9 @@ class Matrix(sym.MutableDenseMatrix):
             >>> mat.simplify()
             >>> mat.equilibrium_vectors()
             Matrix([
-            [1/2],
-            [1/2]])
+            [1/2]
+            [1/2]
+            ])
         """
 
         P = Matrix.from_list((self.elem() - self).nullspace())
@@ -3511,7 +3630,7 @@ class Matrix(sym.MutableDenseMatrix):
         return P
 
     def singular_value_decomposition(
-        self, verbosity: int = 0, tol: float = 0.0, verify: bool = False
+        self, verbosity: int = 0, tol: float = 0.0, verify: bool = True
     ) -> SVD:
         """Performs Singular Value Decomposition (SVD) on the matrix, following the MA1522 syllabus.
 
@@ -3540,7 +3659,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[3, 2, 2], [2, 3, -2]])
-            >>> U, S, V = mat.singular_value_decomposition(verbosity=0, verify=False)
+            >>> mat.singular_value_decomposition(verbosity=0, verify=False)
             SVD(U=Matrix([
             [sqrt(2)/2, -sqrt(2)/2]
             [sqrt(2)/2,  sqrt(2)/2]
@@ -3608,7 +3727,8 @@ class Matrix(sym.MutableDenseMatrix):
                 sym.zeros(m - r, n)
             )
 
-            assert (U @ S @ V.T - self).norm() == 0
+            if verify:
+                assert (U @ S @ V.T - self).norm() == 0
             return SVD(U, S, V)
 
         m, n = self.shape
@@ -3635,7 +3755,8 @@ class Matrix(sym.MutableDenseMatrix):
             res = residues.evalf()
             warn(
                 f"Verification failed: norm of residual is {res} > {tol}",
-                UserWarning,
+                RuntimeWarning,
+                stacklevel=2,
             )
         return SVD(new_U, new_S, new_V)
 
@@ -3679,7 +3800,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[3, 2, 2], [2, 3, -2]])
-            >>> U, S, V = mat.fast_svd(option="sym", identify=False)
+            >>> mat.fast_svd(option="sym", identify=False)
             SVD(U=Matrix([
             [-0.707106781186548, -0.707106781186548]
             [-0.707106781186547,  0.707106781186548]
@@ -3715,15 +3836,16 @@ class Matrix(sym.MutableDenseMatrix):
         elif option == "sym":
             U, S, V = Matrix(U), Matrix(S), Matrix(V)
             if identify:
-                U = U.identify(tol=tol)
-                S = S.identify(tol=tol)
-                V = V.identify(tol=tol)
+                U = U.identify(tol=tol, suppress_warnings=True)
+                S = S.identify(tol=tol, suppress_warnings=True)
+                V = V.identify(tol=tol, suppress_warnings=True)
                 residues = (self - U @ S @ V.T).norm()
                 if residues > tol:
                     res = residues.evalf()
                     warn(
                         f"Non-zero Identification Error: {res}",
-                        UserWarning,
+                        RuntimeWarning,
+                        stacklevel=2,
                     )
                 return SVD(U, S, V)
             else:
@@ -3731,7 +3853,8 @@ class Matrix(sym.MutableDenseMatrix):
         else:
             warn(
                 f"Invalid option '{option}'. Expected 'np' or 'sym'. Returning NumSVD.",
-                UserWarning,
+                SyntaxWarning,
+                stacklevel=2,
             )
             return NumSVD(U, S, V)
 
@@ -3739,7 +3862,9 @@ class Matrix(sym.MutableDenseMatrix):
     # CHAPTER 7: LINEAR TRANSFORMATION #
     ####################################
 
-    def standard_matrix(self, out: Matrix, matrices: int = 1) -> Matrix | PartGen:
+    def standard_matrix(
+        self, out: Matrix, matrices: int = 1
+    ) -> list[Matrix] | list[PartGen]:
         """Returns the standard matrix for the transformation from self to out.
 
         The standard matrix is a matrix `T` such that `T @ self = out`, where `self` is the matrix
@@ -3751,37 +3876,59 @@ class Matrix(sym.MutableDenseMatrix):
 
         Args:
             out (Matrix): The target matrix for the transformation.
-            matrices (int): The number of matrices to return:
+            matrices (int): The type of matrices to return:
 
                 - 1: Returns the standard matrix.
                 - 2: Returns a [`PartGen`][(p).] with the part solution and general solution.
 
         Returns:
-            (Matrix): If `matrices=1`, returns the standard matrix for the transformation.
-            (PartGen): If `matrices=2`, returns a [`PartGen`][(p).] with the part solution and general solution.
+            (list[Matrix]): If `matrices=1`, returns the standard matrix for the transformation.
+            (list[PartGen]): If `matrices=2`, returns a [`PartGen`][(p).] with the part solution and general solution.
 
         Examples:
             >>> input = Matrix([[1, 0, 1], [2, -1, 0], [0, 3, 1]])
             >>> output = Matrix([[4, 2, 3], [5, -1, 0], [1, 4, 2]])
             >>> input.standard_matrix(output)
-            Matrix([
+            [Matrix([
             [   2,    1,   1]
             [-3/5, 14/5, 3/5]
             [ 3/5,  1/5, 7/5]
-            ])
+            ])]
         """
-
         X = Matrix.create_unk_matrix(r=out.rows, c=self.rows)
-        sol = sym.solve(X @ self - out, X.free_symbols)
-        if isinstance(sol, list) and len(sol) > 0:
-            print("Multiple solutions found:")
-            display(X.subs(s) for s in sol)
-            print("Returning the first solution as the standard matrix.")
-            X = X.subs(sol[0])
-        elif isinstance(sol, dict):
-            X = X.subs(sol)
+        equal_0 = X @ self - out
+        if len(self.free_symbols) != 0:
+            # Add zeroing examples to condition the transformation matrix for unknown vectors
+            examples = []
+            for symbol in (symbols := self.free_symbols):
+                sub = {s: 0 for s in symbols if s != symbol}
+                sub[symbol] = 1
+                examples.append(equal_0.subs(sub))
 
-        if matrices == 1:
-            return X
-        else:
-            return X.sep_part_gen()
+            # for _ in range(X.rows * X.cols):
+            #     # Add random examples to condition the transformation matrix
+            #     rand = Matrix.create_rand_matrix(r=len(self.free_symbols), c=1)
+            #     sub = {s: rand[i, 0] for i, s in enumerate(symbols)}
+            #     examples.append(equal_0.subs(sub))
+
+            condition = Matrix.from_list(examples)
+            equal_0 = equal_0.row_join(condition, aug_line=False)
+
+        sol = sym.solve(equal_0, X.free_symbols, dict=True)
+        if len(sol) == 0:
+            raise ValueError(
+                "No solution found for the standard matrix. "
+                "This may indicate that the transformation is not linear."
+            )
+        res = []
+        for s in sol:
+            tmp = X.subs(s)
+            if matrices == 1:
+                res.append(tmp)
+            elif matrices == 2:
+                res.append(tmp.sep_part_gen())
+            else:
+                raise ValueError(
+                    f"Invalid value for matrices: {matrices}. Expected 1 or 2."
+                )
+        return res

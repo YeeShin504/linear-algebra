@@ -11,9 +11,13 @@ class TestUtils:
         assert list(_powerset([])) == [()]
 
     def test_is_zero(self):
-        x = sym.symbols("x")
+        a, b = sym.symbols("a b", real=True)
+        assert _is_zero(-a * b / 2 - a + b) is True
+        assert _is_zero(a - b) is True
         assert _is_zero(0) is True
-        assert _is_zero(sym.Integer(0)) is True
-        assert _is_zero(x - x) is True
-        assert _is_zero(x) is False
+        assert _is_zero(a * b) is True
+        assert _is_zero(b) is True
         assert _is_zero(1) is False
+
+        n, d = sym.fraction(1)
+        assert _is_zero(d) is False

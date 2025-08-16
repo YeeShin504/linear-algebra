@@ -40,3 +40,7 @@ addopts = [
     "--import-mode=importlib",
 ]
 pythonpath = "src"
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE", 
+    "IGNORE_EXCEPTION_DETAIL",
+]

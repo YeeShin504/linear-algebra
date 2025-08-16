@@ -28,9 +28,12 @@ class TestEuclideanVectorSpaces:
     """
 
     def test_normalized(self):
-        mat = Matrix([[1, 1], [0, 4]])
+        mat = Matrix([[1, 0], [1, 4]])
         normalized_mat = mat.normalized()
-        assert normalized_mat == Matrix([[1 / sym.sqrt(2), 1 / sym.sqrt(2)], [0, 1]])  # type: ignore
+        assert (
+            normalized_mat - Matrix([[1 / sym.sqrt(2), 0], [1 / sym.sqrt(2), 1]])  # type: ignore
+            == Matrix.zeros(2, 2)
+        )
 
     def test_is_linearly_independent(self):
         mat = Matrix([[1, 2], [3, 4]])
@@ -47,7 +50,7 @@ class TestEuclideanVectorSpaces:
         mat1 = Matrix([[1, 0], [0, 1]])
         mat2 = Matrix([[2, 0], [0, 2]])
         transition = mat1.transition_matrix(to=mat2, verbosity=2)
-        assert transition == Matrix([[2, 0], [0, 2]])
+        assert transition == Matrix.from_str("1/2 0; 0 1/2")
 
 
 class TestSubspaceOperations:
@@ -88,11 +91,11 @@ class TestCoordinatesBasis:
         A = Matrix([[1, 0], [0, 1]])
         B = Matrix([[1, 1], [1, -1]])
         P = A.transition_matrix(B)
-        assert (P @ A) == B
+        assert (P @ B) == A
 
     def test_coordinate_transformation(self):
         """Test coordinate transformation"""
         A = Matrix([[1, 0], [0, 1]])
         v = Matrix([[1], [1]])
-        coords = A.coords_relative(v)
+        coords = v.coords_relative(A)
         assert (A @ coords) == v

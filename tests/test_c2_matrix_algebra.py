@@ -92,5 +92,5 @@ class TestColumnConstraints:
         constraints = mat.column_constraints()
         half_x2 = sym.Mul(x2, sym.Rational(1, 2))
         x1_minus_half = sym.Add(x1, sym.Mul(half_x2, -1))  # Equivalent to x1 - half_x2
-        expected_rref = Matrix([[1, 2, half_x2], [0, 0, x1_minus_half]], aug_pos=2)
+        expected_rref = Matrix([[1, 2, half_x2], [0, 0, x1_minus_half]], aug_pos=1)
         assert constraints == expected_rref

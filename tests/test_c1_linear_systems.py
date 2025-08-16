@@ -186,5 +186,5 @@ class TestEvaluateCases:
     def test_solve(self):
         A = Matrix([[1, 2], [3, 4]])
         b = Matrix([[1], [1]])
-        x = A.solve(b)
+        x = A.solve(b)[0]
         assert (A @ x - b) == Matrix([0, 0])
