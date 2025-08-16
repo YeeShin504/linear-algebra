@@ -1,6 +1,7 @@
 from __future__ import annotations
 import dataclasses
 from itertools import chain, combinations
+import re
 from typing import TYPE_CHECKING
 
 import sympy as sym
@@ -222,3 +223,24 @@ def display(*args, opt: Literal["math", "dict"] | None = None, **kwargs) -> None
             IPython.display.display(*args, **kwargs)
     else:
         sym.pprint(*args, **kwargs)
+
+
+def _standardise_symbol(
+    symbols: set[sym.Symbol], is_real: bool | None = None
+) -> list[sym.Symbol]:
+    """Standardizes the subscripts of symbols by converting them to a consistent format.
+
+    Args:
+        symbols (set[sym.Symbol]): A set of SymPy's symbols to standardize.
+        is_real (bool, optional): Whether the symbols are real numbers.
+    Returns:
+        list[sym.Symbol]: A list of standardized sympy symbols.
+    """
+    pattern = r"([a-zA-Z]+)(\d+)"
+    replacement = r"\1_\2"
+
+    res = []
+    for symbol in symbols:
+        new_symbol = re.sub(pattern, replacement, str(symbol))
+        res.append(sym.symbols(new_symbol, real=is_real))
+    return res

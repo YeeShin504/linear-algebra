@@ -27,7 +27,7 @@ class Shape(Enum):
     Examples:
         >>> shape = Shape.SYMMETRIC
         >>> print(shape.value)
-        'SYMMETRIC'
+        SYMMETRIC
     """
 
     DIAGONAL = "DIAGONAL"
@@ -184,7 +184,11 @@ class Printable:
         ...
 
     def evalf(self, *args, **kwargs):
-        """Evaluates the object to a matrix of floats."""
+        """Evaluates the object to a matrix of floats.
+
+        See Also:
+            - SymPy's [`Matrix.evalf()`][sympy.matrices.matrixbase.MatrixBase.evalf]
+        """
         return (self.eval()).evalf(*args, **kwargs)
 
 
@@ -214,7 +218,7 @@ class PartGen(Printable):
         )
 
     def eval(self) -> Matrix:
-        return self.part_sol + self.gen_sol
+        return (self.part_sol + self.gen_sol).doit()
 
 
 @dataclasses.dataclass
@@ -243,9 +247,9 @@ class ScalarFactor(Printable):
 
     def eval(self) -> Matrix:
         if self.order == "FD":
-            return self.full @ self.diag
+            return (self.full @ self.diag).doit()
         else:
-            return self.diag @ self.full
+            return (self.diag @ self.full).doit()
 
 
 @dataclasses.dataclass
@@ -270,7 +274,7 @@ class PLU(Printable):
         return self.P._latex(printer) + self.L._latex(printer) + self.U._latex(printer)
 
     def eval(self) -> Matrix:
-        return self.P @ self.L @ self.U
+        return (self.P @ self.L @ self.U).doit()
 
 
 @dataclasses.dataclass
@@ -308,7 +312,7 @@ class VecDecomp(Printable):
     norm: Matrix
 
     def eval(self) -> Matrix:
-        return self.proj + self.norm
+        return (self.proj + self.norm).doit()
 
 
 @dataclasses.dataclass
@@ -330,28 +334,7 @@ class QR(Printable):
         return self.Q._latex(printer) + self.R._latex(printer)
 
     def eval(self) -> Matrix:
-        return self.Q @ self.R
-
-
-# @dataclasses.dataclass
-# class Eigen(Printable):
-#     """
-#     Represents the eigen decomposition of a matrix.
-
-#     This dataclass stores the eigen components of a matrix, given its eigenvalues.
-
-#     Attributes:
-#         value (Expr): The eigenvalue associated with the eigenvector space.
-#         algebraic_multiplicity (int): The algebraic multiplicity of the eigenvalue.
-#         space (list[Matrix]): A list of vectors that forms a basis for the eigenspace associated with the eigenvalue.
-#     """
-
-#     value: Expr
-#     algMult: int
-#     space: list[Matrix]
-
-#     def eval(self) -> Matrix:
-#         return Matrix.from_list(self.space)
+        return (self.Q @ self.R).doit()
 
 
 @dataclasses.dataclass
@@ -370,11 +353,20 @@ class PDP(Printable):
     D: Matrix
 
     def _latex(self, printer=None) -> str:
-        P_inv = self.P.inverse(matrices=1)  # inv exists and is unique
-        return self.P._latex(printer) + self.D._latex(printer) + P_inv._latex(printer)  # type: ignore
+        try:
+            P_inv = self.P.inv()  # inv exists and is unique
+            return (
+                self.P._latex(printer) + self.D._latex(printer) + P_inv._latex(printer)
+            )  # type: ignore
+        except Exception as e:
+            return (
+                self.P._latex(printer)
+                + self.D._latex(printer)
+                + "\\text{(P inverse does not exist)}"
+            )
 
     def eval(self) -> Matrix:
-        return self.P @ self.D @ self.P.inverse(matrices=1)
+        return (self.P @ self.D @ self.P.inv()).doit()
 
 
 @dataclasses.dataclass
@@ -400,7 +392,7 @@ class SVD(Printable):
         )
 
     def eval(self) -> Matrix:
-        return self.U @ self.S @ self.V.T
+        return (self.U @ self.S @ self.V.T).doit()
 
 
 class NumSVD(NamedTuple):
@@ -424,3 +416,6 @@ class NumSVD(NamedTuple):
         U = \n{self.U.__repr__()}, \n
         S = \n{self.S.__repr__()}, \n
         V = \n{self.V.__repr__()})"""
+
+    def eval(self) -> np.typing.NDArray:
+        return self.U @ self.S @ self.V.T
