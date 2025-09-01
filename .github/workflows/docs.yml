@@ -17,13 +17,13 @@ jobs:
           version: "latest"
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.10
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync
 
       - name: Install local package
         run: uv pip install -e .
 
       - name: Deploy docs
-        run: uv run mkdocs gh-deploy --force
+        run: uv run mkdocs gh-deploy --clean --verbose
