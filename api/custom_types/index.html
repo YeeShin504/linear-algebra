@@ -1,0 +1,3060 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python scripts for NUS MA1522 Linear Algebra for Computing">
+      
+      
+        <meta name="author" content="Yee Shin Teng">
+      
+      
+      
+        <link rel="prev" href="../../license/">
+      
+      
+        <link rel="next" href="../symbolic/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>custom_types - linear-algebra</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ma1522.custom_types" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="linear-algebra" class="md-header__button md-logo" aria-label="linear-algebra" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            linear-algebra
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              custom_types
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/YeeShin504/linear-algebra" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    YeeShin504/linear-algebra
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/tutorial/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../live/demo/" class="md-tabs__link">
+          
+  
+  
+  Demonstrations
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="linear-algebra" class="md-nav__button md-logo" aria-label="linear-algebra" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    linear-algebra
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/YeeShin504/linear-algebra" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    YeeShin504/linear-algebra
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Home
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    License
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    custom_types
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    custom_types
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;custom_types
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Shape
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Shape">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.DIAGONAL" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;DIAGONAL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.SCALAR" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;SCALAR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.STRICT_UPPER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;STRICT_UPPER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.STRICT_LOWER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;STRICT_LOWER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.UPPER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;UPPER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.LOWER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;LOWER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.SYMMETRIC" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;SYMMETRIC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Printable" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Printable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Printable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Printable.eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;eval
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Printable.evalf" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;evalf
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.PartGen" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PartGen
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.ScalarFactor" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ScalarFactor
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.PLU" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PLU
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.RREF" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RREF
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.VecDecomp" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;VecDecomp
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.QR" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;QR
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.PDP" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PDP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.SVD" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SVD
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.NumSVD" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NumSVD
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../symbolic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    symbolic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inherited/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    inherited methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    utils
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 4
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tut11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 11
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Demonstrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Demonstrations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../live/demo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Live Notebook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;custom_types
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Shape
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Shape">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.DIAGONAL" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;DIAGONAL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.SCALAR" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;SCALAR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.STRICT_UPPER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;STRICT_UPPER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.STRICT_LOWER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;STRICT_LOWER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.UPPER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;UPPER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.LOWER" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;LOWER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Shape.SYMMETRIC" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;SYMMETRIC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Printable" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Printable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Printable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Printable.eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;eval
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ma1522.custom_types.Printable.evalf" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;evalf
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.PartGen" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PartGen
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.ScalarFactor" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ScalarFactor
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.PLU" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PLU
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.RREF" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RREF
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.VecDecomp" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;VecDecomp
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.QR" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;QR
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.PDP" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PDP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.SVD" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SVD
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ma1522.custom_types.NumSVD" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NumSVD
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>custom_types</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="ma1522.custom_types"></a>
+    <div class="doc doc-contents first">
+
+          
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Classes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            Shape (ma1522.custom_types.Shape)" href="#ma1522.custom_types.Shape">Shape</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Enumeration for different matrix shapes and structural properties.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Base class for objects that can be printed as <span class="arithmatex">\(\rm\LaTeX\)</span>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              PartGen(part_sol: Matrix, gen_sol: Matrix)
+
+  
+      dataclass
+   (ma1522.custom_types.PartGen)" href="#ma1522.custom_types.PartGen">PartGen</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a matrix as the sum of a particular solution and a general solution.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              ScalarFactor(diag: Matrix, full: Matrix, order: Literal['FD', 'DF'])
+
+  
+      dataclass
+   (ma1522.custom_types.ScalarFactor)" href="#ma1522.custom_types.ScalarFactor">ScalarFactor</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a matrix factored into a diagonal matrix and a full matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              PLU(P: Matrix, L: Matrix, U: Matrix)
+
+  
+      dataclass
+   (ma1522.custom_types.PLU)" href="#ma1522.custom_types.PLU">PLU</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a PLU decomposition of a matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              RREF(rref: Matrix, pivots: tuple[int, ...])
+
+  
+      dataclass
+   (ma1522.custom_types.RREF)" href="#ma1522.custom_types.RREF">RREF</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents the reduced row echelon form (RREF) of a matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              VecDecomp(proj: Matrix, norm: Matrix)
+
+  
+      dataclass
+   (ma1522.custom_types.VecDecomp)" href="#ma1522.custom_types.VecDecomp">VecDecomp</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a vector decomposition into projection and normal components.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              QR(Q: Matrix, R: Matrix)
+
+  
+      dataclass
+   (ma1522.custom_types.QR)" href="#ma1522.custom_types.QR">QR</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a QR decomposition of a matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              PDP(P: Matrix, D: Matrix)
+
+  
+      dataclass
+   (ma1522.custom_types.PDP)" href="#ma1522.custom_types.PDP">PDP</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a PDP diagonalization of a matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="              SVD(U: Matrix, S: Matrix, V: Matrix)
+
+  
+      dataclass
+   (ma1522.custom_types.SVD)" href="#ma1522.custom_types.SVD">SVD</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a symbolic Singular Value Decomposition (SVD) of a matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            NumSVD (ma1522.custom_types.NumSVD)" href="#ma1522.custom_types.NumSVD">NumSVD</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Represents a numerical Singular Value Decomposition (SVD) of a matrix.</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.Shape" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>Shape</code>
+
+
+<a href="#ma1522.custom_types.Shape" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-external" title="enum.Enum" href="https://docs.python.org/3/library/enum.html#enum.Enum">Enum</a></code></p>
+
+
+        <p>Enumeration for different matrix shapes and structural properties.</p>
+<p>This enum defines various matrix shapes that can be used to specify
+the structure of matrices in mathematical operations and optimizations.
+Each shape represents a specific pattern of zero and non-zero elements.</p>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="language-pycon highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python Console Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="n">Shape</span><span class="o">.</span><span class="n">SYMMETRIC</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="go">SYMMETRIC</span>
+</span></code></pre></div></td></tr></table></div>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            DIAGONAL = 'DIAGONAL'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.DIAGONAL)" href="#ma1522.custom_types.Shape.DIAGONAL">DIAGONAL</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Diagonal matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            SCALAR = 'SCALAR'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.SCALAR)" href="#ma1522.custom_types.Shape.SCALAR">SCALAR</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Scalar matrix (diagonal matrix with equal diagonal entries).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            STRICT_UPPER = 'STRICT_UPPER'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.STRICT_UPPER)" href="#ma1522.custom_types.Shape.STRICT_UPPER">STRICT_UPPER</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Strictly upper triangular matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            STRICT_LOWER = 'STRICT_LOWER'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.STRICT_LOWER)" href="#ma1522.custom_types.Shape.STRICT_LOWER">STRICT_LOWER</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Strictly lower triangular matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            UPPER = 'UPPER'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.UPPER)" href="#ma1522.custom_types.Shape.UPPER">UPPER</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Upper triangular matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            LOWER = 'LOWER'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.LOWER)" href="#ma1522.custom_types.Shape.LOWER">LOWER</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Lower triangular matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            SYMMETRIC = 'SYMMETRIC'
+
+  
+      class-attribute
+      instance-attribute
+   (ma1522.custom_types.Shape.SYMMETRIC)" href="#ma1522.custom_types.Shape.SYMMETRIC">SYMMETRIC</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Symmetric matrix.</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.DIAGONAL" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">DIAGONAL</span> <span class="o">=</span> <span class="s1">&#39;DIAGONAL&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.DIAGONAL" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Diagonal matrix.</p>
+<p>A matrix where all off-diagonal entries are zero. Only elements on the
+main diagonal (<span class="arithmatex">\(i,j\)</span> where <span class="arithmatex">\(i = j\)</span>) can be non-zero. The diagonal entries
+can have different values and need not be square (unlike SCALAR matrices).</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+a &amp; 0 &amp; 0 \\
+0 &amp; b &amp; 0 \\
+0 &amp; 0 &amp; c
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.SCALAR" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">SCALAR</span> <span class="o">=</span> <span class="s1">&#39;SCALAR&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.SCALAR" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Scalar matrix (diagonal matrix with equal diagonal entries).</p>
+<p>A square matrix where all diagonal entries are equal to the same scalar value,
+and all off-diagonal entries are zero. This is also known as a scalar matrix
+or scalar multiple of the identity matrix.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+c &amp; 0 &amp; 0 \\
+0 &amp; c &amp; 0 \\
+0 &amp; 0 &amp; c
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.STRICT_UPPER" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">STRICT_UPPER</span> <span class="o">=</span> <span class="s1">&#39;STRICT_UPPER&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.STRICT_UPPER" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Strictly upper triangular matrix.</p>
+<p>A matrix where all elements on and below the main diagonal are zero.
+Only elements above the main diagonal (<span class="arithmatex">\(i,j\)</span> where <span class="arithmatex">\(i &lt; j\)</span>) can be non-zero.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+0 &amp; a &amp; b \\
+0 &amp; 0 &amp; c \\
+0 &amp; 0 &amp; 0
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.STRICT_LOWER" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">STRICT_LOWER</span> <span class="o">=</span> <span class="s1">&#39;STRICT_LOWER&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.STRICT_LOWER" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Strictly lower triangular matrix.</p>
+<p>A matrix where all elements on and above the main diagonal are zero.
+Only elements below the main diagonal (<span class="arithmatex">\(i,j\)</span> where <span class="arithmatex">\(i &gt; j\)</span>) can be non-zero.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+0 &amp; 0 &amp; 0 \\
+a &amp; 0 &amp; 0 \\
+b &amp; c &amp; 0
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.UPPER" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">UPPER</span> <span class="o">=</span> <span class="s1">&#39;UPPER&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.UPPER" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Upper triangular matrix.</p>
+<p>A matrix where all elements below the main diagonal are zero.
+Elements on and above the main diagonal (<span class="arithmatex">\(i,j\)</span> where <span class="arithmatex">\(i &lt;= j\)</span>) can be non-zero.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+a &amp; b &amp; c \\
+0 &amp; d &amp; e \\
+0 &amp; 0 &amp; f
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.LOWER" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">LOWER</span> <span class="o">=</span> <span class="s1">&#39;LOWER&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.LOWER" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Lower triangular matrix.</p>
+<p>A matrix where all elements above the main diagonal are zero.
+Elements on and below the main diagonal (<span class="arithmatex">\(i,j\)</span> where <span class="arithmatex">\(i &gt;= j\)</span>) can be non-zero.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+a &amp; 0 &amp; 0 \\
+b &amp; c &amp; 0 \\
+d &amp; e &amp; f
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ma1522.custom_types.Shape.SYMMETRIC" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">SYMMETRIC</span> <span class="o">=</span> <span class="s1">&#39;SYMMETRIC&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Shape.SYMMETRIC" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Symmetric matrix.</p>
+<p>A square matrix where elements are symmetric about the main diagonal,
+meaning <span class="arithmatex">\(A_{i, j} = A_{j,i}\)</span> for all valid indices <span class="arithmatex">\(i\)</span> and <span class="arithmatex">\(j\)</span>.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="arithmatex">\[
+\begin{pmatrix}
+a &amp; b &amp; c \\
+b &amp; d &amp; e \\
+c &amp; e &amp; f
+\end{pmatrix}
+\]</div>
+</details>
+          
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.Printable" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">Printable</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Printable" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Base class for objects that can be printed as <span class="arithmatex">\(\rm\LaTeX\)</span>.</p>
+
+          
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="            eval() -> Matrix
+
+  
+      abstractmethod
+   (ma1522.custom_types.Printable.eval)" href="#ma1522.custom_types.Printable.eval">eval</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Evaluates the object to a matrix.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="            evalf(*args, **kwargs) (ma1522.custom_types.Printable.evalf)" href="#ma1522.custom_types.Printable.evalf">evalf</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Evaluates the object to a matrix of floats.</p>
+            </div>
+          </li>
+    </ul>
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ma1522.custom_types.Printable.eval" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="nb">eval</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Matrix</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.Printable.eval" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluates the object to a matrix.</p>
+
+          
+
+            <details class="quote">
+              <summary>Source code in <code>src/ma1522/custom_types.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-181">181</a></span>
+<span class="normal"><a href="#__codelineno-0-182">182</a></span>
+<span class="normal"><a href="#__codelineno-0-183">183</a></span>
+<span class="normal"><a href="#__codelineno-0-184">184</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181"></a><span class="nd">@abstractmethod</span>
+</span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182"></a><span class="k">def</span><span class="w"> </span><span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
+</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates the object to a matrix.&quot;&quot;&quot;</span>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184"></a>    <span class="o">...</span>
+</span></code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ma1522.custom_types.Printable.evalf" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">evalf</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+<a href="#ma1522.custom_types.Printable.evalf" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluates the object to a matrix of floats.</p>
+
+
+<details class="see-also" open>
+  <summary>See Also</summary>
+  <ul>
+<li>SymPy's <a class="autorefs autorefs-internal" title="            evalf(n=15, subs=None, maxn=100, chop=False, strict=False, quad=None, verbose=False)" href="../inherited/#ma1522.symbolic.Matrix.evalf"><code>Matrix.evalf()</code></a></li>
+</ul>
+</details>
+          
+
+            <details class="quote">
+              <summary>Source code in <code>src/ma1522/custom_types.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-186">186</a></span>
+<span class="normal"><a href="#__codelineno-0-187">187</a></span>
+<span class="normal"><a href="#__codelineno-0-188">188</a></span>
+<span class="normal"><a href="#__codelineno-0-189">189</a></span>
+<span class="normal"><a href="#__codelineno-0-190">190</a></span>
+<span class="normal"><a href="#__codelineno-0-191">191</a></span>
+<span class="normal"><a href="#__codelineno-0-192">192</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="k">def</span><span class="w"> </span><span class="nf">evalf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates the object to a matrix of floats.</span>
+</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188"></a>
+</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189"></a><span class="sd">    See Also:</span>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">        - SymPy&#39;s [`Matrix.evalf()`][sympy.matrices.matrixbase.MatrixBase.evalf]</span>
+</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192"></a>    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.PartGen" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">PartGen</span><span class="p">(</span><span class="n">part_sol</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">gen_sol</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.PartGen" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a matrix as the sum of a particular solution and a general solution.</p>
+<p>This dataclass is used to express the general solution to a linear system as the sum of a particular solution
+(with all free variables set to zero) and a general solution (the homogeneous part).</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PartGen.part_sol">part_sol</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The particular solution matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PartGen.gen_sol">gen_sol</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The general (homogeneous) solution matrix.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.ScalarFactor" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">ScalarFactor</span><span class="p">(</span><span class="n">diag</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">full</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;FD&#39;</span><span class="p">,</span> <span class="s1">&#39;DF&#39;</span><span class="p">])</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.ScalarFactor" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a matrix factored into a diagonal matrix and a full matrix.</p>
+<p>This dataclass is used to express a matrix as the product of a diagonal matrix (containing scalar factors)
+and a matrix with the common divisors factored out. The order of multiplication is specified by the 'order' attribute.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.ScalarFactor.diag">diag</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The diagonal matrix containing the scalar factors.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.ScalarFactor.full">full</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The matrix with common divisors factored out.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.ScalarFactor.order">order</span></code></b>
+              (<code><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a>[&#39;FD&#39;, &#39;DF&#39;]</code>)
+          –
+          <div class="doc-md-description">
+            <p>The order of multiplication, either 'FD' (full @ diag) or 'DF' (diag @ full).</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.PLU" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">PLU</span><span class="p">(</span><span class="n">P</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">L</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">U</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.PLU" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a PLU decomposition of a matrix.</p>
+<p>This dataclass stores the permutation matrix (P), lower triangular matrix (L), and upper triangular matrix (U)
+such that the original matrix can be written as P @ L @ U.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PLU.P">P</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The permutation matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PLU.L">L</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The lower triangular matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PLU.U">U</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The upper triangular matrix.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.RREF" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">RREF</span><span class="p">(</span><span class="n">rref</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">pivots</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.RREF" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents the reduced row echelon form (RREF) of a matrix.</p>
+<p>This dataclass stores the RREF of a matrix and the tuple of pivot column indices.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.RREF.rref">rref</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The matrix in reduced row echelon form.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.RREF.pivots">pivots</span></code></b>
+              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a>, ...]</code>)
+          –
+          <div class="doc-md-description">
+            <p>The indices of the pivot columns.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.VecDecomp" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">VecDecomp</span><span class="p">(</span><span class="n">proj</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">norm</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.VecDecomp" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a vector decomposition into projection and normal components.</p>
+<p>This dataclass is used to express a vector as the sum of its projection onto a subspace and its orthogonal component.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.VecDecomp.proj">proj</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The projection component.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.VecDecomp.norm">norm</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The orthogonal (normal) component.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.QR" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">QR</span><span class="p">(</span><span class="n">Q</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.QR" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a QR decomposition of a matrix.</p>
+<p>This dataclass stores the orthogonal matrix (Q) and the upper triangular matrix (R) such that the original matrix = Q @ R.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.QR.Q">Q</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The orthogonal matrix.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.QR.R">R</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The upper triangular matrix.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.PDP" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">PDP</span><span class="p">(</span><span class="n">P</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">D</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.PDP" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a PDP diagonalization of a matrix.</p>
+<p>This dataclass stores the matrices P and D such that the original matrix = P @ D @ P^{-1}.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PDP.P">P</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The matrix of eigenvectors.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.PDP.D">D</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The diagonal matrix of eigenvalues.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.SVD" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class="highlight language-python"><span class="n">SVD</span><span class="p">(</span><span class="n">U</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">V</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#ma1522.custom_types.SVD" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="              Printable()
+
+  
+      dataclass
+   (ma1522.custom_types.Printable)" href="#ma1522.custom_types.Printable">Printable</a></code></p>
+
+
+        <p>Represents a symbolic Singular Value Decomposition (SVD) of a matrix.</p>
+<p>This dataclass stores the matrices U, S, and V such that the original matrix = U @ S @ V.T.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.SVD.U">U</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The left singular vectors.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.SVD.S">S</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The diagonal matrix of singular values.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.SVD.V">V</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title=" Matrix (ma1522.symbolic.Matrix)" href="../inherited/#ma1522.symbolic.Matrix">Matrix</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The right singular vectors.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ma1522.custom_types.NumSVD" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>NumSVD</code>
+
+
+<a href="#ma1522.custom_types.NumSVD" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-external" title="typing.NamedTuple" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple">NamedTuple</a></code></p>
+
+
+        <p>Represents a numerical Singular Value Decomposition (SVD) of a matrix.</p>
+<p>This named tuple stores the numerical matrices U, S, and V from a numerical SVD computation.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.NumSVD.U">U</span></code></b>
+              (<code><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The left singular vectors.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.NumSVD.S">S</span></code></b>
+              (<code><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The diagonal matrix of singular values.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="ma1522.custom_types.NumSVD.V">V</span></code></b>
+              (<code><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The right singular vectors.</p>
+          </div>
+        </li>
+    </ul>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../license/" class="md-footer__link md-footer__link--prev" aria-label="Previous: License">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                License
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../symbolic/" class="md-footer__link md-footer__link--next" aria-label="Next: symbolic">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                symbolic
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025 Yee Shin Teng
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.code.select", "navigation.expand", "navigation.footer", "navigation.path", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "search.highlight"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.50899def.min.js"></script>
+      
+        <script src="../../assets/javascripts/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+    
+  </body>
+</html>
