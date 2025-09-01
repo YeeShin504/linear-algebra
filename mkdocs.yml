@@ -29,8 +29,7 @@ nav:
       - Tutorial 10: tutorials/tut10.ipynb
       - Tutorial 11: tutorials/tut11.ipynb
   - Demonstrations:
-      - Live Notebook: live/demo.ipynb
-
+      - Live Notebook: ./live/demo.ipynb
 theme:
   name: material
   features:
