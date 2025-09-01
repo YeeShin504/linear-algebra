@@ -1,6 +1,7 @@
 site_name: linear-algebra
 site_description: Python scripts for NUS MA1522 Linear Algebra for Computing
 site_author: Yee Shin Teng
+site_url: https://yeeshin504.github.io/linear-algebra
 repo_url: https://github.com/YeeShin504/linear-algebra
 repo_name: YeeShin504/linear-algebra
 watch: [mkdocs.yml, README.md]
@@ -29,7 +30,7 @@ nav:
       - Tutorial 10: tutorials/tut10.ipynb
       - Tutorial 11: tutorials/tut11.ipynb
   - Demonstrations:
-      - Live Notebook: ./live/demo.ipynb
+      - Live Notebook: live/demo.ipynb
 theme:
   name: material
   features:
