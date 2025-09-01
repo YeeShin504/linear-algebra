@@ -1,6 +1,6 @@
 # Tutorial: Getting Started
 
-This guide is designed for undergraduate students who are new to Python and want to use this library for linear algebra computations. The[ `symbolic.Matrix`](../api/symbolic.md#ma1522.symbolic.matrix) class is built on top of SymPy, a powerful Python library for symbolic mathematics, and is tailored for the NUS MA1522 course (AY 24/25 Sem 1).
+This guide is designed for undergraduate students who are new to Python and want to use this library for linear algebra computations. The[ `symbolic.Matrix`](../api/symbolic.md#ma1522.symbolic.matrix) class is built on top of SymPy, a powerful Python library for symbolic mathematics, and is tailored for the NUS MA1522 course (AY 24/25 Sem 1). You may also find an interactive version of this tutorial here: [Demo Notebook](../../live/demo).
 
 ## 1. Installation and Setup
 
@@ -69,7 +69,7 @@ display(B)
 You can also create a matrix from a string representation, similar to how you might define it in MATLAB.
 
 ```python
-C = Matrix.from_str('1 a 3; 4 5 6; 7 8 9', row_sep=';', col_sep=' ')
+C = Matrix.from_str('1 a 3; 4 b**2 6; 7 pi 9', row_sep=';', col_sep=' ')
 display(C)
 ```
 
@@ -89,7 +89,7 @@ You can also create special matrices easily.
   display(Z)
   ```
 
-- **Symbolic Matrix:** Create a matrix with symbolic entries.
+- **Symbolic Matrix:** Create a matrix with symbolic entries. This is useful to solve matrices whose entries are not known ahead of time.
   ```python
   S = Matrix.create_unk_matrix(2, 2, 's')
   display(S)
@@ -233,7 +233,7 @@ display(U @ S @ V.T)
 
 ## 6. Subspace Analysis
 
-Explore fundamental subspaces of a matrix.
+The 4 fundamental subspaces of a matrix.
 
 ```python
 A = Matrix([[1, 2, 3, 4],
@@ -251,10 +251,14 @@ display(Matrix.from_list(null_space))
 # Row Space
 row_space = A.rowspace()
 display(Matrix.from_list(row_space, row_join=False))
+
+# Left Null Space (Orthogonal Complement)
+orth_comp = A.orthogonal_complement().T
+display(orth_comp)
 ```
 
 ---
 
 This tutorial covers the core functionalities of the `symbolic.Matrix` class. 
-Selected questions and suggested methods to solve them are provided in the [Tutorials](../Tutorials) section.
-For more details on specific functions, you can refer to the [api references](../api).
+Selected questions and suggested methods to solve them are provided in the [other](../tut01) pages.
+For more details on specific functions, you can refer to the [API Reference](../api/custom_types.md).

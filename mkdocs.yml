@@ -3,7 +3,7 @@ site_description: Python scripts for NUS MA1522 Linear Algebra for Computing
 site_author: Yee Shin Teng
 repo_url: https://github.com/YeeShin504/linear-algebra
 repo_name: YeeShin504/linear-algebra
-watch: [mkdocs.yml, README.md, src, docs]
+watch: [mkdocs.yml, README.md]
 copyright: Copyright &copy; 2025 Yee Shin Teng
 
 nav:
@@ -15,30 +15,35 @@ nav:
       - symbolic: api/symbolic.md
       - inherited methods: api/inherited.md
       - utils: api/utils.md
-  - Tutorial:
-      - Quickstart: Tutorials/Tutorial.md
-      - Tutorial 1: Tutorials/Tut01.ipynb
-      - Tutorial 2: Tutorials/Tut02.ipynb
-      - Tutorial 3: Tutorials/Tut03.ipynb
-      - Tutorial 4: Tutorials/Tut04.ipynb
-      - Tutorial 5: Tutorials/Tut05.ipynb
-      - Tutorial 6: Tutorials/Tut06.ipynb
-      - Tutorial 7: Tutorials/Tut07.ipynb
-      - Tutorial 8: Tutorials/Tut08.ipynb
-      - Tutorial 9: Tutorials/Tut09.ipynb
-      - Tutorial 10: Tutorials/Tut10.ipynb
-      - Tutorial 11: Tutorials/Tut11.ipynb
+  - Tutorials:
+      - Quickstart: tutorials/tutorial.md
+      - Tutorial 1: tutorials/tut01.ipynb
+      - Tutorial 2: tutorials/tut02.ipynb
+      - Tutorial 3: tutorials/tut03.ipynb
+      - Tutorial 4: tutorials/tut04.ipynb
+      - Tutorial 5: tutorials/tut05.ipynb
+      - Tutorial 6: tutorials/tut06.ipynb
+      - Tutorial 7: tutorials/tut07.ipynb
+      - Tutorial 8: tutorials/tut08.ipynb
+      - Tutorial 9: tutorials/tut09.ipynb
+      - Tutorial 10: tutorials/tut10.ipynb
+      - Tutorial 11: tutorials/tut11.ipynb
+  - Demonstrations:
+      - Live Notebook: live/demo.ipynb
 
 theme:
   name: material
   features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - navigation.top
-    - search.highlight
     - content.code.copy
     - content.code.select
+    - navigation.expand
+    - navigation.footer
+    - navigation.path
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - search.highlight
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -70,7 +75,17 @@ plugins:
   - search
   - tags
   - mkdocs-jupyter:
-      jupyter_execute_notebooks: on
+      ignore_h1_titles: True
+      # live notebooks to be processed using jupyterlite plugin
+      ignore: ["live/*.ipynb"]
+      execute: true
+  - jupyterlite:
+      notebook_patterns:
+        # Include live notebooks only
+        - "live/*.ipynb"
+      wheels:
+        # - url: "https://files.pythonhosted.org/packages/78/e3/6690b3f85a05506733c7e90b577e4762517404ea78bab2ca3a5cb1aeb78d/numpy-2.3.2-pp311-pypy311_pp73-win_amd64.whl"
+        - command: "uv build --out-dir {wheels_dir}"
   - mkdocstrings:
       default_handler: python_xref
       handlers:
@@ -111,22 +126,22 @@ plugins:
 
 markdown_extensions:
   - admonition
-  # - codehilite:
-  #     guess_lang: false
-  #     use_pygments: true
-  #     css_class: codehilite
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight:
       anchor_linenums: true
       auto_title: true
-      use_pygments: false
       line_spans: __span
       linenums: true
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
   - toc:
       permalink: true
 

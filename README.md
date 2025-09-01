@@ -1,5 +1,10 @@
 # linear-algebra
 
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ma1522-linear-algebra)](https://pypi.org/project/ma1522-linear-algebra/)
+[![PyPI - Version](https://img.shields.io/pypi/v/ma1522-linear-algebra)](https://pypi.org/project/ma1522-linear-algebra/)
+[![GitHub License](https://img.shields.io/github/license/yeeshin504/linear-algebra)](https://github.com/YeeShin504/linear-algebra/blob/master/LICENSE.txt)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/ma1522-linear-algebra)](https://pypistats.org/packages/ma1522-linear-algebra)
+
 ## About
 
 This project builds on SymPy's Matrix class and is designed for students taking NUS MA1522 Linear Algebra for Computing. It has implementations of most of the algorithms taught during the course (as of Sem 1 AY24/25). Documentation of the code is still a work in progress. 
@@ -74,9 +79,11 @@ A.solve(rhs=b)
 augmented_matrix.ref(verbosity=2)
 ```
 
-Documentation of more functions can be found [here](https://yeeshin504.github.io/linear-algebra/).
+Documentation of more functions can be found [here](https://yeeshin504.github.io/linear-algebra/api/symbolic).
 
-More usage examples can be found under the examples folder. Proper documentation would be coming soon for all functions found in `symbolic.py`.
+More usage examples can be found under [tutorials](https://yeeshin504.github.io/linear-algebra/tutorials/tutorial).
+
+Live demonstration of the library can be found [here](https://yeeshin504.github.io/linear-algebra/live/demo).
 
 ### FAQ
 
@@ -84,13 +91,8 @@ More usage examples can be found under the examples folder. Proper documentation
 
 ### Work in Progress
 
-- [ ] Include better documentations for how to use the functions.
 - [ ] Better `ref` algorithm to determine boundary conditions for a given matrix.
 
 ### Credits
 
 I would like to thank [@DenseLance](https://github.com/DenseLance) for his contributions.
-
-### License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.

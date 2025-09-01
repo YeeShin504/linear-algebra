@@ -3,11 +3,30 @@ name = "ma1522-linear-algebra"
 version = "1.0.0"
 description = "Python scripts for NUS MA1522 Linear Algebra for Computing"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.10"
 dependencies = [
-    "numpy>=2.2.1",
+    "numpy>=2.0.2",
     "sympy>=1.13.3",
     "sympy-latex-parser>=1.9.0",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Students",
+    
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 [dependency-groups]
@@ -15,18 +34,18 @@ dev = [
     "ipykernel>=6.29.5",
     "ruff>=0.9.2",
     "pytest>=8.3.5",
-    "pygments>=2.19.1",
     "build>=1.2.2.post1",
 ]
 
 docs = [
+    "mkdocs-autorefs>=1.4.2",
     "mkdocs-material>=9.6.16",
     "mkdocstrings[python]>=0.18",
-    "mkdocs-jupyter>=0.25.1",
-    "mkdocs-gen-files>=0.5.0",
-    "mkdocs-literate-nav>=0.6.2",
-    "mkdocs-autorefs>=1.4.2",
     "mkdocstrings-python-xref>=1.16.3",
+    "mkdocs-jupyter>=0.25.1",
+    "mkdocs-jupyterlite>=0.3.2",
+    "pymdown-extensions>=10.16.1",
+    "pygments>=2.19.1",
 ]
 
 [tool.uv]
