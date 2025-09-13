@@ -171,7 +171,7 @@ def _is_IPython() -> bool:
         from IPython.core.getipython import get_ipython
 
         shell = get_ipython().__class__.__name__
-        if shell == "ZMQInteractiveShell" or shell == "TerminalInteractiveShell":
+        if shell in ["ZMQInteractiveShell", "TerminalInteractiveShell", "Interpreter"]:
             return True  # Jupyter notebook, qtconsole or terminal running IPython
         else:
             return False  # Other type
