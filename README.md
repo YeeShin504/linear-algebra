@@ -7,12 +7,23 @@
 
 ## About
 
-This project builds on SymPy's Matrix class and is designed for students taking NUS MA1522 Linear Algebra for Computing. It has implementations of most of the algorithms taught during the course (as of Sem 1 AY24/25). Documentation of the code is still a work in progress. 
+This project builds on SymPy's Matrix class and is designed for students taking NUS MA1522 Linear Algebra for Computing. It has implementations of most of the algorithms taught during the course (as of Sem 1 AY24/25).
+
 
 ### Key Features
 
-1. Import matrices from $\rm\LaTeX$ directly. $\rm\LaTeX$ expression can be obtained from Canvas by right-clicking on the equations.
-2. Step-by-step workings for most algorithms (including LU Factorisation and SVD)
+1. Import matrices directly from $\rm\LaTeX$ or string/list representations.
+2. Step-by-step workings for most algorithms (including LU Factorisation, SVD, QR, diagonalization, and more).
+3. Enhanced symbolic matrix class with:
+  - Matrix creation from lists, $\rm\LaTeX$, or random values.
+  - Matrix decompositions: REF, RREF, LU, QR, SVD, diagonalization.
+  - Vector space operations: orthogonalization, projections, basis manipulation, subspace intersection, and more.
+  - Eigenvalue/eigenvector computations and characteristic polynomials.
+  - Custom pretty-printing and $\rm\LaTeX$ formatting, including augmented matrices.
+  - Support for both exact symbolic and numerical computations.
+  - Utilities for displaying results in Jupyter/IPython or standard Python.
+4. Follows MA1522 syllabus conventions for linear algebra and provides detailed, educational output.
+5. Rich set of custom types for representing decompositions, solutions, and factorizations.
 
 ## Installation and Usage
 
@@ -84,14 +95,6 @@ Documentation of more functions can be found [here](https://yeeshin504.github.io
 More usage examples can be found under [tutorials](https://yeeshin504.github.io/linear-algebra/tutorials/tutorial).
 
 Live demonstration of the library can be found [here](https://yeeshin504.github.io/linear-algebra/live/demo).
-
-### FAQ
-
-## Development
-
-### Work in Progress
-
-- [ ] Better `ref` algorithm to determine boundary conditions for a given matrix.
 
 ### Credits
 
