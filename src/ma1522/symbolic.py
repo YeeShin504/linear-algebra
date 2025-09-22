@@ -44,19 +44,15 @@ from sympy.core.mul import Mul
 
 def sympy_commands():
     commands = """
-    # Note : zero-indexing, see https://docs.sympy.org/latest/modules/matrices/matrices.html
+    # Note: zero-indexing, see https://docs.sympy.org/latest/modules/matrices/matrices.html
     import sympy as sym
 
     # Variables
     >>> a, b = sym.symbols("a b") # symbols
     >>> I_3 = eye(3) # identity matrix
     >>> zeros = sym.zeros(2, cols=2) # zero matrix
-    >>> A = sym.Matrix(
-        [
-            [...]
-        ]
-    ) # user-defined matrix
-    >>> B = sym.Matrix.vstack(A, I_3, ...) # repeated application of col_join
+    >>> A = Matrix([[...]] ) # user-defined matrix
+    >>> B = Matrix.vstack(A, I_3, ...) # repeated application of col_join
     >>> C = sym.nsimplify(A, tolerance=0.001, rational=True) # convert to fraction
     >>> D = C.evalf() # convert to decimal
 
@@ -79,10 +75,10 @@ def sympy_commands():
     >>> A.vec() # stack to column vector
     >>> A.xreplace(dict) # replace sym (key) with value
 
-    # Symbolic Methods 
+    # Symbolic Methods
     >>> A.T # transpose
     >>> A.inv() # inverse
-    >>> A.adj() # defined as adjoint as per MA1522 definition
+    >>> A.adj() # adjoint (as per MA1522 definition)
     >>> A.cofactor(i, j) # (i, j) cofactor
     >>> A.cofactor_matrix() # cofactor matrix
     >>> A.columnspace(simplify=False) # list of vectors that span column space of A
@@ -101,48 +97,49 @@ def sympy_commands():
     >>> A.rank(iszerofunc=<function _iszero>, simplify=False) # rank
     >>> A.rowspace(simplify=False) # list of vectors that span row space of A
     >>> A.rref() # returns [rref, list_of_pivot_cols]
-    >>> A.LUdecomposition(iszerofunc=<function _iszero>, simpfunc=None, rankcheck=False) # LU decomposition, returns (L, U, perm)
-    >>> A.lower_triangular_solve(rhs) # solve the matrix equation Ax = rhs, where A is an lower triangular matrix
-    >>> A.upper_triangular_solve(rhs) # solve the matrix equation Ax = rhs, where A is an upper triangular matrix
+    >>> A.LUdecomposition(iszerofunc=<function _iszero>, simpfunc=None, rankcheck=False) # LU decomposition
+    >>> A.lower_triangular_solve(rhs) # solve Ax = rhs, A lower triangular
+    >>> A.upper_triangular_solve(rhs) # solve Ax = rhs, A upper triangular
 
     # Custom Commands (verbosity >= 1 returns ERO (idx + 1), >= 2 returns matrix at each step)
     >>> is_zero(expr, symbolic: bool = True)
-    >>> Matrix.from_latex(expr, row_join: bool = True, norm: bool = False) # creates a Matrix object from the LaTeX expression
-    >>> Matrix.from_list(vectors: List, row_join: bool = True) # creates a Matrix object from a list of column vectors
-    >>> Matrix.create_unk_matrix(num_rows: int, num_cols: int, symbol: str, is_real: bool) # creates a Matrix object with symbolic entries
-    >>> Matrix.create_rand_matrix(num_rows: int, num_cols: int) # creates a Matrix object with random entries
-    >>> A.simplify(rational: bool = True, tolerance: float, simplify: bool = True, expand: bool = True, collect_sym: sym.Symbol = None)
-    >>> A.identify(tolerance: float) # returns a matrix simplified using mp.identify 
-    >>> A.elem() # returns the identity matrix with same number of rows as A
-    >>> A.select_rows(*idx) # returns a new matrix with row vectors of *idx 
-    >>> A.select_cols(*idx) # returns a new matrix with column vectors of *idx 
-    >>> A.scale_row(idx: int, scalar: float, verbosity: int = 0) 
-    >>> A.swap_row(idx_1: int, idx_2: int, verbosity: int = 0)
-    >>> A.reduce_row(idx_1: int, scalar: float, idx_2: int, verbosity: int = 0)
-    >>> A.get_pivot_row(col_idx: int, row_start_idx: int, follow_GE: bool = False)
-    >>> A.ref(verbosity: int = 2, max_tries: int = 2, follow_GE: bool = False, matrices: int = 2) # matrices = 1 (U), 2 (LU), 3 (PLU)
-    >>> A.evaluate_cases(rhs: Matrix) # display a list of matrices for unknowns with critical values
-    >>> A.column_constraints(use_id: bool = False, use_ref: bool = False) # returns the rref of [A | b], where b can be any vector. Use it to find constraints for b if A is not invertible.
-    >>> A.extend_basis(span_subspace: Matrix = A.elem()) # returns an augmented matrix with additional column vectors to span the subspace of the argument.
-    >>> A.transition_matrix(to: Matrix) # returns a transition matrix from A to the other matrix
-    >>> A.intersect_subspace(other: Matrix, verbosity: int = 1) # returns a basis for the subspace that is in the intersection of A and other columnspace.
-    >>> A.is_same_subspace(other: Matrix, verbosity: int = 1) # returns True if columnspace of A and other are equal
-    >>> A.inverse(option: str, verbosity: int = 0) # returns an inverse of A. If A is non-square return either a left inverse or right inverse.
-    >>> A.orthogonal_complement(verbosity: int = 0) # returns a matrix whose column vectors are perpendicular (independent) to the column vectors of A (i.e. Null(A^T))
-    >>> A.is_vec_orthogonal(verbosity: int = 1) # checks if the column vectors of A are orthogonal
-    >>> A.normalized(factor: bool = False) # returns a matrix whose columnn vectors are normalized
-    >>> A.scalar_factor(column: bool = True) # returns 2 matrices, one of which is a diagonal matrix, used to simplify matrix expressions
-    >>> A.gram_schmidt(factor: bool = True, verbosity: int = 1)  # returns a matrix with orthonormal columns (and displays gram-schmidt process)
-    >>> A.QRdecomposition(full: bool = False) # QR decomposition, returns (Q, R)
-    >>> A.solve_least_squares(rhs: Matrix, verbosity: int = 1) # solve the least square solution min(|Ax - rhs|)
-    >>> A.cpoly(force_factor: bool = True) # returns a factorised characterstic polynomial for a square matrix
-    >>> A.is_diagonalizable(reals_only: bool = True, verbosity: int = 1) # modified diagonalizability criteria to align with MA1522 (reals_only)
-    >>> A.diagonalize(reals_only: bool = True, verbosity:  int = 0) # returns tuple of invertible P and diagonal D
-    >>> A.is_orthogonally_diagonalizable # checks if matrix is symmetric
-    >>> A.orthogonally_diagonalize(reals_only: bool = True, factor: bool = True, verbosity = 1) # returns tuple of orthogonal matrix P and diagonal D
-    >>> A.equilibrium_vectors() # returns a matrix whose column vectors are probability vectors such that Ax = x
-    >>> A.fast_svd(option: str = 'np', identify: bool = True, tolerance: float = None) # returns a svd via numerical methods. Attempt to convert back to symbolic via identify not guaranteed.
-    >>> A.singular_value_decomposition(verbosity: int = 0) # returns the full SVD required by MA1522 (A = U @ S @ V.T)
+    >>> Matrix.from_latex(expr, row_join=True, norm=False, aug_pos=None) # Parse LaTeX matrix/vector to Matrix
+    >>> Matrix.from_str(matrix_str, row_sep=';', col_sep=' ', aug_pos=None, is_real=True) # Parse string to Matrix
+    >>> Matrix.from_list(vectors, row_join=True, aug_pos=None) # Create Matrix from list of vectors
+    >>> Matrix.create_unk_matrix(num_rows: int, num_cols: int, symbol: str, is_real: bool) # Matrix with symbolic entries
+    >>> Matrix.create_rand_matrix(num_rows: int, num_cols: int) # Matrix with random entries
+    >>> A.simplify(rational=True, tolerance=1e-4, simplify=True, expand=True, collect_sym=None) # Simplify entries
+    >>> A.identify(tolerance: float) # Identify symbolic/numeric constants
+    >>> A.elem() # Identity matrix with same number of rows as A
+    >>> A.select_rows(*idx) # New matrix with selected rows
+    >>> A.select_cols(*idx) # New matrix with selected columns
+    >>> A.scale_row(idx: int, scalar: float, verbosity=0) # Scale row
+    >>> A.swap_row(idx_1: int, idx_2: int, verbosity=0) # Swap rows
+    >>> A.reduce_row(idx_1: int, scalar: float, idx_2: int, verbosity=0) # Row reduction
+    >>> A.get_pivot_row(col_idx: int, row_start_idx: int, follow_GE=False) # Find pivot row
+    >>> A.ref(verbosity=2, max_tries=2, follow_GE=False, matrices=2) # Row echelon form (REF)
+    >>> A.evaluate_cases(rhs: Matrix) # Display solution cases for symbolic systems
+    >>> A.column_constraints(use_id=False, use_ref=False) # RREF of [A | b], constraints for b
+    >>> A.extend_basis(span_subspace=A.elem()) # Augment basis to span subspace
+    >>> A.transition_matrix(to: Matrix) # Transition matrix between bases
+    >>> A.intersect_subspace(other: Matrix, verbosity=1) # Basis for intersection of subspaces
+    >>> A.is_same_subspace(other: Matrix, verbosity=1) # Check if subspaces are equal
+    >>> A.inverse(option: str, verbosity=0) # Inverse (left/right/both)
+    >>> A.orthogonal_complement(verbosity=0) # Null(A^T)
+    >>> A.is_vec_orthogonal(verbosity=1) # Check if columns are orthogonal
+    >>> A.normalized(factor=False) # Normalize columns
+    >>> A.scalar_factor(column=True) # Factor out common divisors
+    >>> A.gram_schmidt(factor=True, verbosity=1) # Orthonormalize columns
+    >>> A.QRdecomposition(full=False) # QR decomposition
+    >>> A.solve_least_squares(rhs: Matrix, verbosity=1) # Least squares solution
+    >>> A.cpoly(force_factor=True) # Characteristic polynomial
+    >>> A.is_diagonalizable(reals_only=True, verbosity=1) # Diagonalizability
+    >>> A.diagonalize(reals_only=True, verbosity=0) # Diagonalization
+    >>> A.is_orthogonally_diagonalizable # Check if symmetric
+    >>> A.orthogonally_diagonalize(reals_only=True, factor=True, verbosity=1) # Orthogonal diagonalization
+    >>> A.equilibrium_vectors() # Probability vectors Ax = x
+    >>> A.fast_svd(option='np', identify=True, tolerance=None) # Fast SVD (numeric)
+    >>> A.singular_value_decomposition(verbosity=0) # Full SVD (A = U @ S @ V.T)
     """
     print(commands)
 
@@ -1711,7 +1708,45 @@ class Matrix(sym.MutableDenseMatrix):
 
         return list(sym.ordered(dict(combination) for combination in combinations))
 
-    def evaluate_cases(self, rhs: Matrix) -> None:
+    def evaluate_cases(self, rhs: Matrix | None = None, use_ref: bool = True) -> None:
+        """
+        Evaluates and displays all possible cases for solutions to a linear system involving the matrix.
+
+        This method analyzes the determinant of the matrix (or its Gram matrix if not square) to identify
+        all possible cases for the values of free variables that affect the existence or uniqueness of solutions.
+        For each case, it substitutes the corresponding values into the system and displays the resulting solution(s).
+
+        Args:
+            rhs (Matrix, optional): The right-hand side matrix of the system. If not provided, it treats the system
+                as homogeneous (i.e., `Ax = 0`).
+            use_ref (bool, optional): Whether to use the row echelon form (REF) for case analysis. Defaults to True.
+
+        Returns:
+            None
+
+        Examples:
+            >>> A = Matrix([[x, 1], [0, 1]])
+            >>> b = Matrix([[2], [3]])
+            >>> A.evaluate_cases(b)
+            Case 1: {}, not including [{x: 0}]
+            Unique solution
+            RREF(rref=Matrix([
+                [x, 1 | 2]
+                [0, 1 | 3]
+            ]), pivots=(0, 1))
+
+
+            Case 2: {x: 0}, not including []
+            No solution
+            RREF(rref=Matrix([
+                [0, 1 | 2]
+                [0, 0 | 1]
+            ]), pivots=(1, 2))
+
+
+        """
+        if rhs is None:
+            rhs = Matrix.zeros(self.rows, 1)
         cases = self.find_all_cases()
         all_possible_values = set(
             possible_val for case in cases for possible_val in case.items()
@@ -1721,13 +1756,23 @@ class Matrix(sym.MutableDenseMatrix):
             print(
                 f"Case {i}: {case}, not including {[dict([val]) for val in all_possible_values.symmetric_difference(set(case.items()))]}"
             )
-            U = (
-                self.row_join(rhs, aug_line=False)
-                .subs(case)
-                .ref(verbosity=0, follow_GE=False)
-                .U
-            )
-            display(U)
+            U = self.row_join(rhs, aug_line=True).subs(case)
+            if use_ref:
+                U = U.ref(verbosity=0, follow_GE=False).U
+                pivots = [pos[1] for pos in U.get_pivot_pos()]
+            else:
+                U, pivots = U.rref(pivots=True)
+            if self.cols in pivots:  # type: ignore
+                print("No solution")
+            else:
+                free_params = self.cols - len(pivots)  # type: ignore
+                if free_params == 0:
+                    print("Unique solution")
+                else:
+                    print(f"Solution with {free_params} free parameters")
+
+            display(RREF(U, tuple(pivots)))  # type: ignore
+            print("\n")
 
     # Override
     def rref(self, *args, pivots: bool = True, **kwargs) -> RREF | Matrix:
@@ -3151,6 +3196,17 @@ class Matrix(sym.MutableDenseMatrix):
                 print("Attempting custom solve...")
 
         ATA, ATb = self.T @ self, self.T @ rhs
+        if ATA.det() != 0 and verbosity >= 1:
+            print("self.T @ self is invertible. The lest squares solution is unique.")
+            display(
+                "\\mathbf{x} = \\left(\\mathbf{A}^\\top \\mathbf{A}\\right)^{-1} \\mathbf{A}^\\top \\mathbf{b}",
+                opt="math",
+            )
+            x = ATA.inv() @ ATb
+            display(x)
+            return x
+
+        # Custom solve using sympy's solve method
         sol = Matrix.create_unk_matrix(ATb.rows, 1)
         sol = sol.subs(sym.solve(ATA @ sol - ATb, dict=True)[0])
 
