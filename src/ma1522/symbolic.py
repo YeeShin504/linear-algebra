@@ -1725,6 +1725,8 @@ class Matrix(sym.MutableDenseMatrix):
             None
 
         Examples:
+            >>> import sympy as sym
+            >>> x = sym.symbols('x')
             >>> A = Matrix([[x, 1], [0, 1]])
             >>> b = Matrix([[2], [3]])
             >>> A.evaluate_cases(b)
@@ -1734,16 +1736,16 @@ class Matrix(sym.MutableDenseMatrix):
                 [x, 1 | 2]
                 [0, 1 | 3]
             ]), pivots=(0, 1))
-
-
+            <BLANKLINE>
+            <BLANKLINE>
             Case 2: {x: 0}, not including []
             No solution
             RREF(rref=Matrix([
                 [0, 1 | 2]
                 [0, 0 | 1]
             ]), pivots=(1, 2))
-
-
+            <BLANKLINE>
+            <BLANKLINE>
         """
         if rhs is None:
             rhs = Matrix.zeros(self.rows, 1)
