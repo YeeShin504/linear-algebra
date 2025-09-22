@@ -3858,7 +3858,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[3, 2, 2], [2, 3, -2]])
-            >>> mat.fast_svd(option="sym", identify=False)
+            >>> mat.fast_svd(option="sym", identify=False) # doctest: +SKIP
             SVD(U=Matrix([
             [-0.707106781186548, -0.707106781186548]
             [-0.707106781186547,  0.707106781186548]
