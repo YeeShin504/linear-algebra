@@ -2097,7 +2097,7 @@ $\displaystyle v_4 = \left[\begin{array}{c}1\\0\\2\\1\end{array}\right]- \left(\
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_2391/1175356544.py:1: UserWarning: Vectors are linearly dependent. Note that there is no QR factorisation
+<pre>/tmp/ipykernel_2427/1175356544.py:1: UserWarning: Vectors are linearly dependent. Note that there is no QR factorisation
   U.gram_schmidt(factor=True, verbosity=1) # UserWarning raised because a zero vector is found
 </pre>
 </div>
@@ -2683,28 +2683,20 @@ sol</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Before RREF: [self.T @ self | self.T @ rhs]
+<pre>self.T @ self is invertible. The lest squares solution is unique.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{cc|c}4 &amp; \frac{57}{1000} &amp; \frac{1493}{1000000}\\\frac{57}{1000} &amp; \frac{869}{1000000} &amp; \frac{11251}{500000000}\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
-After RREF
-</pre>
+$\displaystyle \mathbf{x} = \left(\mathbf{A}^\top \mathbf{A}\right)^{-1} \mathbf{A}^\top \mathbf{b}$
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\text{RREF}\left\{\text{rref} = \left[\begin{array}{cc|c}1 &amp; 0 &amp; \frac{14803}{227000000}\\0 &amp; 1 &amp; \frac{4907}{227000}\end{array}\right], \quad\text{pivots} = (0, 1)\right\}$
+$\displaystyle \left[\begin{array}{c}\frac{14803}{227000000}\\\frac{4907}{227000}\end{array}\right]$
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
@@ -3019,28 +3011,20 @@ sol</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Before RREF: [self.T @ self | self.T @ rhs]
+<pre>self.T @ self is invertible. The lest squares solution is unique.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccccc|c}9 &amp; 55 &amp; 355 &amp; \frac{9625}{4} &amp; \frac{68017}{4} &amp; \frac{16681}{2500}\\55 &amp; 355 &amp; \frac{9625}{4} &amp; \frac{68017}{4} &amp; \frac{1989625}{16} &amp; \frac{286}{5}\\355 &amp; \frac{9625}{4} &amp; \frac{68017}{4} &amp; \frac{1989625}{16} &amp; \frac{14955565}{16} &amp; \frac{4878883}{10000}\\\frac{9625}{4} &amp; \frac{68017}{4} &amp; \frac{1989625}{16} &amp; \frac{14955565}{16} &amp; \frac{459567625}{64} &amp; \frac{20556229}{5000}\\\frac{68017}{4} &amp; \frac{1989625}{16} &amp; \frac{14955565}{16} &amp; \frac{459567625}{64} &amp; \frac{3591602257}{64} &amp; \frac{1370247031}{40000}\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
-After RREF
-</pre>
+$\displaystyle \mathbf{x} = \left(\mathbf{A}^\top \mathbf{A}\right)^{-1} \mathbf{A}^\top \mathbf{b}$
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccccc|c}1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; - \frac{43029219289}{210853500}\\0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; \frac{535177649129}{3162802500}\\0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; - \frac{8061301133}{162195000}\\0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; \frac{972997028}{158140125}\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; - \frac{47784941}{175711250}\end{array}\right], \quad\text{pivots} = (0, 1, 2, 3, 4)\right\}$
+$\displaystyle \left[\begin{array}{c}- \frac{43029219289}{210853500}\\\frac{535177649129}{3162802500}\\- \frac{8061301133}{162195000}\\\frac{972997028}{158140125}\\- \frac{47784941}{175711250}\end{array}\right]$
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
@@ -3427,28 +3411,20 @@ sol</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Before RREF: [self.T @ self | self.T @ rhs]
+<pre>self.T @ self is invertible. The lest squares solution is unique.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccc|c}3 &amp; 3 &amp; 1 &amp; 2\\3 &amp; 4 &amp; 2 &amp; 2\\1 &amp; 2 &amp; 2 &amp; 0\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
-After RREF
-</pre>
+$\displaystyle \mathbf{x} = \left(\mathbf{A}^\top \mathbf{A}\right)^{-1} \mathbf{A}^\top \mathbf{b}$
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 1 &amp; -1\end{array}\right], \quad\text{pivots} = (0, 1, 2)\right\}$
+$\displaystyle \left[\begin{array}{c}0\\1\\-1\end{array}\right]$
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">

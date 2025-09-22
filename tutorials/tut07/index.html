@@ -3042,28 +3042,20 @@ v_proj = v.proj_comp(W, verbosity=1)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Before RREF: [self.T @ self | self.T @ rhs]
+<pre>self.T @ self is invertible. The lest squares solution is unique.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccc|c}5 &amp; 0 &amp; 0 &amp; 3\\0 &amp; 10 &amp; 0 &amp; -1\\0 &amp; 0 &amp; 4 &amp; 2\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
-After RREF
-</pre>
+$\displaystyle \mathbf{x} = \left(\mathbf{A}^\top \mathbf{A}\right)^{-1} \mathbf{A}^\top \mathbf{b}$
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; \frac{3}{5}\\0 &amp; 1 &amp; 0 &amp; - \frac{1}{10}\\0 &amp; 0 &amp; 1 &amp; \frac{1}{2}\end{array}\right], \quad\text{pivots} = (0, 1, 2)\right\}$
+$\displaystyle \left[\begin{array}{c}\frac{3}{5}\\- \frac{1}{10}\\\frac{1}{2}\end{array}\right]$
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -3374,7 +3366,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{cccc}1 &amp; 0 &amp; 0 &amp
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/home/runner/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:2825: UserWarning: Only trivial nullspace (0-vector) detected!
+<pre>/home/runner/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:2870: UserWarning: Only trivial nullspace (0-vector) detected!
   return Matrix.from_list(self.transpose().nullspace(verbosity))
 </pre>
 </div>
