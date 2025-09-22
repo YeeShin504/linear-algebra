@@ -16,12 +16,11 @@ classifiers = [
     
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
-    "Intended Audience :: Students",
     
     "Topic :: Education",
     "Topic :: Scientific/Engineering :: Mathematics",
     
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
