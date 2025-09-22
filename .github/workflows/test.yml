@@ -39,4 +39,4 @@ jobs:
     
       - name: Run docstring tests
         run: |
-          uv run --python ${{ matrix.python-version }} --doctest-modules 
+          uv run --python ${{ matrix.python-version }} pytest --doctest-modules 
