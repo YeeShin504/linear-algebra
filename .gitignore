@@ -16,3 +16,4 @@ site/
 # Generated coverage reports
 htmlcov/
 .coverage/
+.coverage
