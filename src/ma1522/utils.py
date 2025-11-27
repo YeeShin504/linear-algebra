@@ -193,12 +193,11 @@ def display(*args, opt: Literal["math", "dict"] | None = None, **kwargs) -> None
 
             - If "math", displays the object as a math expression.
             - If "dict", generates a LaTeX representation of the dictionary for display.
-            - If none, assumes the object can be passed into IPython's [`display`][] function directly.
+            - If none, assumes the object can be passed into IPython's [`display`][IPython.display.display] function directly.
         **kwargs: Additional keyword arguments to pass to the display function.
 
     See Also:
-        - [`IPython.display.display`][IPython.display]: The class used to display
-            objects in IPython environments.
+        - [`IPython.display`][IPython.display]: The classes used to display objects in IPython environments.
         - [`sympy.pprint`][sympy.printing.pretty.pretty.PrettyPrinter]: The class used to pretty-print
             objects in non-IPython environments.
     """

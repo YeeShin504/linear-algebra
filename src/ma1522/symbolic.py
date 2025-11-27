@@ -1819,7 +1819,7 @@ class Matrix(sym.MutableDenseMatrix):
             return rref_mat
 
     # Override
-    def solve(self, rhs: Matrix) -> list[Matrix]:
+    def solve(self, rhs: Matrix, verbosity: int = 0) -> list[Matrix]:
         """Solves the linear system `Ax = rhs` for `x`.
 
         This method uses SymPy's [`solve`][sympy.solvers.solvers.solve] method to find a solution vector `x` such that `self @ x = rhs`.
@@ -1828,6 +1828,10 @@ class Matrix(sym.MutableDenseMatrix):
 
         Args:
             rhs (Matrix): The right-hand side matrix or vector in the equation `Ax = rhs`.
+
+            verbosity (int, optional): Level of verbosity for displaying intermediate steps:
+                - 0: No output.
+                - 1: Display the augmented matrix before and after RREF.
 
         Returns:
             (list[Matrix]): A list of the solution vectors or matrices `x` that satisfies `Ax = rhs`.
@@ -1853,9 +1857,16 @@ class Matrix(sym.MutableDenseMatrix):
         x = Matrix.create_unk_matrix(r=self.cols, c=1)
         solution = sym.solve(self @ x - rhs, x.free_symbols, dict=True)
 
+        if verbosity >= 1:
+            print("Before RREF:")
+            display(self.row_join(rhs, aug_line=True))
+            print("\nAfter RREF:")
+            display(self.row_join(rhs, aug_line=True).rref())
+
         if len(solution) == 0:
             # If no solution is found (e.g., inconsistent system or empty list), raise an error
-            display(self.row_join(rhs, aug_line=True).rref())
+            if verbosity == 0:
+                display(self.row_join(rhs, aug_line=True).rref())
             raise ValueError(
                 "No solution found for the linear system. The system may be inconsistent."
             )
