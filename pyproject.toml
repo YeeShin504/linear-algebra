@@ -35,6 +35,7 @@ dev = [
     "pytest>=8.3.5",
     "build>=1.2.2.post1",
     "twine>=6.2.0",
+    "coverage>=7.12.0",
 ]
 
 docs = [

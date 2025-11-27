@@ -15,13 +15,13 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 1. Import matrices directly from $\rm\LaTeX$ or string/list representations.
 2. Step-by-step workings for most algorithms (including LU Factorisation, SVD, QR, diagonalization, and more).
 3. Enhanced symbolic matrix class with:
-  - Matrix creation from lists, $\rm\LaTeX$, or random values.
-  - Matrix decompositions: REF, RREF, LU, QR, SVD, diagonalization.
-  - Vector space operations: orthogonalization, projections, basis manipulation, subspace intersection, and more.
-  - Eigenvalue/eigenvector computations and characteristic polynomials.
-  - Custom pretty-printing and $\rm\LaTeX$ formatting, including augmented matrices.
-  - Support for both exact symbolic and numerical computations.
-  - Utilities for displaying results in Jupyter/IPython or standard Python.
+    - Matrix creation from lists, $\rm\LaTeX$, or random values.
+    - Matrix decompositions: REF, RREF, LU, QR, SVD, diagonalization.
+    - Vector space operations: orthogonalization, projections, basis manipulation, subspace intersection, and more.
+    - Eigenvalue/eigenvector computations and characteristic polynomials.
+    - Custom pretty-printing and $\rm\LaTeX$ formatting, including augmented matrices.
+    - Support for both exact symbolic and numerical computations.
+    - Utilities for displaying results in Jupyter/IPython or standard Python.
 4. Follows MA1522 syllabus conventions for linear algebra and provides detailed, educational output.
 5. Rich set of custom types for representing decompositions, solutions, and factorizations.
 
@@ -33,6 +33,7 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 
 This project is best supported in a Jupyter Notebook environment with Python 3.10+. You can download Python from [here](https://www.python.org/downloads/).
 
+Alternatively, you can use a minimal GUI developed by [@MarcusMa06-code](https://github.com/MarcusMa06-code) [here](https://github.com/MarcusMa06-code/linear-algebra/tree/gui-development).
 
 #### Install Dependencies
 
