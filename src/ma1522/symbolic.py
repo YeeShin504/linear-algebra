@@ -3210,7 +3210,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         ATA, ATb = self.T @ self, self.T @ rhs
         if ATA.det() != 0 and verbosity >= 1:
-            print("self.T @ self is invertible. The lest squares solution is unique.")
+            print("self.T @ self is invertible. The least squares solution is unique.")
             display(
                 "\\mathbf{x} = \\left(\\mathbf{A}^\\top \\mathbf{A}\\right)^{-1} \\mathbf{A}^\\top \\mathbf{b}",
                 opt="math",
