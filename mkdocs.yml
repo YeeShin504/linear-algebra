@@ -75,7 +75,7 @@ plugins:
   - search
   - tags
   - offline
-  - privacy
+  # - privacy
   - mkdocs-jupyter:
       ignore_h1_titles: True
       # live notebooks to be processed using jupyterlite plugin
