@@ -5,19 +5,19 @@
         {
           "comment_text": "",
           "digests": {
-            "md5": "d8ec244552a781e7d7104eed0246bed0",
-            "sha256": "528a5d79b093019c1f6c5deee2255acd700210bd54dc705a59cb18c6a483ebf0"
+            "md5": "97df173baea05721c57897e87944e0ab",
+            "sha256": "a019ba0e6a5c2c846edb26e2dec9c2d3bf9c40fffcb9815b657818a2bd0101f1"
           },
           "downloads": -1,
           "filename": "ma1522_linear_algebra-1.1.0-py3-none-any.whl",
           "has_sig": false,
-          "md5_digest": "d8ec244552a781e7d7104eed0246bed0",
+          "md5_digest": "97df173baea05721c57897e87944e0ab",
           "packagetype": "bdist_wheel",
           "python_version": "py3",
           "requires_python": ">=3.10",
           "size": 43880,
-          "upload_time": "2026-01-16T15:27:13.373769Z",
-          "upload_time_iso_8601": "2026-01-16T15:27:13.373769Z",
+          "upload_time": "2026-01-16T16:03:27.050820Z",
+          "upload_time_iso_8601": "2026-01-16T16:03:27.050820Z",
           "url": "./ma1522_linear_algebra-1.1.0-py3-none-any.whl",
           "yanked": false,
           "yanked_reason": null
