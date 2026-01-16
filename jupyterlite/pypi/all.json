@@ -1,24 +1,24 @@
 {
   "ma1522-linear-algebra": {
     "releases": {
-      "1.0.0": [
+      "1.1.0": [
         {
           "comment_text": "",
           "digests": {
-            "md5": "c0cfa0ae9d49ca56433be73b64295a92",
-            "sha256": "c5b3b52311660cf43775bd39ba2a09fd51a1e877eeeaa532ac62046705a5d9d8"
+            "md5": "d8ec244552a781e7d7104eed0246bed0",
+            "sha256": "528a5d79b093019c1f6c5deee2255acd700210bd54dc705a59cb18c6a483ebf0"
           },
           "downloads": -1,
-          "filename": "ma1522_linear_algebra-1.0.0-py3-none-any.whl",
+          "filename": "ma1522_linear_algebra-1.1.0-py3-none-any.whl",
           "has_sig": false,
-          "md5_digest": "c0cfa0ae9d49ca56433be73b64295a92",
+          "md5_digest": "d8ec244552a781e7d7104eed0246bed0",
           "packagetype": "bdist_wheel",
           "python_version": "py3",
           "requires_python": ">=3.10",
-          "size": 43474,
-          "upload_time": "2025-09-22T10:38:48.305751Z",
-          "upload_time_iso_8601": "2025-09-22T10:38:48.305751Z",
-          "url": "./ma1522_linear_algebra-1.0.0-py3-none-any.whl",
+          "size": 43880,
+          "upload_time": "2026-01-16T15:27:13.373769Z",
+          "upload_time_iso_8601": "2026-01-16T15:27:13.373769Z",
+          "url": "./ma1522_linear_algebra-1.1.0-py3-none-any.whl",
           "yanked": false,
           "yanked_reason": null
         }
