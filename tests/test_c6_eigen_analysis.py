@@ -11,8 +11,6 @@
 - fast_svd
 """
 
-import pytest
-
 import sympy as sym
 
 from ma1522 import Matrix
@@ -22,7 +20,6 @@ class TestChapter6:
     def test_cpoly(self):
         mat = Matrix([[1, 2], [3, 4]])
         poly = mat.cpoly()
-        l = sym.symbols("lambda")
         poly = sym.Poly(poly)
         assert poly.all_coeffs() == [1, -5, -2]
 

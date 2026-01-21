@@ -1,4 +1,3 @@
-import pytest
 import numpy as np
 from ma1522 import Matrix
 from ma1522.custom_types import (

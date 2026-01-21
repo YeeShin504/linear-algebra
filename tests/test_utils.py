@@ -1,5 +1,3 @@
-import pytest
-
 import sympy as sym
 
 from ma1522.utils import _powerset, _is_zero

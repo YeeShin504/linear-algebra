@@ -1588,7 +1588,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         U = self.copy()
 
-        I = self.elem()
+        Identity = self.elem()
         L = self.elem()
         P = self.elem()
 
@@ -1606,7 +1606,7 @@ class Matrix(sym.MutableDenseMatrix):
             # Swap the current row with the pivot row if necessary
             if pivot_row != cur_row_pos:
                 U.swap_row(cur_row_pos, pivot_row, verbosity=verbosity)
-                P_elem = I.copy().swap_row(cur_row_pos, pivot_row, verbosity=0)
+                P_elem = Identity.copy().swap_row(cur_row_pos, pivot_row, verbosity=0)
                 P = P @ P_elem
                 L = P_elem @ L @ P_elem
 
@@ -1630,7 +1630,7 @@ class Matrix(sym.MutableDenseMatrix):
 
                         try:
                             decomp = sym.apart(scalar)  # partial fractions
-                        except Exception as e:
+                        except Exception:
                             decomp = scalar
                         if isinstance(decomp, sym.Add):
                             terms = decomp.args
@@ -1649,7 +1649,7 @@ class Matrix(sym.MutableDenseMatrix):
                                     cur_row_pos,
                                     verbosity=verbosity,  # type: ignore
                                 )
-                                elem = I.copy().reduce_row(
+                                elem = Identity.copy().reduce_row(
                                     row_idx, -term, cur_row_pos, verbosity=0
                                 )  # type: ignore
                                 L = L @ elem
@@ -1670,7 +1670,7 @@ class Matrix(sym.MutableDenseMatrix):
                             # if (n != 0) and (not _is_zero(d)):
                             if (not _is_zero(n)) and (not _is_zero(d)):
                                 U.scale_row(row_idx, scalar, verbosity=verbosity)
-                                elem = I.copy().scale_row(
+                                elem = Identity.copy().scale_row(
                                     row_idx, 1 / scalar, verbosity=0
                                 )
                                 L = L @ elem
