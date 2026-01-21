@@ -97,6 +97,39 @@ More usage examples can be found under [tutorials](https://yeeshin504.github.io/
 
 Live demonstration of the library can be found [here](https://yeeshin504.github.io/linear-algebra/live/demo).
 
+### Offline Documentation
+
+An offline version of the documentation is available for download from the [Releases](https://github.com/YeeShin504/linear-algebra/releases) page. This is useful for exam when you may not have internet access.
+
+To use the offline documentation:
+
+1. Download `linear-algebra-docs-offline.zip` from the latest release
+2. Extract the ZIP to a folder
+3. Open `index.html` in your browser
+
+#### Building from Source
+
+If the offline ZIP is not available in the releases, you can build it yourself:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/YeeShin504/linear-algebra.git
+   cd linear-algebra
+   ```
+
+2. Install documentation dependencies:
+   ```bash
+   pip install mkdocs-material mkdocs-jupyter
+   ```
+
+3. Build the documentation:
+   ```bash
+   mkdocs build
+   ```
+
+4. The documentation will be in the `site/` folder. Open `site/index.html` in your browser.
+
+
 ### Credits
 
 I would like to thank [@DenseLance](https://github.com/DenseLance) for his contributions.
