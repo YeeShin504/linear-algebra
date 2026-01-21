@@ -358,7 +358,7 @@ class PDP(Printable):
             return (
                 self.P._latex(printer) + self.D._latex(printer) + P_inv._latex(printer)
             )  # type: ignore
-        except Exception as e:
+        except Exception:
             return (
                 self.P._latex(printer)
                 + self.D._latex(printer)
