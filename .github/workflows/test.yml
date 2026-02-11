@@ -35,11 +35,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          uv run --python ${{ matrix.python-version }} pytest --cov=src --cov-branch --cov-report=xml tests/
-
-      - name: Run docstring tests
-        run: |
-          uv run --python ${{ matrix.python-version }} pytest --doctest-modules
+          uv run --python ${{ matrix.python-version }} pytest --doctest-modules --cov=src --cov-branch --cov-report=xml tests/
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
