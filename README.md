@@ -4,6 +4,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/ma1522-linear-algebra)](https://pypi.org/project/ma1522-linear-algebra/)
 [![GitHub License](https://img.shields.io/github/license/yeeshin504/linear-algebra)](https://github.com/YeeShin504/linear-algebra/blob/master/LICENSE.txt)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/ma1522-linear-algebra)](https://pypistats.org/packages/ma1522-linear-algebra)
+[![codecov](https://codecov.io/github/YeeShin504/linear-algebra/graph/badge.svg?token=2TJ7RSIDOI)](https://codecov.io/github/YeeShin504/linear-algebra)
 
 ## About
 
