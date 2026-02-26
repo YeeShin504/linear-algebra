@@ -3478,6 +3478,9 @@ class Matrix(sym.MutableDenseMatrix):
                 - `P` ([`Matrix`][...]): The matrix of eigenvectors.
                 - `D` ([`Matrix`][...]): The diagonal matrix of eigenvalues.
 
+        Raises:
+            sympy.matrices.matrixbase.MatrixError: If the matrix is not diagonalizable.
+
         Examples:
             >>> mat = Matrix([[1, 2], [3, 4]])
             >>> mat.diagonalize()
