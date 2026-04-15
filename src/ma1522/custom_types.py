@@ -297,6 +297,59 @@ class RREF(Printable):
 
 
 @dataclasses.dataclass
+class RREFCase(Printable):
+    """Represents one symbolic-RREF case produced by :meth:`Matrix.rref_cases`.
+
+    When a pivot entry contains free symbols that may equal zero, the RREF
+    procedure branches into separate cases.  Each branch yields one
+    ``RREFCase`` describing the conditions assumed, the resulting RREF, and
+    derived solution information.
+
+    Attributes:
+        conditions (dict): Substitution map ``{symbol: value}`` that defines
+            this case (e.g. ``{a: 0}`` means "this case holds when ``a = 0``").
+        excluded (list[dict]): Zero-conditions found in *other* branches that
+            are **not** assumed here (i.e. the complement of ``conditions``
+            within the set of all discovered critical values).
+        rref (Matrix): The RREF matrix (augmented with the RHS if one was
+            supplied to :meth:`~Matrix.rref_cases`).
+        pivots (tuple[int, ...]): Column indices of the pivot positions.
+        free_params (int): Number of free parameters in the solution
+            (= ``n_var_cols - len(pivots)`` restricted to variable columns).
+        is_consistent (bool | None): Whether the system is consistent under
+            these conditions.  ``None`` when no RHS was provided.
+    """
+
+    conditions: dict
+    excluded: list
+    rref: Matrix
+    pivots: tuple
+    free_params: int
+    is_consistent: "bool | None"
+
+    def _latex(self, printer=None) -> str:
+        import sympy as _sym
+        from .utils import _textify, _gen_latex_repr_dict
+
+        cond_str = _sym.latex(self.conditions) if self.conditions else r"\{\}"
+        excl_str = _sym.latex(self.excluded) if self.excluded else r"[\,]"
+        rref_str = self.rref._latex(printer)
+        parts = {
+            "conditions": cond_str,
+            "excluded": excl_str,
+            "rref": rref_str,
+            "pivots": str(self.pivots),
+            "free\\_params": str(self.free_params),
+            "is\\_consistent": str(self.is_consistent),
+        }
+        inner = r",\quad ".join(_textify(k) + " = " + v for k, v in parts.items())
+        return _textify("RREFCase") + r"\left\{" + inner + r"\right\}"
+
+    def eval(self) -> "Matrix":
+        return self.rref
+
+
+@dataclasses.dataclass
 class VecDecomp(Printable):
     """
     Represents a vector decomposition into projection and normal components.
