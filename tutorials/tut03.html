@@ -2674,12 +2674,12 @@ Cell <span class="ansi-green-fg">In[7], line 1</span>
 <span class="ansi-green-fg">----&gt; 1</span> x <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">plu</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">U</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">solve</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">y</span><span class="ansi-yellow-bg">)</span>
 <span class="ansi-green-intense-fg ansi-bold">      2</span> x
 
-File <span class="ansi-green-fg">~/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:2346</span>, in <span class="ansi-cyan-fg">Matrix.solve</span><span class="ansi-blue-fg">(self, rhs, verbosity)</span>
-<span class="ansi-green-intense-fg ansi-bold">   2344</span> <span style="color: rgb(95,135,135)"># Use sympy's solve function directly</span>
-<span class="ansi-green-intense-fg ansi-bold">   2345</span> x <span style="color: rgb(98,98,98)">=</span> Matrix<span style="color: rgb(98,98,98)">.</span>create_unk_matrix(r<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>cols, c<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>)
-<span class="ansi-green-fg">-&gt; 2346</span> solution <span style="color: rgb(98,98,98)">=</span> sym<span style="color: rgb(98,98,98)">.</span>solve(<span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">@</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">x</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">-</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">rhs</span>, x<span style="color: rgb(98,98,98)">.</span>free_symbols, <span style="color: rgb(0,135,0)">dict</span><span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
-<span class="ansi-green-intense-fg ansi-bold">   2348</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> verbosity <span style="color: rgb(98,98,98)">&gt;</span><span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">1</span>:
-<span class="ansi-green-intense-fg ansi-bold">   2349</span>     <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Before RREF:</span><span style="color: rgb(175,0,0)">"</span>)
+File <span class="ansi-green-fg">~/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:2248</span>, in <span class="ansi-cyan-fg">Matrix.solve</span><span class="ansi-blue-fg">(self, rhs, verbosity)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2246</span> <span style="color: rgb(95,135,135)"># Use sympy's solve function directly</span>
+<span class="ansi-green-intense-fg ansi-bold">   2247</span> x <span style="color: rgb(98,98,98)">=</span> Matrix<span style="color: rgb(98,98,98)">.</span>create_unk_matrix(r<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>cols, c<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>)
+<span class="ansi-green-fg">-&gt; 2248</span> solution <span style="color: rgb(98,98,98)">=</span> sym<span style="color: rgb(98,98,98)">.</span>solve(<span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">@</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">x</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">-</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">rhs</span>, x<span style="color: rgb(98,98,98)">.</span>free_symbols, <span style="color: rgb(0,135,0)">dict</span><span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
+<span class="ansi-green-intense-fg ansi-bold">   2250</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> verbosity <span style="color: rgb(98,98,98)">&gt;</span><span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">1</span>:
+<span class="ansi-green-intense-fg ansi-bold">   2251</span>     <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Before RREF:</span><span style="color: rgb(175,0,0)">"</span>)
 
 File <span class="ansi-green-fg">~/work/linear-algebra/linear-algebra/.venv/lib/python3.10/site-packages/sympy/core/decorators.py:106</span>, in <span class="ansi-cyan-fg">call_highest_priority.&lt;locals&gt;.priority_decorator.&lt;locals&gt;.binary_op_wrapper</span><span class="ansi-blue-fg">(self, other)</span>
 <span class="ansi-green-intense-fg ansi-bold">    104</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> f <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>:
@@ -2939,12 +2939,12 @@ Cell <span class="ansi-green-fg">In[11], line 1</span>
 <span class="ansi-green-fg">----&gt; 1</span> x <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">plu</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">U</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">solve</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">y</span><span class="ansi-yellow-bg">)</span>
 <span class="ansi-green-intense-fg ansi-bold">      2</span> x
 
-File <span class="ansi-green-fg">~/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:2346</span>, in <span class="ansi-cyan-fg">Matrix.solve</span><span class="ansi-blue-fg">(self, rhs, verbosity)</span>
-<span class="ansi-green-intense-fg ansi-bold">   2344</span> <span style="color: rgb(95,135,135)"># Use sympy's solve function directly</span>
-<span class="ansi-green-intense-fg ansi-bold">   2345</span> x <span style="color: rgb(98,98,98)">=</span> Matrix<span style="color: rgb(98,98,98)">.</span>create_unk_matrix(r<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>cols, c<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>)
-<span class="ansi-green-fg">-&gt; 2346</span> solution <span style="color: rgb(98,98,98)">=</span> sym<span style="color: rgb(98,98,98)">.</span>solve(<span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">@</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">x</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">-</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">rhs</span>, x<span style="color: rgb(98,98,98)">.</span>free_symbols, <span style="color: rgb(0,135,0)">dict</span><span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
-<span class="ansi-green-intense-fg ansi-bold">   2348</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> verbosity <span style="color: rgb(98,98,98)">&gt;</span><span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">1</span>:
-<span class="ansi-green-intense-fg ansi-bold">   2349</span>     <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Before RREF:</span><span style="color: rgb(175,0,0)">"</span>)
+File <span class="ansi-green-fg">~/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:2248</span>, in <span class="ansi-cyan-fg">Matrix.solve</span><span class="ansi-blue-fg">(self, rhs, verbosity)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2246</span> <span style="color: rgb(95,135,135)"># Use sympy's solve function directly</span>
+<span class="ansi-green-intense-fg ansi-bold">   2247</span> x <span style="color: rgb(98,98,98)">=</span> Matrix<span style="color: rgb(98,98,98)">.</span>create_unk_matrix(r<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>cols, c<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>)
+<span class="ansi-green-fg">-&gt; 2248</span> solution <span style="color: rgb(98,98,98)">=</span> sym<span style="color: rgb(98,98,98)">.</span>solve(<span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">@</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">x</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">-</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">rhs</span>, x<span style="color: rgb(98,98,98)">.</span>free_symbols, <span style="color: rgb(0,135,0)">dict</span><span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
+<span class="ansi-green-intense-fg ansi-bold">   2250</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> verbosity <span style="color: rgb(98,98,98)">&gt;</span><span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">1</span>:
+<span class="ansi-green-intense-fg ansi-bold">   2251</span>     <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Before RREF:</span><span style="color: rgb(175,0,0)">"</span>)
 
 File <span class="ansi-green-fg">~/work/linear-algebra/linear-algebra/.venv/lib/python3.10/site-packages/sympy/core/decorators.py:106</span>, in <span class="ansi-cyan-fg">call_highest_priority.&lt;locals&gt;.priority_decorator.&lt;locals&gt;.binary_op_wrapper</span><span class="ansi-blue-fg">(self, other)</span>
 <span class="ansi-green-intense-fg ansi-bold">    104</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> f <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>:
@@ -3699,8 +3699,24 @@ $\displaystyle \left[\begin{array}{ccc}a &amp; b &amp; c\\p &amp; q &amp; r\\u &
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=344bf798">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="question-7">Question 7<a class="anchor-link" href="#question-7">¶</a></h2><p>Use Cramer's rule to solve
+$$\begin{cases} 
+x &amp;+&amp; 5y &amp;+&amp; 3z &amp;=&amp; 1 \\ 
+&amp;&amp; 2y &amp;-&amp; 2z &amp;=&amp; 2 \\
+&amp;&amp; y &amp;+&amp; 3z &amp;=&amp; 0 
+\end{cases}$$</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b8678a5d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5b46b496">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3718,11 +3734,15 @@ $\displaystyle \left[\begin{array}{ccc}a &amp; b &amp; c\\p &amp; q &amp; r\\u &
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1 5 3; 0 2 -2; 0 1 3"</span><span class="p">)</span><span class="o">.</span><span class="n">cramer_solve</span><span class="p">(</span><span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1; 2; 0"</span><span class="p">))</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-23">Matrix.from_str("1 5 3; 0 2 -2; 0 1 3").cramer_solve(Matrix.from_str("1; 2; 0"))
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1 5 3; 0 2 -2; 0 1 3"</span><span class="p">)</span>
+<span class="n">rhs</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1; 2; 0"</span><span class="p">)</span>
 
-</div>
+<span class="n">mat</span><span class="o">.</span><span class="n">cramer_solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-23">mat = Matrix.from_str("1 5 3; 0 2 -2; 0 1 3")
+rhs = Matrix.from_str("1; 2; 0")
+
+mat.cramer_solve(rhs, verbosity=2)</div>
 </div>
 </div>
 </div>
@@ -3798,23 +3818,18 @@ $\displaystyle \left[\begin{array}{c}-2\\\frac{3}{4}\\- \frac{1}{4}\end{array}\r
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=344bf798">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=140f66fd">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="question-7">Question 7<a class="anchor-link" href="#question-7">¶</a></h2><p>Use Cramer's rule to solve
-$$\begin{cases} 
-x &amp;+&amp; 5y &amp;+&amp; 3z &amp;=&amp; 1 \\ 
-&amp;&amp; 2y &amp;-&amp; 2z &amp;=&amp; 2 \\
-&amp;&amp; y &amp;+&amp; 3z &amp;=&amp; 0 
-\end{cases}$$</p>
+<h2 id="question-8">Question 8<a class="anchor-link" href="#question-8">¶</a></h2><p>Compute the adjoint of $\mathbf{A} = \begin{pmatrix} 1 &amp; -1 &amp; 2 \\ 0 &amp; 2 &amp; 1 \\ 3 &amp; 0 &amp; 6 \end{pmatrix}$, and use it to compute $\mathbf{A}^{-1}$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5b46b496">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d7956aef">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3832,15 +3847,13 @@ x &amp;+&amp; 5y &amp;+&amp; 3z &amp;=&amp; 1 \\
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1 5 3; 0 2 -2; 0 1 3"</span><span class="p">)</span>
-<span class="n">rhs</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1; 2; 0"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1 -1 2; 0 2 1; 3 0 6"</span><span class="p">)</span>
 
-<span class="n">mat</span><span class="o">.</span><span class="n">cramer_solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">A</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-24">mat = Matrix.from_str("1 5 3; 0 2 -2; 0 1 3")
-rhs = Matrix.from_str("1; 2; 0")
+<div class="clipboard-copy-txt" id="cell-24">A = Matrix.from_str("1 -1 2; 0 2 1; 3 0 6")
 
-mat.cramer_solve(rhs, verbosity=2)</div>
+A</div>
 </div>
 </div>
 </div>
@@ -3849,85 +3862,17 @@ mat.cramer_solve(rhs, verbosity=2)</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Modified matrix for column 1:
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccc}1 &amp; 5 &amp; 3\\2 &amp; 2 &amp; -2\\0 &amp; 1 &amp; 3\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \text{Determinant for column }1: -2$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Modified matrix for column 2:
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccc}1 &amp; 1 &amp; 3\\0 &amp; 2 &amp; -2\\0 &amp; 0 &amp; 3\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \text{Determinant for column }2: \frac{3}{4}$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Modified matrix for column 3:
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccc}1 &amp; 5 &amp; 1\\0 &amp; 2 &amp; 2\\0 &amp; 1 &amp; 0\end{array}\right]$
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \text{Determinant for column }3: - \frac{1}{4}$
-</div>
-</div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{c}-2\\\frac{3}{4}\\- \frac{1}{4}\end{array}\right]$
+$\displaystyle \left[\begin{array}{ccc}1 &amp; -1 &amp; 2\\0 &amp; 2 &amp; 1\\3 &amp; 0 &amp; 6\end{array}\right]$
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=140f66fd">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="question-8">Question 8<a class="anchor-link" href="#question-8">¶</a></h2><p>Compute the adjoint of $\mathbf{A} = \begin{pmatrix} 1 &amp; -1 &amp; 2 \\ 0 &amp; 2 &amp; 1 \\ 3 &amp; 0 &amp; 6 \end{pmatrix}$, and use it to compute $\mathbf{A}^{-1}$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d7956aef">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ecfe8de9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3945,13 +3890,17 @@ $\displaystyle \left[\begin{array}{c}-2\\\frac{3}{4}\\- \frac{1}{4}\end{array}\r
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">"1 -1 2; 0 2 1; 3 0 6"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Note: Please use `adj` method instead of `adjoint` or `adjugate` </span>
+<span class="c1"># even if they are aliased correctly based on MA1522 definitions as</span>
+<span class="c1"># they are not the same as the SymPy's `adjoint` or `adjugate` methods.</span>
 
-<span class="n">A</span>
+<span class="n">A</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-25">A = Matrix.from_str("1 -1 2; 0 2 1; 3 0 6")
+<div class="clipboard-copy-txt" id="cell-25"># Note: Please use `adj` method instead of `adjoint` or `adjugate` 
+# even if they are aliased correctly based on MA1522 definitions as
+# they are not the same as the SymPy's `adjoint` or `adjugate` methods.
 
-A</div>
+A.adj()</div>
 </div>
 </div>
 </div>
@@ -3963,14 +3912,14 @@ A</div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[25]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{array}{ccc}1 &amp; -1 &amp; 2\\0 &amp; 2 &amp; 1\\3 &amp; 0 &amp; 6\end{array}\right]$
+$\displaystyle \left[\begin{matrix}12 &amp; 6 &amp; -5\\3 &amp; 0 &amp; -1\\-6 &amp; -3 &amp; 2\end{matrix}\right]$
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ecfe8de9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8b704089">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3988,17 +3937,9 @@ $\displaystyle \left[\begin{array}{ccc}1 &amp; -1 &amp; 2\\0 &amp; 2 &amp; 1\\3 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Note: Please use `adj` method instead of `adjoint` or `adjugate` </span>
-<span class="c1"># even if they are aliased correctly based on MA1522 definitions as</span>
-<span class="c1"># they are not the same as the SymPy's `adjoint` or `adjugate` methods.</span>
-
-<span class="n">A</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">adjoint</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-26"># Note: Please use `adj` method instead of `adjoint` or `adjugate` 
-# even if they are aliased correctly based on MA1522 definitions as
-# they are not the same as the SymPy's `adjoint` or `adjugate` methods.
-
-A.adj()</div>
+<div class="clipboard-copy-txt" id="cell-26">A.adjoint()</div>
 </div>
 </div>
 </div>
@@ -4007,6 +3948,15 @@ A.adj()</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/tmp/ipykernel_2499/2803142297.py:1: DeprecationWarning: The classical adjoint of the matrix is computed rather than the conjugate transpose.
+            Please use self.adj() instead to remove ambiguity.
+  A.adjoint()
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
@@ -4017,7 +3967,7 @@ $\displaystyle \left[\begin{matrix}12 &amp; 6 &amp; -5\\3 &amp; 0 &amp; -1\\-6 &
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8b704089">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5d8b30e3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4035,58 +3985,10 @@ $\displaystyle \left[\begin{matrix}12 &amp; 6 &amp; -5\\3 &amp; 0 &amp; -1\\-6 &
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">adjoint</span><span class="p">()</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-27">A.adjoint()</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_2522/2803142297.py:1: DeprecationWarning: The classical adjoint of the matrix is computed rather than the conjugate transpose.
-            Please use self.adj() instead to remove ambiguity.
-  A.adjoint()
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
-<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[\begin{matrix}12 &amp; 6 &amp; -5\\3 &amp; 0 &amp; -1\\-6 &amp; -3 &amp; 2\end{matrix}\right]$
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5d8b30e3">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-28">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">A_inv</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">det</span><span class="p">()</span>
 <span class="n">A_inv</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-28">A_inv = A.adj() / A.det()
+<div class="clipboard-copy-txt" id="cell-27">A_inv = A.adj() / A.det()
 A_inv</div>
 </div>
 </div>
@@ -4097,7 +3999,7 @@ A_inv</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[28]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left[\begin{array}{ccc}-4 &amp; -2 &amp; \frac{5}{3}\\-1 &amp; 0 &amp; \frac{1}{3}\\2 &amp; 1 &amp; - \frac{2}{3}\end{array}\right]$
 </div>

@@ -868,6 +868,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#new-method-in-v12-using" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New method in v1.2 using
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#a_1" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1449,6 +1471,28 @@
   
     <nav class="md-nav" aria-label="Question 4">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-method-in-v12-using" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New method in v1.2 using
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative Solution
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#a_1" class="md-nav__link">
@@ -2915,8 +2959,19 @@ $\displaystyle \left[\begin{array}{ccc|c}a &amp; 0 &amp; b &amp; 2\\a &amp; a &a
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cddf03a9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="new-method-in-v12-using-evaluate_cases">New method in v1.2 using <code>evaluate_cases()</code><a class="anchor-link" href="#new-method-in-v12-using-evaluate_cases">¶</a></h3><p>In v1.2, a new method <code>evaluate_cases(rhs, verbosity)</code> is introduced to check through all possible combinations at the same time using RREF. If <code>rhs</code> is not provided, it is treated as a homogenous system.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=efcb9ba0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d13cbaea">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2934,9 +2989,626 @@ $\displaystyle \left[\begin{array}{ccc|c}a &amp; 0 &amp; b &amp; 2\\a &amp; a &a
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">plu</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">ref</span><span class="p">()</span>  <span class="c1"># Reduced Row Echelon Form using PLU decomposition</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Require separation of A and b as it is a non-homogenous system</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">select_cols</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">select_cols</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">A</span><span class="p">,</span> <span class="n">b</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">plu = mat.ref()  # Reduced Row Echelon Form using PLU decomposition</div>
+<div class="clipboard-copy-txt" id="cell-12"># Require separation of A and b as it is a non-homogenous system
+A = mat.select_cols(0, 1, 2)
+b = mat.select_cols(3)
+
+A, b</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left( \left[\begin{array}{ccc}a &amp; 0 &amp; b\\a &amp; a &amp; 4\\0 &amp; a &amp; 2\end{array}\right], \  \left[\begin{array}{c}2\\4\\b\end{array}\right]\right)$
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4ed95803">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-13">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">evaluate_cases</span><span class="p">(</span><span class="n">rhs</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-13">A.evaluate_cases(rhs=b, verbosity=2)</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Branching on pivot at (0, 0) due to possibility of zero value with free symbols {a}
+Branch 1 on pivot (0, 0) = 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ a : 0\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_1 \leftrightarrow R_2$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 4 &amp; 4\\0 &amp; 0 &amp; b &amp; 2\\0 &amp; 0 &amp; 2 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left(\frac{1}{4}\right) R_1 \rightarrow R_1$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; b &amp; 2\\0 &amp; 0 &amp; 2 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_2 - \left(b\right)R_1 \rightarrow R_2$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 2 - b\\0 &amp; 0 &amp; 2 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_3 - \left(2\right)R_1 \rightarrow R_3$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 2 - b\\0 &amp; 0 &amp; 0 &amp; b - 2\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Branching on pivot at (1, 3) due to possibility of zero value with free symbols {b}
+Branch 1 on pivot (1, 3) = 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ a : 0, \  b : 2\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Completed branch with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ a : 0, \  b : 2\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Branch 2 on pivot (1, 3) ≠ 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ a : 0\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left(\frac{1}{2 - b}\right) R_2 \rightarrow R_2$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; b - 2\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_1 - \left(1\right)R_2 \rightarrow R_1$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; b - 2\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_3 - \left(-2\right)R_2 \rightarrow R_3$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_3 - \left(b\right)R_2 \rightarrow R_3$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Completed branch with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ a : 0\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Branch 2 on pivot (0, 0) ≠ 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ \right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left(\frac{1}{a}\right) R_1 \rightarrow R_1$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{b}{a} &amp; \frac{2}{a}\\a &amp; a &amp; 4 &amp; 4\\0 &amp; a &amp; 2 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_2 - \left(a\right)R_1 \rightarrow R_2$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{b}{a} &amp; \frac{2}{a}\\0 &amp; a &amp; 4 - b &amp; 2\\0 &amp; a &amp; 2 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Branching on pivot at (1, 1) due to possibility of zero value with free symbols {a}
+Branch 1 on pivot (1, 1) ≠ 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ \right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left(\frac{1}{a}\right) R_2 \rightarrow R_2$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{b}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; - \frac{b}{a} + \frac{4}{a} &amp; \frac{2}{a}\\0 &amp; a &amp; 2 &amp; b\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_3 - \left(a\right)R_2 \rightarrow R_3$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{b}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; - \frac{b}{a} + \frac{4}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; b - 2 &amp; b - 2\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Branching on pivot at (2, 2) due to possibility of zero value with free symbols {b}
+Branch 1 on pivot (2, 2) = 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ b : 2\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Completed branch with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ b : 2\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Branch 2 on pivot (2, 2) ≠ 0 with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ \right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left(\frac{1}{b - 2}\right) R_3 \rightarrow R_3$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{b}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; - \frac{b}{a} + \frac{4}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_1 - \left(\frac{b}{a}\right)R_3 \rightarrow R_1$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; - \frac{b}{a} + \frac{2}{a}\\0 &amp; 1 &amp; - \frac{b}{a} + \frac{4}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle R_2 - \left(\frac{4 - b}{a}\right)R_3 \rightarrow R_2$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; - \frac{b}{a} + \frac{2}{a}\\0 &amp; 1 &amp; 0 &amp; \frac{b}{a} - \frac{2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Completed branch with conditions:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ \right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; - \frac{b}{a} + \frac{2}{a}\\0 &amp; 1 &amp; 0 &amp; \frac{b}{a} - \frac{2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right]$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Summary of merged cases for non-homogeneous system:
+Case 1: assume {a: 0}, excluding [{b: 2}]
+No solution
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (2, 3)\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Case 2: assume {}, excluding [{a: 0}, {b: 2}]
+Unique solution
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; - \frac{b}{a} + \frac{2}{a}\\0 &amp; 1 &amp; 0 &amp; \frac{b}{a} - \frac{2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right], \quad\text{pivots} = (0, 1, 2)\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Case 3: assume {b: 2}, excluding [{a: 0}]
+Solution with 1 free parameter(s)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (0, 1)\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+Case 4: assume {a: 0, b: 2}, excluding []
+Solution with 2 free parameter(s)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedLatex jp-OutputArea-output" data-mime-type="text/latex" tabindex="0">
+$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (2,)\right\}$
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left[ \text{RREFCase}\left\{\text{conditions} = \left\{ a : 0\right\},\quad \text{excluded} = \left[ \left\{ b : 2\right\}\right],\quad \text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right],\quad \text{pivots} = (2, 3),\quad \text{free\_params} = 2,\quad \text{is\_consistent} = \text{False}\right\}, \  \text{RREFCase}\left\{\text{conditions} = \{\},\quad \text{excluded} = \left[ \left\{ a : 0\right\}, \  \left\{ b : 2\right\}\right],\quad \text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; - \frac{b}{a} + \frac{2}{a}\\0 &amp; 1 &amp; 0 &amp; \frac{b}{a} - \frac{2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right],\quad \text{pivots} = (0, 1, 2),\quad \text{free\_params} = 0,\quad \text{is\_consistent} = \text{True}\right\}, \  \text{RREFCase}\left\{\text{conditions} = \left\{ b : 2\right\},\quad \text{excluded} = \left[ \left\{ a : 0\right\}\right],\quad \text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right],\quad \text{pivots} = (0, 1),\quad \text{free\_params} = 1,\quad \text{is\_consistent} = \text{True}\right\}, \  \text{RREFCase}\left\{\text{conditions} = \left\{ a : 0, \  b : 2\right\},\quad \text{excluded} = [\,],\quad \text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right],\quad \text{pivots} = (2,),\quad \text{free\_params} = 2,\quad \text{is\_consistent} = \text{True}\right\}\right]$
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d46b52a8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="alternative-solution">Alternative Solution<a class="anchor-link" href="#alternative-solution">¶</a></h3><p>This is an alternative method that that gives you more flexibility to do your own substitution.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=efcb9ba0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">plu</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">ref</span><span class="p">()</span>  <span class="c1"># Row Echelon Form using PLU decomposition</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-14">plu = mat.ref()  # Row Echelon Form using PLU decomposition</div>
 </div>
 </div>
 </div>
@@ -3005,10 +3677,10 @@ $\displaystyle \left[\begin{array}{ccc|c}a &amp; 0 &amp; b &amp; 2\\0 &amp; a &a
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-13">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3022,7 +3694,7 @@ $\displaystyle \left[\begin{array}{ccc|c}a &amp; 0 &amp; b &amp; 2\\0 &amp; a &a
 
 <span class="n">plu</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">a</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span><span class="o">.</span><span class="n">rref</span><span class="p">()</span>  <span class="c1"># substitute a = 0</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13"># Case 1: b != 2, a = 0
+<div class="clipboard-copy-txt" id="cell-15"># Case 1: b != 2, a = 0
 
 plu.U.subs({a: 0}).rref()  # substitute a = 0</div>
 </div>
@@ -3034,7 +3706,7 @@ plu.U.subs({a: 0}).rref()  # substitute a = 0</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (2, 3)\right\}$
 </div>
@@ -3059,10 +3731,10 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &am
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-16">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3076,7 +3748,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &am
 
 <span class="n">plu</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">rref</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-14"># Case 2: b != 2, a != 0
+<div class="clipboard-copy-txt" id="cell-16"># Case 2: b != 2, a != 0
 
 plu.U.rref()</div>
 </div>
@@ -3088,7 +3760,7 @@ plu.U.rref()</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; \frac{2 - b}{a}\\0 &amp; 1 &amp; 0 &amp; \frac{b - 2}{a}\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right], \quad\text{pivots} = (0, 1, 2)\right\}$
 </div>
@@ -3113,10 +3785,10 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &am
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3129,7 +3801,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &am
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Case 3: b = 2, a != 0</span>
 <span class="n">plu</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span><span class="o">.</span><span class="n">rref</span><span class="p">()</span>  <span class="c1"># substitute b = 2</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-15"># Case 3: b = 2, a != 0
+<div class="clipboard-copy-txt" id="cell-17"># Case 3: b = 2, a != 0
 plu.U.subs({b: 2}).rref()  # substitute b = 2</div>
 </div>
 </div>
@@ -3139,10 +3811,17 @@ plu.U.subs({b: 2}).rref()  # substitute b = 2</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
-<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 1 &amp; \frac{2}{a} &amp; \frac{2}{a}\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (0, 1)\right\}$
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">TypeError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[17], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span style="color: rgb(95,135,135)"># Case 3: b = 2, a != 0</span>
+<span class="ansi-green-fg">----&gt; 2</span> plu<span style="color: rgb(98,98,98)">.</span>U<span style="color: rgb(98,98,98)">.</span>subs({b: <span style="color: rgb(98,98,98)">2</span>})<span style="color: rgb(98,98,98)">.</span>rref()  <span style="color: rgb(95,135,135)"># substitute b = 2</span>
+
+<span class="ansi-red-fg">TypeError</span>: unhashable type: 'Matrix'</pre>
 </div>
 </div>
 </div>
@@ -3165,10 +3844,10 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-16">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-18">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3181,7 +3860,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; \frac
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Case 4: b = 2, a = 0</span>
 <span class="n">plu</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">a</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span><span class="o">.</span><span class="n">rref</span><span class="p">()</span>  <span class="c1"># substitute a = 0 and b = 2</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-16"># Case 4: b = 2, a = 0
+<div class="clipboard-copy-txt" id="cell-18"># Case 4: b = 2, a = 0
 plu.U.subs({a: 0, b: 2}).rref()  # substitute a = 0 and b = 2</div>
 </div>
 </div>
@@ -3191,10 +3870,17 @@ plu.U.subs({a: 0, b: 2}).rref()  # substitute a = 0 and b = 2</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
-<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (2,)\right\}$
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">TypeError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[18], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span style="color: rgb(95,135,135)"># Case 4: b = 2, a = 0</span>
+<span class="ansi-green-fg">----&gt; 2</span> plu<span style="color: rgb(98,98,98)">.</span>U<span style="color: rgb(98,98,98)">.</span>subs({a: <span style="color: rgb(98,98,98)">0</span>, b: <span style="color: rgb(98,98,98)">2</span>})<span style="color: rgb(98,98,98)">.</span>rref()  <span style="color: rgb(95,135,135)"># substitute a = 0 and b = 2</span>
+
+<span class="ansi-red-fg">TypeError</span>: unhashable type: 'Matrix'</pre>
 </div>
 </div>
 </div>
@@ -3220,10 +3906,10 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &am
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-19">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3239,7 +3925,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}0 &amp; 0 &amp; 1 &am
 
 <span class="n">mat</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-17">mat = Matrix([[1, -1, 2, 6],
+<div class="clipboard-copy-txt" id="cell-19">mat = Matrix([[1, -1, 2, 6],
               [2, 2, -5, 3],
               [2, 5, 1, 9]], aug_pos=2)
 
@@ -3253,7 +3939,7 @@ mat</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left[\begin{array}{ccc|c}1 &amp; -1 &amp; 2 &amp; 6\\2 &amp; 2 &amp; -5 &amp; 3\\2 &amp; 5 &amp; 1 &amp; 9\end{array}\right]$
 </div>
@@ -3267,10 +3953,10 @@ $\displaystyle \left[\begin{array}{ccc|c}1 &amp; -1 &amp; 2 &amp; 6\\2 &amp; 2 &
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-18">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-20">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3282,7 +3968,7 @@ $\displaystyle \left[\begin{array}{ccc|c}1 &amp; -1 &amp; 2 &amp; 6\\2 &amp; 2 &
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">mat</span><span class="o">.</span><span class="n">rref</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-18">mat.rref()</div>
+<div class="clipboard-copy-txt" id="cell-20">mat.rref()</div>
 </div>
 </div>
 </div>
@@ -3292,7 +3978,7 @@ $\displaystyle \left[\begin{array}{ccc|c}1 &amp; -1 &amp; 2 &amp; 6\\2 &amp; 2 &
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &amp; 4\\0 &amp; 1 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1 &amp; 1\end{array}\right], \quad\text{pivots} = (0, 1, 2)\right\}$
 </div>
@@ -3306,10 +3992,10 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &am
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-19">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-21">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3333,7 +4019,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccc|c}1 &amp; 0 &amp; 0 &am
 
 <span class="n">mat</span><span class="p">,</span> <span class="n">vec</span><span class="p">,</span> <span class="n">aug</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-19"># Alternative Method: Using sym.solve
+<div class="clipboard-copy-txt" id="cell-21"># Alternative Method: Using sym.solve
 
 x, y, z = sym.symbols('x y z')  # Define symbolic variables for the solution
 
@@ -3355,7 +4041,7 @@ mat, vec, aug</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left( \left[\begin{array}{ccc}1 &amp; -1 &amp; 2\\2 &amp; 2 &amp; -5\\2 &amp; 5 &amp; 1\end{array}\right], \  \left[\begin{array}{c}x^{2}\\y^{2}\\z^{2}\end{array}\right], \  \left[\begin{array}{c}6\\3\\9\end{array}\right]\right)$
 </div>
@@ -3369,10 +4055,10 @@ $\displaystyle \left( \left[\begin{array}{ccc}1 &amp; -1 &amp; 2\\2 &amp; 2 &amp
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-20">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-22">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3386,7 +4072,7 @@ $\displaystyle \left( \left[\begin{array}{ccc}1 &amp; -1 &amp; 2\\2 &amp; 2 &amp
 <span class="k">for</span> <span class="n">sol</span> <span class="ow">in</span> <span class="n">sols</span><span class="p">:</span>
     <span class="n">display</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>  <span class="c1"># Print the solutions for each variable</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-20">sols = sym.solve(mat @ vec - aug)  # Solve the system of equations
+<div class="clipboard-copy-txt" id="cell-22">sols = sym.solve(mat @ vec - aug)  # Solve the system of equations
 for sol in sols:
     display(sol)  # Print the solutions for each variable</div>
 </div>
@@ -3453,10 +4139,10 @@ $\displaystyle \left\{ x : 2, \  y : 0, \  z : 1\right\}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-21">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-23">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3475,7 +4161,7 @@ $\displaystyle \left\{ x : 2, \  y : 0, \  z : 1\right\}$
 
 <span class="n">aug_mat</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-21">aug_mat = Matrix([[1, 0, 1, 0, 0, 0, 0, 800],
+<div class="clipboard-copy-txt" id="cell-23">aug_mat = Matrix([[1, 0, 1, 0, 0, 0, 0, 800],
                   [1, -1, 0, 1, 0, 0, 0, 200],
                   [0, 1, 0, 0, -1, 0, 0, 500],
                   [0, 0, 1, 0, 0, 1, 0, 750],
@@ -3492,7 +4178,7 @@ aug_mat</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[23]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 800\\1 &amp; -1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 200\\0 &amp; 1 &amp; 0 &amp; 0 &amp; -1 &amp; 0 &amp; 0 &amp; 500\\0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 750\\0 &amp; 0 &amp; 0 &amp; -1 &amp; 0 &amp; -1 &amp; 1 &amp; -600\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; -1 &amp; -50\end{array}\right]$
 </div>
@@ -3506,10 +4192,10 @@ $\displaystyle \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-22">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-24">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3521,7 +4207,7 @@ $\displaystyle \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">aug_mat</span><span class="o">.</span><span class="n">rref</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-22">aug_mat.rref()</div>
+<div class="clipboard-copy-txt" id="cell-24">aug_mat.rref()</div>
 </div>
 </div>
 </div>
@@ -3531,7 +4217,7 @@ $\displaystyle \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1 &amp; 0 &amp; 50\\0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1 &amp; 450\\0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 750\\0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; -1 &amp; 600\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; -1 &amp; -50\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\end{array}\right], \quad\text{pivots} = (0, 1, 2, 3, 4)\right\}$
 </div>
@@ -3545,10 +4231,10 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 0
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-23">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-25">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3564,7 +4250,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{ccccccc|c}1 &amp; 0 &amp; 0
 <span class="n">sol</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">aug</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">sol</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-23">mat = aug_mat.select_cols(*range(7))
+<div class="clipboard-copy-txt" id="cell-25">mat = aug_mat.select_cols(*range(7))
 aug = aug_mat.select_cols(7)
 
 sol = mat.solve(aug)[0]
@@ -3578,7 +4264,7 @@ sol</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[23]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[25]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left[\begin{array}{c}y + 50\\z + 450\\750 - y\\- y + z + 600\\z - 50\\y\\z\end{array}\right]$
 </div>
@@ -3603,10 +4289,10 @@ $\displaystyle \left[\begin{array}{c}y + 50\\z + 450\\750 - y\\- y + z + 600\\z 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-24">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-26">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3620,7 +4306,7 @@ $\displaystyle \left[\begin{array}{c}y + 50\\z + 450\\750 - y\\- y + z + 600\\z 
 <span class="n">z</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
 <span class="n">sol</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">y</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>  <span class="c1"># Substitute y and z with specified values</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-24">y = sol[5]
+<div class="clipboard-copy-txt" id="cell-26">y = sol[5]
 z = sol[6]
 sol.subs({y: 50, z: 100})  # Substitute y and z with specified values</div>
 </div>
@@ -3632,7 +4318,7 @@ sol.subs({y: 50, z: 100})  # Substitute y and z with specified values</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left[\begin{array}{c}100\\550\\700\\650\\50\\50\\100\end{array}\right]$
 </div>
@@ -3657,10 +4343,10 @@ $\displaystyle \left[\begin{array}{c}100\\550\\700\\650\\50\\50\\100\end{array}\
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-25">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-27">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3672,7 +4358,7 @@ $\displaystyle \left[\begin{array}{c}100\\550\\700\\650\\50\\50\\100\end{array}\
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">sol</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">y</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">})</span> <span class="c1"># Set sol[0] = 0</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-25">sol.subs({y: -50}) # Set sol[0] = 0</div>
+<div class="clipboard-copy-txt" id="cell-27">sol.subs({y: -50}) # Set sol[0] = 0</div>
 </div>
 </div>
 </div>
@@ -3682,7 +4368,7 @@ $\displaystyle \left[\begin{array}{c}100\\550\\700\\650\\50\\50\\100\end{array}\
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[25]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\displaystyle \left[\begin{array}{c}0\\z + 450\\800\\z + 650\\z - 50\\-50\\z\end{array}\right]$
 </div>

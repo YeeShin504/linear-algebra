@@ -2625,10 +2625,10 @@ $\displaystyle \left( \left[\begin{array}{cccc}1 &amp; 3 &amp; -2 &amp; 0\\2 &am
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">aug</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">aug</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">sol</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">sol = mat.solve(aug)
+<div class="clipboard-copy-txt" id="cell-4">sol = mat.solve(aug)[0]
 sol</div>
 </div>
 </div>
@@ -2641,7 +2641,7 @@ sol</div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\displaystyle \left[ \left[\begin{array}{c}- 3 x - 4 z\\x\\- 2 z\\z\end{array}\right]\right]$
+$\displaystyle \left[\begin{array}{c}- 3 x - 4 z\\x\\- 2 z\\z\end{array}\right]$
 </div>
 </div>
 </div>
@@ -2677,16 +2677,10 @@ $\displaystyle \left[ \left[\begin{array}{c}- 3 x - 4 z\\x\\- 2 z\\z\end{array}\
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[5], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span class="ansi-yellow-bg">sol</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">sep_unk</span>()
-
-<span class="ansi-red-fg">AttributeError</span>: 'list' object has no attribute 'sep_unk'</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
+$\displaystyle \left\{ x : \left[\begin{array}{c}-3\\1\\0\\0\end{array}\right], \  z : \left[\begin{array}{c}-4\\0\\-2\\1\end{array}\right]\right\}$
 </div>
 </div>
 </div>
@@ -3878,7 +3872,7 @@ $\text{RREF}\left\{\text{rref} = \left[\begin{array}{cccc}1 &amp; 0 &amp; 0 &amp
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/home/runner/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:3371: UserWarning: Only trivial nullspace (0-vector) detected!
+<pre>/home/runner/work/linear-algebra/linear-algebra/src/ma1522/symbolic.py:3275: UserWarning: Only trivial nullspace (0-vector) detected!
   return Matrix.from_list(self.transpose().nullspace(verbosity))
 </pre>
 </div>
