@@ -167,23 +167,6 @@ def _gen_latex_repr(obj: Printable, printer: LatexPrinter | None = None) -> str:
         A LaTeX string representation of the object.
     """
 
-    # def text(txt: str) -> str:
-    #     return "\\text{" + txt + "}"
-
-    # list_repr = []
-    # for k, v in dataclasses.asdict(obj).items():
-    #     k_repr = text(k)
-    #     if hasattr(v, "_latex"):
-    #         # used for overriding printing behaviour in sympy objects
-    #         v_repr = v._latex(printer)
-    #     elif hasattr(v, "_repr_latex_") and _unwrap_latex(v.__repr__()) != v.__repr__():
-    #         # used for objects that support IPython printing in latex
-    #         v_repr = _unwrap_latex(v.__repr__())
-    #     else:
-    #         v_repr = text(v.__repr__())
-    #     list_repr.append(k_repr + " = " + v_repr)
-
-    # merged = ", \\quad".join(list_repr)
     return _textify(type(obj).__name__) + _gen_latex_repr_dict(
         dataclasses.asdict(obj), printer=printer
     )

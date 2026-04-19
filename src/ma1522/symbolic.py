@@ -38,13 +38,6 @@ from sympy.core.expr import Expr
 from sympy.core.symbol import Symbol
 from sympy.core.mul import Mul
 
-########
-# MISC #
-########
-
-
-
-
 sym.init_printing(use_unicode=True)
 np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
 
@@ -2094,18 +2087,19 @@ class Matrix(sym.MutableDenseMatrix):
         and returns one [`RREFCase`][(p).RREFCase] per distinct branch.
 
         Algorithm:
+
         1. Work column-by-column to find the leftmost pivot in each active row.
         2. If the candidate pivot entry has free symbols that can equal zero,
            create two branches:
-                - **Zero branch**: substitute the zero-making values and retry the
-                    same column (a different row may now become the pivot).
-                - **Non-zero branch**: treat the entry as a non-zero (possibly
-                    symbolic) scalar, normalise the pivot row to 1, and eliminate
-                    the pivot column in all other rows (full RREF).
+            - **Zero branch**: substitute the zero-making values and retry the
+                same column (a different row may now become the pivot).
+            - **Non-zero branch**: treat the entry as a non-zero (possibly
+                symbolic) scalar, normalise the pivot row to 1, and eliminate
+                the pivot column in all other rows (full RREF).
         3. Recursion terminates when all columns (or rows) have been processed.
 
         Args:
-            rhs ([`Matrix`][...], optional): Right-hand side of the system ``Ax = rhs``,
+            rhs (Matrix, optional): Right-hand side of the system ``Ax = rhs``,
                 appended as an augmented column block. When provided, each
                 [`RREFCase`][(p).RREFCase] reports consistency in
                 `RREFCase.is_consistent`.
@@ -2114,10 +2108,11 @@ class Matrix(sym.MutableDenseMatrix):
         Returns:
             (list[RREFCase]): One entry per distinct case. Each
                 [`RREFCase`][(p).RREFCase] contains:
+
                 - ``conditions`` — the symbol substitutions that define the case.
                 - ``excluded`` — zero-conditions from *other* cases (i.e. what
-                                    is **not** assumed here), excluding redundant alternatives for
-                                    symbols already fixed by ``conditions``.
+                    is **not** assumed here), excluding redundant alternatives for
+                    symbols already fixed by ``conditions``.
                 - ``rref`` — the RREF matrix (augmented if *rhs* was given).
                 - ``pivots`` — pivot column indices.
                 - ``free_params`` — number of free parameters.
