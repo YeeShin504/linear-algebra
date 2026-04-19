@@ -4,6 +4,10 @@ from ma1522 import Matrix
 
 class TestVerbosityCoverage:
     """Tests designed to hit printing/verbosity lines in symbolic.py for coverage."""
+
+    def test_command(self):
+        from ma1522.symbolic import sympy_commands
+        sympy_commands()
     
     def test_ref_verbosity(self):
         A = Matrix.from_str("1 2; 3 4")

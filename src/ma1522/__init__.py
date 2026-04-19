@@ -14,7 +14,7 @@ from .custom_types import (
     NumSVD,
 )
 
-from .symbolic import Matrix
+from .symbolic import Matrix, sympy_commands
 
 __all__ = [
     "display",
@@ -30,4 +30,5 @@ __all__ = [
     "SVD",
     "NumSVD",
     "Matrix",
+    "sympy_commands",
 ]

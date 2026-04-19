@@ -119,7 +119,7 @@ def sympy_commands():
     >>> A.reduce_row(idx_1: int, scalar: float, idx_2: int, verbosity=0) # Row reduction
     >>> A.get_pivot_row(col_idx: int, row_start_idx: int, follow_GE=False) # Find pivot row
     >>> A.ref(verbosity=2, max_tries=2, follow_GE=False, matrices=2) # Row echelon form (REF)
-    >>> A.evaluate_cases(rhs: Matrix) # Display solution cases for symbolic systems
+    >>> A.evaluate_cases(rhs: Matrix, verbosity=0) # Display solution cases for symbolic systems
     >>> A.column_constraints(use_id=False, use_ref=False) # RREF of [A | b], constraints for b
     >>> A.extend_basis(span_subspace=A.elem()) # Augment basis to span subspace
     >>> A.transition_matrix(to: Matrix) # Transition matrix between bases
@@ -907,8 +907,11 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> import math
+            >>> import pytest
             >>> mat = Matrix([[math.sqrt(4), math.e], [1/math.sqrt(2), 0.0]])
-            >>> mat.identify() == Matrix([[2, sym.E], [sym.sqrt(2) / 2, 0]])
+            >>> with pytest.warns(RuntimeWarning, match="Non-zero Identification Error"):
+            ...     result = mat.identify()
+            >>> result == Matrix([[2, sym.E], [sym.sqrt(2) / 2, 0]])
             True
 
         See Also:
@@ -2512,7 +2515,9 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[1, 2], [3, 4]])
-            >>> mat.adjoint()
+            >>> import pytest
+            >>> with pytest.warns(DeprecationWarning, match="The classical adjoint"):
+            ...     mat.adjoint()
             Matrix([
             [ 4, -2],
             [-3,  1]])
