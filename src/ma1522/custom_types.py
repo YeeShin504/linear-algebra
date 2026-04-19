@@ -4,9 +4,10 @@ import dataclasses
 from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
+import sympy as sym
 from sympy.printing.latex import LatexPrinter
 
-from .utils import _gen_latex_repr
+from .utils import _gen_latex_repr, _textify, _gen_latex_repr_dict
 # from ma1522 import utils
 
 if TYPE_CHECKING:
@@ -298,7 +299,8 @@ class RREF(Printable):
 
 @dataclasses.dataclass
 class RREFCase(Printable):
-    """Represents one symbolic-RREF case produced by :meth:`Matrix.rref_cases`.
+    """
+    Represents one symbolic-RREF case produced by :meth:`~Matrix.rref_cases`.
 
     When a pivot entry contains free symbols that may equal zero, the RREF
     procedure branches into separate cases.  Each branch yields one
@@ -325,22 +327,19 @@ class RREFCase(Printable):
     rref: Matrix
     pivots: tuple
     free_params: int
-    is_consistent: "bool | None"
+    is_consistent: bool | None
 
     def _latex(self, printer=None) -> str:
-        import sympy as _sym
-        from .utils import _textify, _gen_latex_repr_dict
-
-        cond_str = _sym.latex(self.conditions) if self.conditions else r"\{\}"
-        excl_str = _sym.latex(self.excluded) if self.excluded else r"[\,]"
+        cond_str = sym.latex(self.conditions) if self.conditions else r"\{\}"
+        excl_str = sym.latex(self.excluded) if self.excluded else r"[\,]"
         rref_str = self.rref._latex(printer)
         parts = {
             "conditions": cond_str,
             "excluded": excl_str,
             "rref": rref_str,
             "pivots": str(self.pivots),
-            "free\\_params": str(self.free_params),
-            "is\\_consistent": str(self.is_consistent),
+            "free_params": str(self.free_params),
+            "is_consistent": _textify(str(self.is_consistent)),
         }
         inner = r",\quad ".join(_textify(k) + " = " + v for k, v in parts.items())
         return _textify("RREFCase") + r"\left\{" + inner + r"\right\}"

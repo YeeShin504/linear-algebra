@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Iterable
+import dis
 from typing import TYPE_CHECKING
 from warnings import warn
 
+from numpy.linalg import cond
 import sympy as sym
 from sympy.parsing.sympy_parser import parse_expr
 
@@ -147,164 +149,6 @@ def sympy_commands():
 
 sym.init_printing(use_unicode=True)
 np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
-
-
-# ---------------------------------------------------------------------------
-# Private helpers for rref_cases
-# ---------------------------------------------------------------------------
-
-
-def _get_rref_pivots(mat: sym.Matrix) -> list[int]:
-    """Return pivot column indices by scanning each row of an RREF matrix.
-
-    For each row we take the leftmost non-zero entry as the pivot.  Rows that
-    are entirely zero (zero rows) contribute no pivot.
-    """
-    pivots: list[int] = []
-    for row in range(mat.rows):
-        for col in range(mat.cols):
-            entry = sym.simplify(mat[row, col])
-            if entry != 0:
-                pivots.append(col)
-                break
-    return pivots
-
-
-def _check_rref_consistency(mat: sym.Matrix, n_var_cols: int) -> bool:
-    """Return *True* if the augmented RREF matrix represents a consistent system.
-
-    A system is inconsistent when any row has all-zero entries in the first
-    ``n_var_cols`` columns but a non-zero entry in the remaining (RHS) columns.
-    """
-    for row in range(mat.rows):
-        lhs_zero = all(sym.simplify(mat[row, col]) == 0 for col in range(n_var_cols))
-        rhs_nonzero = any(
-            sym.simplify(mat[row, col]) != 0 for col in range(n_var_cols, mat.cols)
-        )
-        if lhs_zero and rhs_nonzero:
-            return False
-    return True
-
-
-def _pivot_and_continue(
-    mat: sym.Matrix,
-    conditions: dict,
-    cur_row: int,
-    cur_col: int,
-    pivot_row: int,
-) -> "list[tuple[sym.Matrix, dict]]":
-    """Swap the pivot into place, normalise the pivot row to 1, eliminate the
-    pivot column in every other row (full RREF), then recurse.
-
-    Args:
-        mat: Current working matrix (already has ``conditions`` applied).
-        conditions: Symbol substitutions assumed in this branch.
-        cur_row: Row index to place the pivot into.
-        cur_col: Column index of the current pivot.
-        pivot_row: Row where the chosen pivot currently lives.
-
-    Returns:
-        A list of ``(final_matrix, conditions)`` tuples.
-    """
-    # Work on a copy to avoid mutating shared state across branches.
-    m = mat.copy()
-
-    # --- swap pivot row into position ------------------------------------------
-    if pivot_row != cur_row:
-        m.swap_row(cur_row, pivot_row, verbosity=0)
-
-    # --- normalise pivot to 1 --------------------------------------------------
-    pivot_val = sym.simplify(m[cur_row, cur_col])
-    if pivot_val != 1:
-        m.scale_row(cur_row, sym.Integer(1) / pivot_val, verbosity=0)
-
-    # --- eliminate pivot column in all OTHER rows (full RREF) ------------------
-    for row_idx in range(m.rows):
-        if row_idx == cur_row:
-            continue
-        coeff = sym.simplify(m[row_idx, cur_col])
-        if coeff != 0:
-            m.reduce_row(row_idx, coeff, cur_row, verbosity=0)
-
-    return _symbolic_rref(m, conditions, cur_row + 1, cur_col + 1)
-
-
-def _symbolic_rref(
-    mat: sym.Matrix,
-    conditions: dict,
-    cur_row: int,
-    cur_col: int,
-) -> "list[tuple[sym.Matrix, dict]]":
-    """Recursively compute RREF, branching whenever a pivot entry has free
-    symbols that could be zero under some assignment.
-
-    Args:
-        mat: Current working matrix (already reflects earlier pivoting steps;
-            may still contain free symbols).
-        conditions: Symbol substitutions (``{Symbol: value}``) accumulated so
-            far in this branch.
-        cur_row: Next row to place a pivot into.
-        cur_col: Next column to look for a pivot in.
-
-    Returns:
-        A list of ``(final_matrix_in_rref, conditions)`` pairs — one per leaf
-        branch in the case tree.
-    """
-    # --- Apply current conditions and simplify ---------------------------------
-    mat_eval = mat.subs(conditions)
-    mat_eval.simplify(rational=False, simplify=True, suppress_warnings=True)
-
-    # --- Base case: all columns (or rows) exhausted ----------------------------
-    if cur_col >= mat_eval.cols or cur_row >= mat_eval.rows:
-        return [(mat_eval, conditions)]
-
-    # --- Find first non-zero entry in cur_col at or below cur_row --------------
-    pivot_row: int | None = None
-    for row_idx in range(cur_row, mat_eval.rows):
-        entry = sym.simplify(mat_eval[row_idx, cur_col])
-        if entry != 0:
-            pivot_row = row_idx
-            break
-
-    if pivot_row is None:
-        # No pivot in this column — skip to the next column.
-        return _symbolic_rref(mat_eval, conditions, cur_row, cur_col + 1)
-
-    pivot_entry = sym.simplify(mat_eval[pivot_row, cur_col])
-    free_syms = pivot_entry.free_symbols
-
-    if not free_syms:
-        # Pivot is a non-zero constant — proceed unconditionally.
-        return _pivot_and_continue(mat_eval, conditions, cur_row, cur_col, pivot_row)
-
-    # --- Pivot has free symbols: check whether it can equal zero ---------------
-    try:
-        zero_solutions: list[dict] = sym.solve(pivot_entry, list(free_syms), dict=True)
-    except Exception:
-        zero_solutions = []
-
-    if not zero_solutions:
-        # Cannot be zero — proceed unconditionally.
-        return _pivot_and_continue(mat_eval, conditions, cur_row, cur_col, pivot_row)
-
-    # --- Branch: one branch per zero solution, plus the "non-zero" branch ------
-    results: list[tuple[sym.Matrix, dict]] = []
-
-    for zero_sol in zero_solutions:
-        # Skip degenerate solutions where no symbol is actually constrained.
-        if not zero_sol:
-            continue
-        new_conds = {**conditions, **zero_sol}
-        # With this substitution the pivot becomes 0 — re-enter the same
-        # (cur_row, cur_col) so the algorithm searches for a different pivot.
-        results.extend(_symbolic_rref(mat_eval, new_conds, cur_row, cur_col))
-
-    # "Non-zero" branch: proceed with the current pivot as-is (symbolic but ≠ 0).
-    results.extend(
-        _pivot_and_continue(mat_eval, conditions, cur_row, cur_col, pivot_row)
-    )
-
-    return results
 
 
 # ---------------------------------------------------------------------------
@@ -1664,7 +1508,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         return pivot_pos
 
-    def get_pivot_elements(self) -> list[Expr]:
+    def get_pivot_elements(self) -> list[sym.Expr]:
         """Retrieves the pivot elements from the matrix.
 
         This method identifies the pivot positions (row, column) using the
@@ -1681,12 +1525,92 @@ class Matrix(sym.MutableDenseMatrix):
             [1, 5]
         """
 
-        pivot_elements: list[Expr] = []
+        pivot_elements: list[sym.Expr] = []
 
         for i, j in self.get_pivot_pos():
             pivot_elements.append(self[i, j])  # type: ignore
 
         return pivot_elements
+
+    def _symbolic_reduce_row(
+        self,
+        row_idx: int,
+        pivot_row_idx: int,
+        col_idx: int,
+        max_tries: int = 2,
+        verbosity: int = 0,
+        L_matrix: Matrix | None = None,
+    ) -> None:
+        """Reduce a row using a pivot row, handling symbolic denominators.
+
+        Used by both ref() and rref_cases(). If L_matrix is provided, it records
+        the operations to maintain the L matrix in PLU decomposition.
+
+        Args:
+            row_idx (int): The index of the row to reduce.
+            pivot_row_idx (int): The index of the pivot row to use for reduction.
+            col_idx (int): The index of the column to reduce.
+            max_tries (int, optional): Maximum number of tries to reduce a row in case of symbolic denominators.
+            verbosity (int, optional): The level of verbosity for output.
+                - 0: No output.
+                - 1: Print the row reduction operation.
+                - 2: Print the row reduction operation and display the matrix.
+            L_matrix ([`Matrix`][...], optional): If provided, updates this matrix to reflect the row operations
+                for maintaining the L matrix in PLU decomposition.
+        """
+        Identity = self.elem()
+        tries = 0
+        while sym.simplify(self[row_idx, col_idx]) != 0:
+            tries += 1
+            if tries > max_tries:
+                warn(
+                    f"ERROR: Max tries exceeded to reduce row {row_idx + 1} with row {pivot_row_idx + 1}",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                break
+            try:
+                scalar = self[row_idx, col_idx] / self[pivot_row_idx, col_idx]  # type: ignore
+                scalar = scalar.expand().simplify()
+
+                try:
+                    decomp = sym.apart(scalar)  # partial fractions
+                except Exception:
+                    decomp = scalar
+                if isinstance(decomp, sym.Add):
+                    terms = decomp.args
+                else:
+                    terms = [decomp]
+
+                for term in terms:
+                    _, d = sym.fraction(term)
+                    if sym.simplify(d) != 0:
+                        self.reduce_row(
+                            row_idx, term, pivot_row_idx, verbosity=verbosity
+                        )
+                        if L_matrix is not None:
+                            elem = Identity.copy().reduce_row(
+                                row_idx, -term, pivot_row_idx, verbosity=0
+                            )
+                            L_matrix.__dict__.update((L_matrix @ elem).__dict__)
+
+                # Scaling fallback for symbolic denominators
+                if sym.simplify(self[row_idx, col_idx]) != 0:
+                    scalar = self[pivot_row_idx, col_idx] / self[row_idx, col_idx]  # type: ignore
+                    tmp = scalar.simplify()
+                    if tmp is not None:
+                        scalar = tmp
+                    n, d = sym.fraction(scalar)
+                    if (sym.simplify(n) != 0) and (sym.simplify(d) != 0):
+                        self.scale_row(row_idx, scalar, verbosity=verbosity)
+                        if L_matrix is not None:
+                            elem = Identity.copy().scale_row(
+                                row_idx, sym.Integer(1) / scalar, verbosity=0
+                            )
+                            L_matrix.__dict__.update((L_matrix @ elem).__dict__)
+            except Exception as error:
+                warn(f"Reduction error: {error}", RuntimeWarning)
+                break
 
     def ref(
         self,
@@ -1771,169 +1695,46 @@ class Matrix(sym.MutableDenseMatrix):
 
             # Eliminate the current column in rest of the rows below
             for row_idx in range(cur_row_pos + 1, self.rows):
-                # reduce the row_idx iteratively via partial fractions to
-                # prevent division by a possible 0 term
-                tries = 0
-                while U[row_idx, cur_col_pos] != 0:
-                    tries += 1
-                    if tries > max_tries:
-                        warn(
-                            f"ERROR: Max tries exceeded to reduce row {row_idx + 1} with row {cur_row_pos + 1}",
-                            RuntimeWarning,
-                            stacklevel=2,
-                        )
-                        break
-                    try:
-                        scalar = U[row_idx, cur_col_pos] / U[cur_row_pos, cur_col_pos]  # type: ignore
-                        scalar = scalar.expand().simplify()
+                U._symbolic_reduce_row(
+                    row_idx, cur_row_pos, cur_col_pos, max_tries, verbosity, L
+                )
 
-                        try:
-                            decomp = sym.apart(scalar)  # partial fractions
-                        except Exception:
-                            decomp = scalar
-                        if isinstance(decomp, sym.Add):
-                            terms = decomp.args
-                        else:
-                            # there is only 1 term (could be integer or proper fraction)
-                            terms = [decomp]
-
-                        for term in terms:
-                            _, d = sym.fraction(term)
-
-                            # ensure denominator is non-zero so that reduction is valid
-                            if not _is_zero(d):
-                                U.reduce_row(
-                                    row_idx,
-                                    term,
-                                    cur_row_pos,
-                                    verbosity=verbosity,  # type: ignore
-                                )
-                                elem = Identity.copy().reduce_row(
-                                    row_idx, -term, cur_row_pos, verbosity=0
-                                )  # type: ignore
-                                L = L @ elem
-
-                        # Cases where pivot row contains symbols such that scalar is a
-                        # fraction with symbolic denominator.
-                        # To reduce further, can only scale row_idx accordingly
-                        if U[row_idx, cur_col_pos] != 0:
-                            scalar = (
-                                U[cur_row_pos, cur_col_pos] / U[row_idx, cur_col_pos]
-                            )  # type: ignore
-                            tmp = scalar.simplify()
-                            if tmp is not None:
-                                scalar = tmp
-                            n, d = sym.fraction(scalar)
-                            # to scale by n, n cannot be 0 both numerically or symbolically
-                            # to scale by 1/d, d cannot be 0, same argument as n
-                            # if (n != 0) and (not _is_zero(d)):
-                            if (not _is_zero(n)) and (not _is_zero(d)):
-                                U.scale_row(row_idx, scalar, verbosity=verbosity)
-                                elem = Identity.copy().scale_row(
-                                    row_idx, 1 / scalar, verbosity=0
-                                )
-                                L = L @ elem
-
-                    except Exception as error:
-                        print(f"Exception encountered: {error}")
-                        return PLU(P, L, U)
             cur_row_pos += 1
 
         # Return the appropriate number of matrices based on the `matrices` parameter
         return PLU(P, L, U)
 
-    def find_all_cases(self) -> list:
-        cases = []
-        det = (self.T @ self).det()
-        if len(det.free_symbols) == 0:
-            # determinant of the matrix is fixed
-            return []
-        elif len(det.free_symbols) == 1:
-            for sol in sym.solve(det):
-                cases.extend([{det.free_symbols.pop(): sol}])
-        else:
-            for sol in sym.solve(det):
-                cases.extend([sol])
-        cases = [dict(case) for case in set(tuple(case.items()) for case in cases)]
+    def evaluate_cases(self, rhs: Matrix | None = None, verbosity: int = 0) -> list[RREFCase]:
+        """Evaluates and displays all possible cases for solutions to a linear system involving the matrix.
 
-        # if variable is not in dictionary, it can be treated as entire real
-        # except for specific cases found in other combinations
-        combinations = set()
-        for subset in _powerset(cases):
-            combined = dict()
-            for d in subset:
-                combined = {**combined, **d}
-            combinations.add(tuple(sym.ordered(combined.items())))
-
-        return list(sym.ordered(dict(combination) for combination in combinations))
-
-    def evaluate_cases(self, rhs: Matrix | None = None, use_ref: bool = True) -> None:
-        """
-        Evaluates and displays all possible cases for solutions to a linear system involving the matrix.
-
-        This method analyzes the determinant of the matrix (or its Gram matrix if not square) to identify
-        all possible cases for the values of free variables that affect the existence or uniqueness of solutions.
-        For each case, it substitutes the corresponding values into the system and displays the resulting solution(s).
+        This method uses `rref_cases()` to find all critical symbolic values where
+        the system's structure changes. For each case, it displays the conditions,
+        the resulting RREF, and the solution consistency.
 
         Args:
-            rhs (Matrix, optional): The right-hand side matrix of the system. If not provided, it treats the system
-                as homogeneous (i.e., `Ax = 0`).
-            use_ref (bool, optional): Whether to use the row echelon form (REF) for case analysis. Defaults to True.
-
-        Returns:
-            None
-
-        Examples:
-            >>> import sympy as sym
-            >>> x = sym.symbols('x')
-            >>> A = Matrix([[x, 1], [0, 1]])
-            >>> b = Matrix([[2], [3]])
-            >>> A.evaluate_cases(b)
-            Case 1: {}, not including [{x: 0}]
-            Unique solution
-            RREF(rref=Matrix([
-                [x, 1 | 2]
-                [0, 1 | 3]
-            ]), pivots=(0, 1))
-            <BLANKLINE>
-            <BLANKLINE>
-            Case 2: {x: 0}, not including []
-            No solution
-            RREF(rref=Matrix([
-                [0, 1 | 2]
-                [0, 0 | 1]
-            ]), pivots=(1, 2))
-            <BLANKLINE>
-            <BLANKLINE>
+            rhs (Matrix, optional): The right-hand side of the system Ax = rhs.
+                If not provided, the system is treated as homogeneous.
+            verbosity (int, optional): The level of verbosity for the computation.
         """
-        if rhs is None:
-            rhs = Matrix.zeros(self.rows, 1)
-        cases = self.find_all_cases()
-        all_possible_values = set(
-            possible_val for case in cases for possible_val in case.items()
-        )
-
-        for i, case in enumerate(cases, 1):
-            print(
-                f"Case {i}: {case}, not including {[dict([val]) for val in all_possible_values.symmetric_difference(set(case.items()))]}"
-            )
-            U = self.row_join(rhs, aug_line=True).subs(case)
-            if use_ref:
-                U = U.ref(verbosity=0, follow_GE=False).U
-                pivots = [pos[1] for pos in U.get_pivot_pos()]
+        cases = self.rref_cases(rhs=rhs, verbosity=verbosity)
+        print(f"Summary of cases for {'homogeneous' if rhs is None else 'non-homogeneous'} system:")
+        for i, c in enumerate(cases, 1):
+            print(f"Case {i}: assume {c.conditions}, excluding {c.excluded}")
+            if rhs is None:
+                print(f"Homogeneous system with {c.free_params} free parameter(s)")
             else:
-                U, pivots = U.rref(pivots=True)
-            if self.cols in pivots:  # type: ignore
-                print("No solution")
-            else:
-                free_params = self.cols - len(pivots)  # type: ignore
-                if free_params == 0:
-                    print("Unique solution")
+                if c.is_consistent:
+                    if c.free_params == 0:
+                        print("Unique solution")
+                    else:
+                        print(f"Solution with {c.free_params} free parameter(s)")
                 else:
-                    print(f"Solution with {free_params} free parameters")
-
-            display(RREF(U, tuple(pivots)))  # type: ignore
+                    print("No solution")
+            
+            display(RREF(c.rref, c.pivots))
             print("\n")
+    
+        return cases
 
     # Override
     def rref(self, *args, pivots: bool = True, **kwargs) -> RREF | Matrix:
@@ -1969,7 +1770,7 @@ class Matrix(sym.MutableDenseMatrix):
         else:
             rref_mat = super().rref(*args, pivots=False, **kwargs)
 
-        aug = self._aug_pos.copy() if hasattr(self, "_aug_pos") else set()
+        aug = self._aug_pos.copy() if isinstance(self, Matrix) else set()
         rref_mat = Matrix(rref_mat, aug_pos=aug)
 
         if pivots:
@@ -1977,45 +1778,241 @@ class Matrix(sym.MutableDenseMatrix):
         else:
             return rref_mat
 
-    def rref_cases(
+    def _get_rref_pivots(self) -> list[int]:
+        """Return pivot column indices by scanning each row of an RREF matrix.
+
+        For each row we take the leftmost non-zero entry as the pivot.  Rows that
+        are entirely zero (zero rows) contribute no pivot.
+        """
+        pivots: list[int] = []
+        for row in range(self.rows):
+            for col in range(self.cols):
+                entry = sym.simplify(self[row, col])
+                if entry != 0:
+                    pivots.append(col)
+                    break
+        return pivots
+
+    def _check_rref_consistency(self) -> bool:
+        """Return *True* if the augmented RREF matrix represents a consistent system.
+
+        A system is inconsistent when any row has all-zero entries on the left-hand side (LHS) of the
+        augmentation line(s) but a non-zero entry on the right-hand side (RHS).
+        """
+        if (
+            not isinstance(self, Matrix)
+            or not hasattr(self, "_aug_pos")
+            or not self._aug_pos
+        ):
+            raise ValueError(
+                "Matrix must have augmentation lines defined for consistency check."
+            )
+        # pick the leftmost augmentation line as the boundary between LHS and RHS
+        n_var_cols = self.cols - min(self._aug_pos)
+        for row in range(self.rows):
+            lhs_zero = all(
+                sym.simplify(self[row, col]) == 0 for col in range(n_var_cols)
+            )
+            rhs_nonzero = any(
+                sym.simplify(self[row, col]) != 0
+                for col in range(n_var_cols, self.cols)
+            )
+            if lhs_zero and rhs_nonzero:
+                return False
+        return True
+
+    def _pivot_and_continue(
         self,
-        rhs: Matrix | None = None,
-        n_cols: int | None = None,
+        conditions: dict,
+        cur_row: int,
+        cur_col: int,
+        pivot_row: int,
+        verbosity: int = 0,
+    ) -> "list[tuple[Matrix, dict]]":
+        """Swap the pivot into place, normalise the pivot row to 1, eliminate the
+        pivot column in every other row (full RREF), then recurse.
+        """
+        # Create a copy to avoid mutating shared state across branches.
+        m = self.copy()
+
+        # swap pivot row into position
+        if pivot_row != cur_row:
+            m.swap_row(cur_row, pivot_row, verbosity=verbosity)
+
+        # normalise pivot to 1 (if not already 1)
+        pivot_val = sym.simplify(m[cur_row, cur_col])
+        if pivot_val != 1:
+            m.scale_row(cur_row, sym.Integer(1) / pivot_val, verbosity=verbosity)
+
+        # eliminate pivot column in all other rows (full RREF)
+        for row_idx in range(m.rows):
+            if row_idx == cur_row:
+                continue
+            m._symbolic_reduce_row(row_idx, cur_row, cur_col, verbosity=verbosity)
+
+        return m._symbolic_rref(
+            conditions, cur_row + 1, cur_col + 1, verbosity=verbosity
+        )
+
+    def _symbolic_rref(
+        self,
+        conditions: dict,
+        cur_row: int,
+        cur_col: int,
+        verbosity: int = 0,
+    ) -> "list[tuple[Matrix, dict]]":
+        """Recursively compute RREF, branching whenever a pivot entry has free
+        symbols that could be zero under some assignment.
+        """
+
+        # Apply current conditions and simplify
+        mat_eval = self.subs(conditions)
+        if not isinstance(mat_eval, Matrix):
+            mat_eval = Matrix(mat_eval)
+        mat_eval.simplify(rational=False, simplify=True, suppress_warnings=True)
+
+        # Base case: all columns (or rows) exhausted
+        if cur_col >= mat_eval.cols or cur_row >= mat_eval.rows:
+            if verbosity >= 1:
+                print("Completed branch with conditions:")
+                display(conditions)
+            if verbosity >= 2:
+                display(mat_eval)
+                print("\n")
+            return [(mat_eval, conditions)]
+
+        # Find first non-zero entry in cur_col at or below cur_row
+        # Prefer constants to symbols (following GE logic) to avoid redundant branches
+        pivot_row = mat_eval.get_pivot_row(cur_col, cur_row, follow_GE=False)
+
+        if pivot_row is None:
+            # No pivot in this column — skip to the next column.
+            return mat_eval._symbolic_rref(
+                conditions=conditions,
+                cur_row=cur_row,
+                cur_col=cur_col + 1,
+                verbosity=verbosity,
+            )
+
+        pivot_entry = sym.simplify(mat_eval[pivot_row, cur_col])
+        free_syms = pivot_entry.free_symbols
+
+        if not free_syms:
+            # Pivot is a non-zero constant — proceed unconditionally.
+            return mat_eval._pivot_and_continue(
+                conditions=conditions,
+                cur_row=cur_row,
+                cur_col=cur_col,
+                pivot_row=pivot_row,
+                verbosity=verbosity,
+            )
+
+        # Pivot has free symbols: check whether it can equal zero
+        try:
+            zero_solutions: list[dict] = sym.solve(
+                pivot_entry, list(free_syms), dict=True
+            )
+        except Exception:
+            zero_solutions = []
+
+        if not zero_solutions:
+            # Cannot be zero — proceed unconditionally.
+            return mat_eval._pivot_and_continue(
+                conditions=conditions,
+                cur_row=cur_row,
+                cur_col=cur_col,
+                pivot_row=pivot_row,
+                verbosity=verbosity,
+            )
+
+        # Branch: one branch per zero solution, plus the "non-zero" branch
+        results: list[tuple[Matrix, dict]] = []
+
+        if verbosity >= 1:
+            print(
+                f"Branching on pivot at ({pivot_row}, {cur_col}) due to possibility of zero value with free symbols {free_syms}"
+            )
+
+        branch_count = 1
+        for zero_sol in zero_solutions:
+            # Skip degenerate solutions where no symbol is actually constrained.
+            if not zero_sol:
+                continue
+
+            new_conds = {**conditions, **zero_sol}
+
+            # Check if this branch contradicts a previous non-zero assumption
+            # by checking if substituting the zero solution produces division by zero.
+            test_mat = mat_eval.subs(zero_sol)
+            if test_mat.has(sym.zoo, sym.nan):
+                continue
+
+            # With this substitution the pivot becomes 0 — re-enter the same
+            # (cur_row, cur_col) so the algorithm searches for a different pivot.
+            if verbosity >= 1:
+                print(
+                    f"Branch {branch_count} on pivot ({pivot_row}, {cur_col}) = 0 with conditions:"
+                )
+                display(new_conds)
+            branch_count += 1
+            results.extend(
+                mat_eval._symbolic_rref(
+                    conditions=new_conds,
+                    cur_row=cur_row,
+                    cur_col=cur_col,
+                    verbosity=verbosity,
+                )
+            )
+
+        # "Non-zero" branch: proceed with the current pivot as-is (symbolic but ≠ 0).
+        if verbosity >= 1:
+            print(
+                f"Branch {branch_count} on pivot ({pivot_row}, {cur_col}) ≠ 0 with conditions:"
+            )
+            display(conditions)
+        results.extend(
+            mat_eval._pivot_and_continue(
+                conditions=conditions,
+                cur_row=cur_row,
+                cur_col=cur_col,
+                pivot_row=pivot_row,
+                verbosity=verbosity,
+            )
+        )
+
+        return results
+
+    def rref_cases(
+        self, rhs: Matrix | None = None, verbosity: int = 0
     ) -> list[RREFCase]:
-        """Compute all symbolic-RREF cases, splitting on zero-pivot conditions.
+        """Compute all symbolic-RREF cases by splitting on zero-pivot conditions.
 
         When the matrix contains free symbols, different assignments of those
         symbols can lead to structurally different row-echelon forms (different
         numbers of pivots, inconsistencies, etc.).  This method detects exactly
-        those critical values by branching at every pivot that *could* be zero,
+        those critical values by branching at every pivot that could be zero,
         and returns one :class:`RREFCase` per distinct branch.
 
-        Algorithm overview:
-
+        Algorithm:
         1. Work column-by-column to find the leftmost pivot in each active row.
         2. If the candidate pivot entry has free symbols that can equal zero,
            create two branches:
-
            - **Zero branch** — substitute the zero-making values and retry the
              same column (a different row may now become the pivot).
            - **Non-zero branch** — treat the entry as a non-zero (possibly
              symbolic) scalar, normalise the pivot row to 1, and eliminate
              the pivot column in all other rows (full RREF).
-
         3. Recursion terminates when all columns (or rows) have been processed.
 
         Args:
-            rhs (Matrix, optional): Right-hand side of the system ``Ax = rhs``,
+            rhs ([`Matrix`][...], optional): Right-hand side of the system ``Ax = rhs``,
                 appended as an augmented column block.  When provided, each
                 :class:`RREFCase` reports :attr:`~RREFCase.is_consistent`.
-            n_cols (int, optional): Number of "variable" columns in ``self``
-                (used to distinguish the LHS from the RHS in the augmented
-                matrix).  Defaults to ``self.cols``.
+            verbosity (int, optional): Level of verbosity for the computation.
 
         Returns:
             (list[RREFCase]): One entry per distinct case.  Each
                 :class:`RREFCase` contains:
-
                 - ``conditions`` — the symbol substitutions that define the case.
                 - ``excluded`` — zero-conditions from *other* cases (i.e. what
                   is **not** assumed here).
@@ -2036,7 +2033,7 @@ class Matrix(sym.MutableDenseMatrix):
             {a: 0} | 1 free params
             {} | 0 free params
 
-            Non-homogeneous system — also checks consistency:
+            Non-homogeneous system also checks consistency:
 
             >>> b_vec = Matrix([[2], [3]])
             >>> cases = A.rref_cases(rhs=b_vec)
@@ -2046,21 +2043,22 @@ class Matrix(sym.MutableDenseMatrix):
             {} | consistent: True
 
         See Also:
-            - :meth:`rref` for the standard (non-branching) RREF wrapper.
-            - :meth:`evaluate_cases` for a printing-oriented case analysis.
+            - [`rref`][..] for the standard (non-branching) RREF wrapper.
+            - [`evaluate_cases`][..] for a printing-oriented case analysis.
         """
-        n_var_cols: int = n_cols if n_cols is not None else self.cols
-
         # Build working matrix (augmented when rhs is supplied).
         if rhs is not None:
             working_mat: Matrix = self.row_join(rhs, aug_line=True)
         else:
             working_mat = self.copy()
 
+        n_var_cols = self.cols
         # Run the recursive symbolic RREF, collecting all branches.
-        raw_results: list[tuple[Matrix, dict]] = _symbolic_rref(working_mat, {}, 0, 0)
+        raw_results: list[tuple[Matrix, dict]] = working_mat._symbolic_rref(
+            conditions={}, cur_row=0, cur_col=0, verbosity=verbosity
+        )
 
-        # Collect ALL zero-conditions discovered across every branch so we can
+        # Collect all zero-conditions discovered across every branch so we can
         # compute the "excluded" set for each case.
         all_zero_conds: set[tuple] = set()
         for _, conds in raw_results:
@@ -2074,7 +2072,7 @@ class Matrix(sym.MutableDenseMatrix):
             excluded = [dict([item]) for item in sym.ordered(excluded_set)]
 
             # Pivot columns (all columns, including any augmented ones).
-            pivots = _get_rref_pivots(mat)
+            pivots = mat._get_rref_pivots()
 
             # Free parameters = LHS columns without a pivot.
             n_pivot_lhs = sum(1 for p in pivots if p < n_var_cols)
@@ -2083,7 +2081,7 @@ class Matrix(sym.MutableDenseMatrix):
             # Consistency (only meaningful when rhs was provided).
             is_consistent: bool | None = None
             if rhs is not None:
-                is_consistent = _check_rref_consistency(mat, n_var_cols)
+                is_consistent = mat._check_rref_consistency()
 
             # Preserve augmentation line from the original matrix.
             aug = (
