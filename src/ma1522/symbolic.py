@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Iterable
-import dis
 from typing import TYPE_CHECKING
 from warnings import warn
 
-from numpy.linalg import cond
 import sympy as sym
 from sympy.parsing.sympy_parser import parse_expr
 
@@ -17,7 +15,7 @@ import re
 
 # import IPython.display
 
-from .utils import _powerset, _is_zero, _standardise_symbol, _textify, display
+from .utils import _is_zero, _standardise_symbol, _textify, display
 
 from .custom_types import (
     Shape,
@@ -1543,8 +1541,8 @@ class Matrix(sym.MutableDenseMatrix):
     ) -> None:
         """Reduce a row using a pivot row, handling symbolic denominators.
 
-        Used by both ref() and rref_cases(). If L_matrix is provided, it records
-        the operations to maintain the L matrix in PLU decomposition.
+        Used by both [`ref`][..] and [`rref_cases`][..]. If `L_matrix` is provided,
+        it records the operations to maintain the `L` matrix in PLU decomposition.
 
         Args:
             row_idx (int): The index of the row to reduce.
@@ -1704,7 +1702,9 @@ class Matrix(sym.MutableDenseMatrix):
         # Return the appropriate number of matrices based on the `matrices` parameter
         return PLU(P, L, U)
 
-    def evaluate_cases(self, rhs: Matrix | None = None, verbosity: int = 0) -> list[RREFCase]:
+    def evaluate_cases(
+        self, rhs: Matrix | None = None, verbosity: int = 0
+    ) -> list[RREFCase]:
         """Evaluates and displays all possible cases for solutions to a linear system involving the matrix.
 
         This method uses `rref_cases()` to find all critical symbolic values where
@@ -1715,9 +1715,18 @@ class Matrix(sym.MutableDenseMatrix):
             rhs (Matrix, optional): The right-hand side of the system Ax = rhs.
                 If not provided, the system is treated as homogeneous.
             verbosity (int, optional): The level of verbosity for the computation.
+
+        Returns:
+            (list[RREFCase]): The list of symbolic RREF cases found by
+                [`rref_cases`][..].
+
+        See Also:
+            - [`rref_cases`][..]: Returns case data without printing a summary.
         """
         cases = self.rref_cases(rhs=rhs, verbosity=verbosity)
-        print(f"Summary of cases for {'homogeneous' if rhs is None else 'non-homogeneous'} system:")
+        print(
+            f"Summary of cases for {'homogeneous' if rhs is None else 'non-homogeneous'} system:"
+        )
         for i, c in enumerate(cases, 1):
             print(f"Case {i}: assume {c.conditions}, excluding {c.excluded}")
             if rhs is None:
@@ -1730,10 +1739,10 @@ class Matrix(sym.MutableDenseMatrix):
                         print(f"Solution with {c.free_params} free parameter(s)")
                 else:
                     print("No solution")
-            
+
             display(RREF(c.rref, c.pivots))
             print("\n")
-    
+
         return cases
 
     # Override
@@ -1781,7 +1790,7 @@ class Matrix(sym.MutableDenseMatrix):
     def _get_rref_pivots(self) -> list[int]:
         """Return pivot column indices by scanning each row of an RREF matrix.
 
-        For each row we take the leftmost non-zero entry as the pivot.  Rows that
+        For each row we take the leftmost non-zero entry as the pivot. Rows that
         are entirely zero (zero rows) contribute no pivot.
         """
         pivots: list[int] = []
@@ -1794,7 +1803,7 @@ class Matrix(sym.MutableDenseMatrix):
         return pivots
 
     def _check_rref_consistency(self) -> bool:
-        """Return *True* if the augmented RREF matrix represents a consistent system.
+        """Return `True` if the augmented RREF matrix represents a consistent system.
 
         A system is inconsistent when any row has all-zero entries on the left-hand side (LHS) of the
         augmentation line(s) but a non-zero entry on the right-hand side (RHS).
@@ -1807,8 +1816,8 @@ class Matrix(sym.MutableDenseMatrix):
             raise ValueError(
                 "Matrix must have augmentation lines defined for consistency check."
             )
-        # pick the leftmost augmentation line as the boundary between LHS and RHS
-        n_var_cols = self.cols - min(self._aug_pos)
+        # Pick the leftmost augmentation line as the boundary between LHS and RHS
+        n_var_cols = min(self._aug_pos) + 1
         for row in range(self.rows):
             lhs_zero = all(
                 sym.simplify(self[row, col]) == 0 for col in range(n_var_cols)
@@ -1989,30 +1998,31 @@ class Matrix(sym.MutableDenseMatrix):
 
         When the matrix contains free symbols, different assignments of those
         symbols can lead to structurally different row-echelon forms (different
-        numbers of pivots, inconsistencies, etc.).  This method detects exactly
+        numbers of pivots, inconsistencies, etc.). This method detects exactly
         those critical values by branching at every pivot that could be zero,
-        and returns one :class:`RREFCase` per distinct branch.
+        and returns one [`RREFCase`][(p).RREFCase] per distinct branch.
 
         Algorithm:
         1. Work column-by-column to find the leftmost pivot in each active row.
         2. If the candidate pivot entry has free symbols that can equal zero,
            create two branches:
-           - **Zero branch** — substitute the zero-making values and retry the
-             same column (a different row may now become the pivot).
-           - **Non-zero branch** — treat the entry as a non-zero (possibly
-             symbolic) scalar, normalise the pivot row to 1, and eliminate
-             the pivot column in all other rows (full RREF).
+                - **Zero branch**: substitute the zero-making values and retry the
+                    same column (a different row may now become the pivot).
+                - **Non-zero branch**: treat the entry as a non-zero (possibly
+                    symbolic) scalar, normalise the pivot row to 1, and eliminate
+                    the pivot column in all other rows (full RREF).
         3. Recursion terminates when all columns (or rows) have been processed.
 
         Args:
             rhs ([`Matrix`][...], optional): Right-hand side of the system ``Ax = rhs``,
-                appended as an augmented column block.  When provided, each
-                :class:`RREFCase` reports :attr:`~RREFCase.is_consistent`.
+                appended as an augmented column block. When provided, each
+                [`RREFCase`][(p).RREFCase] reports consistency in
+                `RREFCase.is_consistent`.
             verbosity (int, optional): Level of verbosity for the computation.
 
         Returns:
-            (list[RREFCase]): One entry per distinct case.  Each
-                :class:`RREFCase` contains:
+            (list[RREFCase]): One entry per distinct case. Each
+                [`RREFCase`][(p).RREFCase] contains:
                 - ``conditions`` — the symbol substitutions that define the case.
                 - ``excluded`` — zero-conditions from *other* cases (i.e. what
                   is **not** assumed here).

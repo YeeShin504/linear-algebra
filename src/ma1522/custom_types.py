@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, NamedTuple
 import sympy as sym
 from sympy.printing.latex import LatexPrinter
 
-from .utils import _gen_latex_repr, _textify, _gen_latex_repr_dict
+from .utils import _gen_latex_repr, _textify
 # from ma1522 import utils
 
 if TYPE_CHECKING:
@@ -300,10 +300,10 @@ class RREF(Printable):
 @dataclasses.dataclass
 class RREFCase(Printable):
     """
-    Represents one symbolic-RREF case produced by :meth:`~Matrix.rref_cases`.
+    Represents one symbolic-RREF case produced by [`rref_cases`][ma1522.symbolic.Matrix.rref_cases].
 
     When a pivot entry contains free symbols that may equal zero, the RREF
-    procedure branches into separate cases.  Each branch yields one
+    procedure branches into separate cases. Each branch yields one
     ``RREFCase`` describing the conditions assumed, the resulting RREF, and
     derived solution information.
 
@@ -314,12 +314,12 @@ class RREFCase(Printable):
             are **not** assumed here (i.e. the complement of ``conditions``
             within the set of all discovered critical values).
         rref (Matrix): The RREF matrix (augmented with the RHS if one was
-            supplied to :meth:`~Matrix.rref_cases`).
+            supplied to [`rref_cases`][ma1522.symbolic.Matrix.rref_cases].
         pivots (tuple[int, ...]): Column indices of the pivot positions.
         free_params (int): Number of free parameters in the solution
             (= ``n_var_cols - len(pivots)`` restricted to variable columns).
         is_consistent (bool | None): Whether the system is consistent under
-            these conditions.  ``None`` when no RHS was provided.
+            these conditions. ``None`` when no RHS was provided.
     """
 
     conditions: dict
