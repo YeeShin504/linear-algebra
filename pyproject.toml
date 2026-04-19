@@ -36,6 +36,7 @@ dev = [
     "build>=1.2.2.post1",
     "twine>=6.2.0",
     "pytest-cov>=7.0.0",
+    "ma1522-linear-algebra",
 ]
 
 docs = [
@@ -51,6 +52,14 @@ docs = [
 
 [tool.uv]
 default-groups = ["dev", "docs"]
+
+[tool.uv.workspace]
+members = [
+    ".",
+]
+
+[tool.uv.sources]
+ma1522-linear-algebra = { workspace = true, editable = true }
 
 [tool.setuptools]
 license-files = []

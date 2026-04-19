@@ -108,6 +108,12 @@ To use the offline documentation:
 2. Extract the ZIP to a folder
 3. Open `index.html` in your browser
 
+A quick reference guide is also available as a function in the library:
+```python
+from ma1522 import sympy_commands
+sympy_commands()
+```
+
 #### Building from Source
 
 If the offline ZIP is not available in the releases, you can build it yourself:

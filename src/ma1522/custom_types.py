@@ -5,10 +5,10 @@ from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
 import sympy as sym
+from sympy.matrices.exceptions import NonInvertibleMatrixError
 from sympy.printing.latex import LatexPrinter
 
 from .utils import _gen_latex_repr, _textify
-# from ma1522 import utils
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -407,10 +407,14 @@ class PDP(Printable):
     def _latex(self, printer=None) -> str:
         try:
             P_inv = self.P.inv()  # inv exists and is unique
+            # Normalize inverse to Matrix subclass so custom latex uses array formatting.
+            P_inv_fmt = self.P.__class__(P_inv, aug_pos=set())
             return (
-                self.P._latex(printer) + self.D._latex(printer) + P_inv._latex(printer)
-            )  # type: ignore
-        except Exception:
+                self.P._latex(printer)
+                + self.D._latex(printer)
+                + P_inv_fmt._latex(printer)
+            )
+        except NonInvertibleMatrixError:
             return (
                 self.P._latex(printer)
                 + self.D._latex(printer)

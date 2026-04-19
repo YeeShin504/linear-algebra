@@ -1,4 +1,4 @@
-from .utils import display
+from .utils import display, sympy_commands
 
 from .custom_types import (
     Shape,
@@ -30,4 +30,5 @@ __all__ = [
     "SVD",
     "NumSVD",
     "Matrix",
+    "sympy_commands",
 ]
