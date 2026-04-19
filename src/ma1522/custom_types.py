@@ -311,8 +311,8 @@ class RREFCase(Printable):
         conditions (dict): Substitution map ``{symbol: value}`` that defines
             this case (e.g. ``{a: 0}`` means "this case holds when ``a = 0``").
         excluded (list[dict]): Zero-conditions found in *other* branches that
-            are **not** assumed here (i.e. the complement of ``conditions``
-            within the set of all discovered critical values).
+            are **not** assumed here. Redundant alternatives for symbols already
+            fixed in ``conditions`` are omitted.
         rref (Matrix): The RREF matrix (augmented with the RHS if one was
             supplied to [`rref_cases`][ma1522.symbolic.Matrix.rref_cases].
         pivots (tuple[int, ...]): Column indices of the pivot positions.

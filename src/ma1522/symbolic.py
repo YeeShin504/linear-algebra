@@ -1702,14 +1702,148 @@ class Matrix(sym.MutableDenseMatrix):
         # Return the appropriate number of matrices based on the `matrices` parameter
         return PLU(P, L, U)
 
+    @staticmethod
+    def _case_item_key(item: tuple) -> tuple[str, str]:
+        """Return a canonical, orderable key for a symbolic (key, value) pair."""
+        k, v = item
+        return (sym.srepr(sym.sympify(k)), sym.srepr(sym.sympify(v)))
+
+    @classmethod
+    def _case_outcome_key(cls, case: RREFCase, rhs: Matrix | None) -> tuple[str, int]:
+        """Group key used by evaluate_cases for merge-by-outcome."""
+        if rhs is None:
+            return ("hom", case.free_params)
+        if case.is_consistent is False:
+            return ("non", -1)
+        if case.free_params == 0:
+            return ("unique", 0)
+        return ("param", case.free_params)
+
+    @classmethod
+    def _case_sort_key(
+        cls, case: RREFCase, rhs: Matrix | None
+    ) -> tuple[int, int, int, tuple]:
+        """Presentation order key for merged evaluate_cases output."""
+        kind, param = cls._case_outcome_key(case, rhs)
+        priority = 2
+        if kind == "non":
+            priority = 0
+        elif kind == "unique":
+            priority = 1
+        return (
+            priority,
+            max(param, 0),
+            len(case.conditions),
+            tuple(sorted(cls._case_item_key(it) for it in case.conditions.items())),
+        )
+
+    @classmethod
+    def _dedupe_key(cls, case: RREFCase) -> tuple:
+        """Exact signature used for evaluate_cases de-duplication."""
+        excluded_keys = tuple(
+            sorted(cls._case_item_key(tuple(d.items())[0]) for d in case.excluded)
+        )
+        condition_keys = tuple(
+            sorted(cls._case_item_key(it) for it in case.conditions.items())
+        )
+        return (
+            condition_keys,
+            excluded_keys,
+            case.is_consistent,
+            case.free_params,
+            case.pivots,
+        )
+
+    @classmethod
+    def _merge_case_group(cls, group_cases: list[RREFCase]) -> list[RREFCase]:
+        """Apply group-local absorption, redundancy removal, and dedupe."""
+        # If a general case excludes a single assignment that is also
+        # represented by a specific sibling with the same outcome, absorb
+        # that assignment into the general case by removing the exclusion.
+        changed = True
+        while changed:
+            changed = False
+            for general in group_cases:
+                gen_items = set(general.conditions.items())
+                gen_excluded = {tuple(d.items())[0] for d in general.excluded}
+                for specific in group_cases:
+                    if general is specific:
+                        continue
+                    spec_items = set(specific.conditions.items())
+                    if not gen_items.issubset(spec_items):
+                        continue
+                    extra_items = spec_items - gen_items
+                    if len(extra_items) != 1:
+                        continue
+                    extra_item = next(iter(extra_items))
+                    if extra_item not in gen_excluded:
+                        continue
+
+                    general.excluded = [
+                        d for d in general.excluded if tuple(d.items())[0] != extra_item
+                    ]
+                    changed = True
+
+        # Conservative merge: drop a specific case only if there is a less-
+        # specific case with the same outcome that already covers the
+        # dropped assignment(s).
+        kept: list[RREFCase] = []
+        for candidate in group_cases:
+            cand_items = set(candidate.conditions.items())
+            is_redundant = False
+            for general in group_cases:
+                if general is candidate:
+                    continue
+                gen_items = set(general.conditions.items())
+                if not gen_items.issubset(cand_items):
+                    continue
+                dropped_items = cand_items - gen_items
+                if not dropped_items:
+                    continue
+
+                general_excluded = {tuple(d.items())[0] for d in general.excluded}
+                if all(item not in general_excluded for item in dropped_items):
+                    is_redundant = True
+                    break
+
+            if not is_redundant:
+                kept.append(candidate)
+
+        # Remove exact duplicates (same condition/outcome) while preserving order.
+        seen: set[tuple] = set()
+        deduped: list[RREFCase] = []
+        for case in sorted(
+            kept,
+            key=lambda c: (
+                len(c.conditions),
+                tuple(sorted(cls._case_item_key(it) for it in c.conditions.items())),
+                tuple(
+                    sorted(cls._case_item_key(tuple(d.items())[0]) for d in c.excluded)
+                ),
+            ),
+        ):
+            key = cls._dedupe_key(case)
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(case)
+
+        return deduped
+
     def evaluate_cases(
         self, rhs: Matrix | None = None, verbosity: int = 0
     ) -> list[RREFCase]:
         """Evaluates and displays all possible cases for solutions to a linear system involving the matrix.
 
-        This method uses `rref_cases()` to find all critical symbolic values where
-        the system's structure changes. For each case, it displays the conditions,
-        the resulting RREF, and the solution consistency.
+        This method uses [`rref_cases`][..] to find symbolic cases, and group them
+        based on the system's outcome (no solution, unique solution, infinitely many solutions).
+
+        1. Merge redundant cases with identical outcomes only when a less-
+              specific case explicitly excludes the dropped assignment(s).
+        2. Order results by outcome priority:
+           - No solution
+           - Unique solution
+           - Infinitely many solutions (increasing free parameters)
 
         Args:
             rhs (Matrix, optional): The right-hand side of the system Ax = rhs.
@@ -1717,17 +1851,28 @@ class Matrix(sym.MutableDenseMatrix):
             verbosity (int, optional): The level of verbosity for the computation.
 
         Returns:
-            (list[RREFCase]): The list of symbolic RREF cases found by
+            (list[RREFCase]): The merged and ordered list of symbolic RREF cases found by
                 [`rref_cases`][..].
 
         See Also:
-            - [`rref_cases`][..]: Returns case data without printing a summary.
+            - [`rref_cases`][..]: Returns case data without printing a summary or merging similar cases.
         """
         cases = self.rref_cases(rhs=rhs, verbosity=verbosity)
+
+        grouped: dict[tuple[str, int], list[RREFCase]] = defaultdict(list)
+        for case in cases:
+            grouped[self._case_outcome_key(case, rhs)].append(case)
+
+        merged_cases: list[RREFCase] = []
+        for _, group_cases in grouped.items():
+            merged_cases.extend(self._merge_case_group(group_cases))
+
+        ordered_cases = sorted(merged_cases, key=lambda c: self._case_sort_key(c, rhs))
+
         print(
-            f"Summary of cases for {'homogeneous' if rhs is None else 'non-homogeneous'} system:"
+            f"Summary of merged cases for {'homogeneous' if rhs is None else 'non-homogeneous'} system:"
         )
-        for i, c in enumerate(cases, 1):
+        for i, c in enumerate(ordered_cases, 1):
             print(f"Case {i}: assume {c.conditions}, excluding {c.excluded}")
             if rhs is None:
                 print(f"Homogeneous system with {c.free_params} free parameter(s)")
@@ -1740,10 +1885,11 @@ class Matrix(sym.MutableDenseMatrix):
                 else:
                     print("No solution")
 
-            display(RREF(c.rref, c.pivots))
-            print("\n")
+            if verbosity >= 1:
+                display(RREF(c.rref, c.pivots))
+                print("\n")
 
-        return cases
+        return ordered_cases
 
     # Override
     def rref(self, *args, pivots: bool = True, **kwargs) -> RREF | Matrix:
@@ -1836,6 +1982,7 @@ class Matrix(sym.MutableDenseMatrix):
         cur_row: int,
         cur_col: int,
         pivot_row: int,
+        nonzero_assumptions: tuple[sym.Expr, ...] = (),
         verbosity: int = 0,
     ) -> "list[tuple[Matrix, dict]]":
         """Swap the pivot into place, normalise the pivot row to 1, eliminate the
@@ -1860,7 +2007,11 @@ class Matrix(sym.MutableDenseMatrix):
             m._symbolic_reduce_row(row_idx, cur_row, cur_col, verbosity=verbosity)
 
         return m._symbolic_rref(
-            conditions, cur_row + 1, cur_col + 1, verbosity=verbosity
+            conditions,
+            cur_row + 1,
+            cur_col + 1,
+            nonzero_assumptions=nonzero_assumptions,
+            verbosity=verbosity,
         )
 
     def _symbolic_rref(
@@ -1868,6 +2019,7 @@ class Matrix(sym.MutableDenseMatrix):
         conditions: dict,
         cur_row: int,
         cur_col: int,
+        nonzero_assumptions: tuple[sym.Expr, ...] = (),
         verbosity: int = 0,
     ) -> "list[tuple[Matrix, dict]]":
         """Recursively compute RREF, branching whenever a pivot entry has free
@@ -1879,6 +2031,17 @@ class Matrix(sym.MutableDenseMatrix):
         if not isinstance(mat_eval, Matrix):
             mat_eval = Matrix(mat_eval)
         mat_eval.simplify(rational=False, simplify=True, suppress_warnings=True)
+
+        # Propagate prior "pivot != 0" assumptions under current conditions.
+        # If any such assumption simplifies to 0, this branch is contradictory.
+        next_nonzero: list[sym.Expr] = []
+        for expr in nonzero_assumptions:
+            expr_eval = sym.simplify(expr.subs(conditions))
+            if expr_eval == 0:
+                return []
+            if expr_eval.free_symbols:
+                next_nonzero.append(expr_eval)
+        nonzero_assumptions = tuple(next_nonzero)
 
         # Base case: all columns (or rows) exhausted
         if cur_col >= mat_eval.cols or cur_row >= mat_eval.rows:
@@ -1900,6 +2063,7 @@ class Matrix(sym.MutableDenseMatrix):
                 conditions=conditions,
                 cur_row=cur_row,
                 cur_col=cur_col + 1,
+                nonzero_assumptions=nonzero_assumptions,
                 verbosity=verbosity,
             )
 
@@ -1913,6 +2077,7 @@ class Matrix(sym.MutableDenseMatrix):
                 cur_row=cur_row,
                 cur_col=cur_col,
                 pivot_row=pivot_row,
+                nonzero_assumptions=nonzero_assumptions,
                 verbosity=verbosity,
             )
 
@@ -1931,6 +2096,7 @@ class Matrix(sym.MutableDenseMatrix):
                 cur_row=cur_row,
                 cur_col=cur_col,
                 pivot_row=pivot_row,
+                nonzero_assumptions=nonzero_assumptions,
                 verbosity=verbosity,
             )
 
@@ -1956,6 +2122,12 @@ class Matrix(sym.MutableDenseMatrix):
             if test_mat.has(sym.zoo, sym.nan):
                 continue
 
+            # Contradiction check with prior assumptions of the form expr != 0.
+            if any(
+                sym.simplify(expr.subs(zero_sol)) == 0 for expr in nonzero_assumptions
+            ):
+                continue
+
             # With this substitution the pivot becomes 0 — re-enter the same
             # (cur_row, cur_col) so the algorithm searches for a different pivot.
             if verbosity >= 1:
@@ -1969,6 +2141,7 @@ class Matrix(sym.MutableDenseMatrix):
                     conditions=new_conds,
                     cur_row=cur_row,
                     cur_col=cur_col,
+                    nonzero_assumptions=nonzero_assumptions,
                     verbosity=verbosity,
                 )
             )
@@ -1985,6 +2158,7 @@ class Matrix(sym.MutableDenseMatrix):
                 cur_row=cur_row,
                 cur_col=cur_col,
                 pivot_row=pivot_row,
+                nonzero_assumptions=nonzero_assumptions + (pivot_entry,),
                 verbosity=verbosity,
             )
         )
@@ -2025,7 +2199,8 @@ class Matrix(sym.MutableDenseMatrix):
                 [`RREFCase`][(p).RREFCase] contains:
                 - ``conditions`` — the symbol substitutions that define the case.
                 - ``excluded`` — zero-conditions from *other* cases (i.e. what
-                  is **not** assumed here).
+                                    is **not** assumed here), excluding redundant alternatives for
+                                    symbols already fixed by ``conditions``.
                 - ``rref`` — the RREF matrix (augmented if *rhs* was given).
                 - ``pivots`` — pivot column indices.
                 - ``free_params`` — number of free parameters.
@@ -2078,7 +2253,14 @@ class Matrix(sym.MutableDenseMatrix):
         result_cases: list[RREFCase] = []
         for mat, conds in raw_results:
             # excluded = zero-conditions present in other branches but not here.
-            excluded_set = all_zero_conds - set(conds.items())
+            # If this branch already fixes a symbol (e.g. a = 0), skip other
+            # alternatives for that same symbol (e.g. a = 1), because they are
+            # mutually exclusive and therefore redundant to list.
+            excluded_set = {
+                item
+                for item in (all_zero_conds - set(conds.items()))
+                if item[0] not in conds
+            }
             excluded = [dict([item]) for item in sym.ordered(excluded_set)]
 
             # Pivot columns (all columns, including any augmented ones).
