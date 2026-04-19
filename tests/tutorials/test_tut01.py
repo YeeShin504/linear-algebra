@@ -62,9 +62,27 @@ class TestTutorial01:
             mat.solve(aug)[0]
 
     def test_question_4(self):
-        # TODO: Implement better evaluate all cases
-        a, b = sym.symbols("a b")  # Define symbolic variables
+        a, b = sym.symbols("a b")
         mat = Matrix([[a, 0, b, 2], [a, a, 4, 4], [0, a, 2, b]], aug_pos=2)
+
+        # Explicitly test evaluate_cases as shown in notebook
+        A = mat.select_cols(0, 1, 2)
+        rhs = mat.select_cols(3)
+        cases = A.evaluate_cases(rhs=rhs, verbosity=0)
+
+        assert len(cases) == 4
+        # Case 1: b != 2, a = 0
+        assert cases[0].conditions == {a: 0}
+        assert cases[0].is_consistent is False
+        # Case 2: b != 2, a != 0
+        assert cases[1].conditions == {}
+        assert cases[1].is_consistent is True
+        # Case 3: b = 2, a != 0
+        assert cases[2].conditions == {b: 2}
+        assert cases[2].is_consistent is True
+        # Case 4: b = 2, a = 0
+        assert cases[3].conditions == {a: 0, b: 2}
+        assert cases[3].is_consistent is True
 
         # Intermediate: REF always produces an upper-triangular form
         plu = mat.ref()
@@ -123,10 +141,19 @@ class TestTutorial01:
             aug_pos=6,
         )
 
+        # Explicitly assert the matrix from notebook
+        assert aug_mat.shape == (6, 8)
+
         # Intermediate (7a): RREF has 5 pivots among 7 coefficient columns
         # → 2 free variables, so the system is underdetermined
         rref = aug_mat.rref(pivots=False)
         assert rref.shape == (6, 8)
+
+        # Assert specific RREF values from notebook
+        assert rref[0, -1] == 50
+        assert rref[1, -1] == 450
+        assert rref[5, -1] == 0
+
         # 5 coefficient columns become identity columns; x6 and x7 are free
         pivot_cols = [
             c
@@ -154,3 +181,6 @@ class TestTutorial01:
 
         # (7c) Set x6=-50 so that x1=0; x7 remains free
         assert sol.subs({y: -50}) == Matrix([0, z + 450, 800, z + 650, z - 50, -50, z])  # type: ignore
+
+        # Coverage: Run once with verbosity to hit print lines
+        mat.solve(aug, verbosity=1)

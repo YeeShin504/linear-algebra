@@ -10,6 +10,10 @@ class TestTutorial02:
         assert A.shape == (3, 4)
 
         X = A.inverse("right", matrices=2)
+        # Explicitly assert the particular solution matrix from notebook
+        expected_part = Matrix([[1, -1, 1], [0, 1, -1], [0, 0, 1], [0, 0, 0]])
+        assert X.part_sol == expected_part
+
         # Particular solution must satisfy A @ X_part == I_3
         assert (A @ X.part_sol).applyfunc(sym.simplify) == Matrix.eye(3)
         assert X.part_sol.shape == (4, 3)
@@ -19,6 +23,16 @@ class TestTutorial02:
         assert B.shape == (4, 3)
 
         Y = B.inverse("left", matrices=2)
+        # Explicitly assert the particular solution matrix from notebook
+        expected_part = Matrix(
+            [
+                [sym.Rational(1, 2), sym.Rational(1, 2), sym.Rational(-1, 2), 0],
+                [sym.Rational(-1, 2), sym.Rational(1, 2), sym.Rational(1, 2), 0],
+                [sym.Rational(1, 2), sym.Rational(-1, 2), sym.Rational(1, 2), 0],
+            ]
+        )
+        assert Y.part_sol == expected_part
+
         # Particular solution must satisfy Y_part @ B == I_3
         assert (Y.part_sol @ B).applyfunc(sym.simplify) == Matrix.eye(3)
         assert Y.part_sol.shape == (3, 4)

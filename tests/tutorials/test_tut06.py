@@ -29,6 +29,9 @@ class TestTutorial06:
         S = Matrix.from_str("1 2 -1; 0 2 1; 0 -1 3").T
         T = Matrix.from_str("1 5 4; -1 3 7; 2 2 4").T
         P_T_to_S = T.transition_matrix(S)
+        # Explicitly assert transition matrix from notebook
+        expected = Matrix([[1, -1, 2], [2, 3, 0], [1, 1, 2]])
+        assert P_T_to_S == expected
         assert (S @ P_T_to_S).applyfunc(sym.simplify) == T
 
     def test_question_1d(self):
@@ -36,6 +39,15 @@ class TestTutorial06:
         T = Matrix.from_str("1 5 4; -1 3 7; 2 2 4").T
         P_T_to_S = T.transition_matrix(S)
         P_S_to_T = S.transition_matrix(T)
+        # Explicitly assert transition matrix from notebook
+        expected_inv = Matrix(
+            [
+                [sym.Rational(3, 4), sym.Rational(1, 2), sym.Rational(-3, 4)],
+                [sym.Rational(-1, 2), 0, sym.Rational(1, 2)],
+                [sym.Rational(-1, 8), sym.Rational(-1, 4), sym.Rational(5, 8)],
+            ]
+        )
+        assert P_S_to_T == expected_inv
         assert P_S_to_T.applyfunc(sym.simplify) == P_T_to_S.inverse()
 
     def test_question_1e(self):

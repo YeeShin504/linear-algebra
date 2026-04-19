@@ -6,10 +6,22 @@ from ma1522 import Matrix
 class TestTutorial04:
     def test_question_2a(self):
         U = Matrix.from_str("2 1 0 3; 3 -1 5 2; -1 0 2 1").T
-        actual_contraints = U.column_constraints()[3, 3]
+        actual_constraints = U.column_constraints()
         vec = Matrix.create_unk_matrix(4, 1, "x")
+        # Explicitly assert the constraint from notebook
         expected = vec[0, 0] + 7 * vec[1, 0] + 2 * vec[2, 0] - 3 * vec[3, 0]
-        assert actual_contraints == expected
+        assert actual_constraints[3, 3] == expected
+
+        # Check vectors from (a)
+        rhs = Matrix.from_str("2 3 -7 3; 0 0 0 0; 1 1 1 1; -4 6 -13 4").T
+        # (i) 2 + 7(3) + 2(-7) - 3(3) = 2 + 21 - 14 - 9 = 0 -> Consistent
+        assert rhs.select_cols(0).is_subspace_of(U)
+        # (ii) 0 -> Consistent
+        assert rhs.select_cols(1).is_subspace_of(U)
+        # (iii) 1 + 7 + 2 - 3 = 7 != 0 -> Inconsistent
+        assert not rhs.select_cols(2).is_subspace_of(U)
+        # (iv) -4 + 7(6) + 2(-13) - 3(4) = -4 + 42 - 26 - 12 = 0 -> Consistent
+        assert rhs.select_cols(3).is_subspace_of(U)
 
     def test_question_2b(self):
         U = Matrix.from_str("2 1 0 3; 3 -1 5 2; -1 0 2 1").T
