@@ -1,12 +1,11 @@
 import pytest
 import sympy as sym
-from ma1522 import Matrix
+from ma1522 import Matrix, sympy_commands
 
 class TestVerbosityCoverage:
     """Tests designed to hit printing/verbosity lines in symbolic.py for coverage."""
 
     def test_command(self):
-        from ma1522.symbolic import sympy_commands
         sympy_commands()
     
     def test_ref_verbosity(self):
