@@ -718,12 +718,9 @@ class Matrix(sym.MutableDenseMatrix):
         return Matrix(super().__abs__(), aug_pos=aug)
 
     def __add__(self, other: Matrix) -> Matrix:
-        if not hasattr(self, "_aug_pos"):
-            self._aug_pos = set()
-        if not hasattr(other, "_aug_pos"):
-            other._aug_pos = set()
-
-        aug = self._aug_pos | other._aug_pos
+        aug_self = getattr(self, "_aug_pos", set())
+        aug_other = getattr(other, "_aug_pos", set())
+        aug = aug_self | aug_other
         return Matrix(super().__add__(other), aug_pos=aug)
 
     def __mul__(self, other) -> Matrix:
@@ -788,6 +785,12 @@ class Matrix(sym.MutableDenseMatrix):
 
         Returns:
             (Matrix): A new matrix with substituted values, preserving augmentation lines.
+
+        Examples:
+            >>> x = sym.Symbol('x')
+            >>> mat = Matrix([[x, 1]], aug_pos=0)
+            >>> mat.subs({x: 2}) == Matrix([[2, 1]], aug_pos=0)
+            True
         """
         new_mat = super().subs(*args, **kwargs)
         aug = self._aug_pos.copy() if hasattr(self, "_aug_pos") else set()
@@ -905,11 +908,8 @@ class Matrix(sym.MutableDenseMatrix):
         Examples:
             >>> import math
             >>> mat = Matrix([[math.sqrt(4), math.e], [1/math.sqrt(2), 0.0]])
-            >>> mat.identify()
-            Matrix([
-            [        2, E]
-            [sqrt(2)/2, 0]
-            ])
+            >>> mat.identify() == Matrix([[2, sym.E], [sym.sqrt(2) / 2, 0]])
+            True
 
         See Also:
             - [`mpmath.identify`][mpmath.identify]: The function used to identify
@@ -1026,6 +1026,15 @@ class Matrix(sym.MutableDenseMatrix):
             (dict[Expr, Matrix]): Returns a dictionary where the sum of the key*value pairs
                 reconstructs the original matrix. Each key is a free symbol, and each value is a
                 matrix with that symbol set to 1 and all other free symbols set to 0.
+
+        Examples:
+            >>> x, y = sym.symbols('x y')
+            >>> mat = Matrix([[x + y]])
+            >>> parts = mat.sep_unk()
+            >>> parts[x] == Matrix([[1]])
+            True
+            >>> parts[y] == Matrix([[1]])
+            True
         """
         syms = self.free_symbols
         res: dict[Expr, Matrix] = defaultdict(Matrix)
@@ -1215,18 +1224,14 @@ class Matrix(sym.MutableDenseMatrix):
             [3, 4 | 6]
             ])
         """
-        if not hasattr(self, "_aug_pos"):
-            self._aug_pos = set()
-        if not hasattr(other, "_aug_pos"):
-            other._aug_pos = set()
-
+        aug = set(getattr(self, "_aug_pos", set()))
+        other_aug = set(getattr(other, "_aug_pos", set()))
         offset = self.cols
-        # Iterate over a copy of the set to prevent runtime errors
-        for pos in list(other._aug_pos):
-            self._aug_pos.add(pos + offset)
+        for pos in other_aug:
+            aug.add(pos + offset)
         if aug_line:
-            self._aug_pos.add(offset - 1)
-        return Matrix(super().row_join(other), aug_pos=self._aug_pos)
+            aug.add(offset - 1)
+        return Matrix(super().row_join(other), aug_pos=aug)
 
     # Override
     def col_join(self, other: Matrix) -> Matrix:
@@ -1259,12 +1264,9 @@ class Matrix(sym.MutableDenseMatrix):
             [3 | 4]
             ])
         """
-        if not hasattr(self, "_aug_pos"):
-            self._aug_pos = set()
-        if not hasattr(other, "_aug_pos"):
-            other._aug_pos = set()
-
-        aug = self._aug_pos & other._aug_pos
+        aug_self = set(getattr(self, "_aug_pos", set()))
+        aug_other = set(getattr(other, "_aug_pos", set()))
+        aug = aug_self & aug_other
         return Matrix(super().col_join(other), aug_pos=aug)
 
     def scale_row(
@@ -1854,6 +1856,17 @@ class Matrix(sym.MutableDenseMatrix):
             (list[RREFCase]): The merged and ordered list of symbolic RREF cases found by
                 [`rref_cases`][..].
 
+        Examples:
+            >>> a = sym.Symbol('a')
+            >>> A = Matrix([[a, 1], [0, 1]])
+            >>> b = Matrix([[2], [3]])
+            >>> cases = A.evaluate_cases(rhs=b, verbosity=0)
+            Summary of merged cases for non-homogeneous system:
+            Case 1: assume {a: 0}, excluding []
+            No solution
+            Case 2: assume {}, excluding [{a: 0}]
+            Unique solution
+
         See Also:
             - [`rref_cases`][..]: Returns case data without printing a summary or merging similar cases.
         """
@@ -1925,7 +1938,7 @@ class Matrix(sym.MutableDenseMatrix):
         else:
             rref_mat = super().rref(*args, pivots=False, **kwargs)
 
-        aug = self._aug_pos.copy() if isinstance(self, Matrix) else set()
+        aug = self._aug_pos.copy() if hasattr(self, "_aug_pos") else set()
         rref_mat = Matrix(rref_mat, aug_pos=aug)
 
         if pivots:
@@ -1954,16 +1967,13 @@ class Matrix(sym.MutableDenseMatrix):
         A system is inconsistent when any row has all-zero entries on the left-hand side (LHS) of the
         augmentation line(s) but a non-zero entry on the right-hand side (RHS).
         """
-        if (
-            not isinstance(self, Matrix)
-            or not hasattr(self, "_aug_pos")
-            or not self._aug_pos
-        ):
+        aug_pos = getattr(self, "_aug_pos", set())
+        if not aug_pos:
             raise ValueError(
                 "Matrix must have augmentation lines defined for consistency check."
             )
         # Pick the leftmost augmentation line as the boundary between LHS and RHS
-        n_var_cols = min(self._aug_pos) + 1
+        n_var_cols = min(aug_pos) + 1
         for row in range(self.rows):
             lhs_zero = all(
                 sym.simplify(self[row, col]) == 0 for col in range(n_var_cols)
