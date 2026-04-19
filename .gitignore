@@ -12,6 +12,7 @@ wheels/
 
 # Generated docs
 site/
+.cache/
 
 # Generated coverage reports
 htmlcov/

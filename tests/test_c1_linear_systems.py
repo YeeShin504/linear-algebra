@@ -17,6 +17,7 @@
 """
 
 import pytest
+import sympy as sym
 from sympy import S
 
 from ma1522 import Matrix
@@ -175,13 +176,31 @@ class TestEvaluateCases:
     - solve
     """
 
-    # TODO
     def test_evaluate_cases(self):
-        """Test evaluating special cases"""
-        mat = Matrix([[1, 2], [3, 4]])
-        rhs = Matrix([[1], [2]])
-        # Just verify the method runs without error
-        mat.evaluate_cases(rhs)
+        """Test the symbolic case split produces all expected cases."""
+        a, b = sym.symbols("a b")
+        mat = Matrix([[a, 0, b, 2], [a, a, 4, 4], [0, a, 2, b]], aug_pos=2)
+        rhs = mat.select_cols(3)
+        mat = mat.select_cols(*range(3))
+
+        cases = mat.evaluate_cases(rhs, verbosity=0)
+
+        assert len(cases) == 4
+        assert [c.conditions for c in cases] == [
+            {a: 0},
+            {},
+            {b: 2},
+            {a: 0, b: 2},
+        ]
+        assert [c.excluded for c in cases] == [
+            [{b: 2}],
+            [{a: 0}, {b: 2}],
+            [{a: 0}],
+            [],
+        ]
+        assert [c.is_consistent for c in cases] == [False, True, True, True]
+        assert [c.free_params for c in cases] == [2, 0, 1, 2]
+        assert [c.pivots for c in cases] == [(2, 3), (0, 1, 2), (0, 1), (2,)]
 
     def test_solve(self):
         A = Matrix([[1, 2], [3, 4]])

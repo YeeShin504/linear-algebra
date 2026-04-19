@@ -4,9 +4,10 @@ import dataclasses
 from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
+import sympy as sym
 from sympy.printing.latex import LatexPrinter
 
-from .utils import _gen_latex_repr
+from .utils import _gen_latex_repr, _textify
 # from ma1522 import utils
 
 if TYPE_CHECKING:
@@ -293,6 +294,57 @@ class RREF(Printable):
     pivots: tuple[int, ...]
 
     def eval(self) -> Matrix:
+        return self.rref
+
+
+@dataclasses.dataclass
+class RREFCase(Printable):
+    """
+    Represents one symbolic-RREF case produced by [`rref_cases`][ma1522.symbolic.Matrix.rref_cases].
+
+    When a pivot entry contains free symbols that may equal zero, the RREF
+    procedure branches into separate cases. Each branch yields one
+    ``RREFCase`` describing the conditions assumed, the resulting RREF, and
+    derived solution information.
+
+    Attributes:
+        conditions (dict): Substitution map ``{symbol: value}`` that defines
+            this case (e.g. ``{a: 0}`` means "this case holds when ``a = 0``").
+        excluded (list[dict]): Zero-conditions found in *other* branches that
+            are **not** assumed here. Redundant alternatives for symbols already
+            fixed in ``conditions`` are omitted.
+        rref (Matrix): The RREF matrix (augmented with the RHS if one was
+            supplied to [`rref_cases`][ma1522.symbolic.Matrix.rref_cases].
+        pivots (tuple[int, ...]): Column indices of the pivot positions.
+        free_params (int): Number of free parameters in the solution
+            (= ``n_var_cols - len(pivots)`` restricted to variable columns).
+        is_consistent (bool | None): Whether the system is consistent under
+            these conditions. ``None`` when no RHS was provided.
+    """
+
+    conditions: dict
+    excluded: list
+    rref: Matrix
+    pivots: tuple
+    free_params: int
+    is_consistent: bool | None
+
+    def _latex(self, printer=None) -> str:
+        cond_str = sym.latex(self.conditions) if self.conditions else r"\{\}"
+        excl_str = sym.latex(self.excluded) if self.excluded else r"[\,]"
+        rref_str = self.rref._latex(printer)
+        parts = {
+            "conditions": cond_str,
+            "excluded": excl_str,
+            "rref": rref_str,
+            "pivots": str(self.pivots),
+            "free_params": str(self.free_params),
+            "is_consistent": _textify(str(self.is_consistent)),
+        }
+        inner = r",\quad ".join(_textify(k) + " = " + v for k, v in parts.items())
+        return _textify("RREFCase") + r"\left\{" + inner + r"\right\}"
+
+    def eval(self) -> "Matrix":
         return self.rref
 
 

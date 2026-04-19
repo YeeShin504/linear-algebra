@@ -21,11 +21,16 @@ jobs:
           python -m pip install build
           python -m build
 
-      - name: upload windows dists
+      - name: upload dists as artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-dists
           path: dist/
+
+      - name: Upload dists to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
 
   pypi-publish:
     name: Upload release on PyPI
@@ -49,3 +54,36 @@ jobs:
 
       - name: Publish release distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  offline-docs:
+    name: Build offline documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Install local package
+        run: uv pip install -e .
+
+      - name: Build documentation
+        run: uv run mkdocs build
+
+      - name: Create ZIP archive
+        run: |
+          cd site
+          zip -r ../linear-algebra-docs-offline.zip .
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: linear-algebra-docs-offline.zip
