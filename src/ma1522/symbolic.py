@@ -43,106 +43,6 @@ from sympy.core.mul import Mul
 ########
 
 
-def sympy_commands():
-    commands = """
-    # Note: zero-indexing, see https://docs.sympy.org/latest/modules/matrices/matrices.html
-    import sympy as sym
-
-    # Variables
-    >>> a, b = sym.symbols("a b") # symbols
-    >>> I_3 = eye(3) # identity matrix
-    >>> zeros = sym.zeros(2, cols=2) # zero matrix
-    >>> A = Matrix([[...]] ) # user-defined matrix
-    >>> B = Matrix.vstack(A, I_3, ...) # repeated application of col_join
-    >>> C = sym.nsimplify(A, tolerance=0.001, rational=True) # convert to fraction
-    >>> D = C.evalf() # convert to decimal
-
-    # Matrix Operations
-    >>> A @ B # matrix multiplication
-    >>> A + B # element wise addition
-    >>> A - B # element wise subtraction
-    >>> A.col_del(col) # delete column
-    >>> A.col_insert(pos, B) # insert matrix B at pos in A, column wise
-    >>> A.col_join(B) # insert matrix B below matrix A
-    >>> A.dot(B) # dot product of A and B
-    >>> A.exp() # exponential
-    >>> A.flat() # flatten to row vector
-    >>> A.pow(exp) # power
-    >>> A.reshape(rows, cols) # reshape
-    >>> A.rot90(k=1) # rotate 90deg, k times
-    >>> A.row_del(row) # delete row
-    >>> A.row_insert(pos, B) # insert matrix B at pos in A, row wise
-    >>> A.row_join(B) # insert matrix B on RHS of matrix A
-    >>> A.vec() # stack to column vector
-    >>> A.xreplace(dict) # replace sym (key) with value
-
-    # Symbolic Methods
-    >>> A.T # transpose
-    >>> A.inv() # inverse
-    >>> A.adj() # adjoint (as per MA1522 definition)
-    >>> A.cofactor(i, j) # (i, j) cofactor
-    >>> A.cofactor_matrix() # cofactor matrix
-    >>> A.columnspace(simplify=False) # list of vectors that span column space of A
-    >>> A.conjugate() # conjugate
-    >>> A.copy() # copy matrix
-    >>> A.det(method='bareiss', iszerofunc=None) # determinant, use domain-ge/laplace as method
-    >>> A.diag() # diagonal
-    >>> A.echelon_form() # REF
-    >>> A.eigenvals(rational=True) # eigenvalues
-    >>> A.eigenvects() # eigenvectors
-    >>> A.elementary_row_op(op='n->kn', row=None, k=None, row1=None, row2=None) # ERO, "n->kn"/"n<->m"/"n->n+km"
-    >>> A.is_nilpotent() # check if nilpotent
-    >>> A.is_symmetric() # check if symmetric
-    >>> A.minor(i, j) # (i, j) minor (WRONG DEFINITION, uses determinant)
-    >>> A.nullspace() # nullspace
-    >>> A.rank(iszerofunc=<function _iszero>, simplify=False) # rank
-    >>> A.rowspace(simplify=False) # list of vectors that span row space of A
-    >>> A.rref() # returns [rref, list_of_pivot_cols]
-    >>> A.LUdecomposition(iszerofunc=<function _iszero>, simpfunc=None, rankcheck=False) # LU decomposition
-    >>> A.lower_triangular_solve(rhs) # solve Ax = rhs, A lower triangular
-    >>> A.upper_triangular_solve(rhs) # solve Ax = rhs, A upper triangular
-
-    # Custom Commands (verbosity >= 1 returns ERO (idx + 1), >= 2 returns matrix at each step)
-    >>> is_zero(expr, symbolic: bool = True)
-    >>> Matrix.from_latex(expr, row_join=True, norm=False, aug_pos=None) # Parse LaTeX matrix/vector to Matrix
-    >>> Matrix.from_str(matrix_str, row_sep=';', col_sep=' ', aug_pos=None, is_real=True) # Parse string to Matrix
-    >>> Matrix.from_list(vectors, row_join=True, aug_pos=None) # Create Matrix from list of vectors
-    >>> Matrix.create_unk_matrix(num_rows: int, num_cols: int, symbol: str, is_real: bool) # Matrix with symbolic entries
-    >>> Matrix.create_rand_matrix(num_rows: int, num_cols: int) # Matrix with random entries
-    >>> A.simplify(rational=True, tolerance=1e-4, simplify=True, expand=True, collect_sym=None) # Simplify entries
-    >>> A.identify(tolerance: float) # Identify symbolic/numeric constants
-    >>> A.elem() # Identity matrix with same number of rows as A
-    >>> A.select_rows(*idx) # New matrix with selected rows
-    >>> A.select_cols(*idx) # New matrix with selected columns
-    >>> A.scale_row(idx: int, scalar: float, verbosity=0) # Scale row
-    >>> A.swap_row(idx_1: int, idx_2: int, verbosity=0) # Swap rows
-    >>> A.reduce_row(idx_1: int, scalar: float, idx_2: int, verbosity=0) # Row reduction
-    >>> A.get_pivot_row(col_idx: int, row_start_idx: int, follow_GE=False) # Find pivot row
-    >>> A.ref(verbosity=2, max_tries=2, follow_GE=False, matrices=2) # Row echelon form (REF)
-    >>> A.evaluate_cases(rhs: Matrix, verbosity=0) # Display solution cases for symbolic systems
-    >>> A.column_constraints(use_id=False, use_ref=False) # RREF of [A | b], constraints for b
-    >>> A.extend_basis(span_subspace=A.elem()) # Augment basis to span subspace
-    >>> A.transition_matrix(to: Matrix) # Transition matrix between bases
-    >>> A.intersect_subspace(other: Matrix, verbosity=1) # Basis for intersection of subspaces
-    >>> A.is_same_subspace(other: Matrix, verbosity=1) # Check if subspaces are equal
-    >>> A.inverse(option: str, verbosity=0) # Inverse (left/right/both)
-    >>> A.orthogonal_complement(verbosity=0) # Null(A^T)
-    >>> A.is_vec_orthogonal(verbosity=1) # Check if columns are orthogonal
-    >>> A.normalized(factor=False) # Normalize columns
-    >>> A.scalar_factor(column=True) # Factor out common divisors
-    >>> A.gram_schmidt(factor=True, verbosity=1) # Orthonormalize columns
-    >>> A.QRdecomposition(full=False) # QR decomposition
-    >>> A.solve_least_squares(rhs: Matrix, verbosity=1) # Least squares solution
-    >>> A.cpoly(force_factor=True) # Characteristic polynomial
-    >>> A.is_diagonalizable(reals_only=True, verbosity=1) # Diagonalizability
-    >>> A.diagonalize(reals_only=True, verbosity=0) # Diagonalization
-    >>> A.is_orthogonally_diagonalizable # Check if symmetric
-    >>> A.orthogonally_diagonalize(reals_only=True, factor=True, verbosity=1) # Orthogonal diagonalization
-    >>> A.equilibrium_vectors() # Probability vectors Ax = x
-    >>> A.fast_svd(option='np', identify=True, tolerance=None) # Fast SVD (numeric)
-    >>> A.singular_value_decomposition(verbosity=0) # Full SVD (A = U @ S @ V.T)
-    """
-    print(commands)
 
 
 sym.init_printing(use_unicode=True)
@@ -255,7 +155,11 @@ class Matrix(sym.MutableDenseMatrix):
 
     # Override
     def _latex(self, printer=None) -> str:
-        raw = printer._print(sym.Matrix(self))  # type: ignore
+        if printer is None:
+            raw = sym.latex(sym.Matrix(self))
+        else:
+            raw = printer._print(sym.Matrix(self))  # type: ignore
+
         if not hasattr(self, "_aug_pos"):
             # Matrices produced by parent methods may not have _aug_pos
             return raw

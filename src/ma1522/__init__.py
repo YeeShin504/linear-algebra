@@ -1,4 +1,4 @@
-from .utils import display
+from .utils import display, sympy_commands
 
 from .custom_types import (
     Shape,
@@ -14,7 +14,7 @@ from .custom_types import (
     NumSVD,
 )
 
-from .symbolic import Matrix, sympy_commands
+from .symbolic import Matrix
 
 __all__ = [
     "display",
