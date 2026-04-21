@@ -7,6 +7,10 @@ resolution-markers = [
     "python_full_version < '3.11'",
 ]
 
+[options]
+exclude-newer = "2026-04-13T23:53:58.1114823Z"
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "antlr4-python3-runtime"
 version = "4.13.1"
@@ -1092,8 +1096,8 @@ wheels = [
 
 [[package]]
 name = "ma1522-linear-algebra"
-version = "1.1.0"
-source = { virtual = "." }
+version = "1.2.0"
+source = { editable = "." }
 dependencies = [
     { name = "numpy" },
     { name = "sympy" },

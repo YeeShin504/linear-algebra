@@ -3,7 +3,8 @@ name = "ma1522-linear-algebra"
 version = "1.2.0"
 description = "Python scripts for NUS MA1522 Linear Algebra for Computing"
 readme = "README.md"
-license = "MIT"
+license = { text = "MIT" }
+license-files = { paths = ["LICENSE.txt"] }
 requires-python = ">=3.10"
 dependencies = [
     "numpy>=2.0.2",
@@ -36,7 +37,6 @@ dev = [
     "build>=1.2.2.post1",
     "twine>=6.2.0",
     "pytest-cov>=7.0.0",
-    "ma1522-linear-algebra",
 ]
 
 docs = [
@@ -53,16 +53,12 @@ docs = [
 [tool.uv]
 default-groups = ["dev", "docs"]
 
-[tool.uv.workspace]
-members = [
-    ".",
-]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.uv.sources]
-ma1522-linear-algebra = { workspace = true, editable = true }
-
-[tool.setuptools]
-license-files = []
+[tool.hatch.build.targets.wheel]
+packages = ["src/ma1522"]
 
 [tool.pytest.ini_options]
 addopts = [
