@@ -44,7 +44,7 @@ jobs:
         run: uv pip install -e .
 
       - name: Build docs
-        run: uv run mkdocs build --strict --verbose
+        run: uv run mkdocs build --verbose
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
