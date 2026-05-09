@@ -277,11 +277,11 @@ def display(*args, opt: Literal["math", "dict"] | None = None, **kwargs) -> None
 
     Args:
         *args: The objects to display.
-        opt:
+        opt (Literal["math", "dict"] | None): 
 
             - If "math", displays the object as a math expression.
             - If "dict", generates a LaTeX representation of the dictionary for display.
-            - If none, assumes the object can be passed into IPython's [`display`][IPython.display.display] function directly.
+            - If None, assumes the object can be passed into IPython's [`display`][IPython.display.display] function directly.
         **kwargs: Additional keyword arguments to pass to the display function.
 
     See Also:
