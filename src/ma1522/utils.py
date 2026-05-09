@@ -255,12 +255,15 @@ def _is_IPython() -> bool:
     try:
         from IPython.core.getipython import get_ipython
 
-        shell = get_ipython().__class__.__name__
+        ip = get_ipython()
+        if ip is None:
+            return False
+        shell = ip.__class__.__name__
         if shell in ["ZMQInteractiveShell", "TerminalInteractiveShell", "Interpreter"]:
             return True  # Jupyter notebook, qtconsole or terminal running IPython
         else:
             return False  # Other type
-    except NameError:
+    except (NameError, AttributeError):
         return False  # Probably standard Python interpreter
     except ImportError:
         return False  # IPython module does not exist
