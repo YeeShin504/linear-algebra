@@ -83,3 +83,38 @@ class TestBasicManipulators:
         assert isinstance(scalar_factor, ScalarFactor)
         assert scalar_factor.full == Matrix([[1, 1], [3, 2]])
         assert scalar_factor.diag == Matrix([[2, 0], [0, 4]])
+
+    def test_hermitian_transpose(self):
+        """Verify the .H property for complex matrices."""
+        A = Matrix([[1, 2 + sym.I], [3 - sym.I, 4]])
+        expected = Matrix([[1, 3 + sym.I], [2 - sym.I, 4]])
+        assert A.H == expected
+
+    def test_is_mat_orthogonal_behavioral(self):
+        """Verify is_mat_orthogonal calls .is_diagonal() as a method, not a property."""        
+        A = Matrix.eye(2)
+        assert A.is_mat_orthogonal() is True
+        B = Matrix([[1, 1], [0, 1]])
+        assert B.is_mat_orthogonal() is False
+
+    def test_is_mat_orthogonal_negative(self):
+        """Verify is_mat_orthogonal returns False for non-orthogonal matrices."""
+        # Non-square matrix (not orthogonal by definition)
+        A = Matrix([[1, 0, 0], [0, 1, 0]])
+        assert A.is_mat_orthogonal(verbosity=0) is False
+        # Square but non-orthogonal
+        B = Matrix([[1, 1], [0, 1]])
+        assert B.is_mat_orthogonal(verbosity=0) is False
+
+    def test_scale_row_warning(self):
+        """Verify that scaling a row by zero triggers a UserWarning."""
+        mat = Matrix([[1, 2], [3, 4]])
+        with pytest.warns(UserWarning):
+            mat.scale_row(0, 0)
+
+    def test_normalized_zero_column(self):
+        """Verify that normalized() handles zero columns without errors."""
+        mat = Matrix([[0, 1], [0, 0]])
+        result = mat.normalized()
+        assert result[0, 0] == 0
+        assert result[1, 0] == 0

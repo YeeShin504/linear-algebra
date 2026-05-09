@@ -33,46 +33,57 @@ class TestUtils:
         assert _unwrap_latex(None) == ""
 
     def test_ipython_detection(self):
+        """Mock various environments to verify IPython detection logic."""
         from ma1522.utils import _is_IPython
         from unittest.mock import patch, MagicMock
 
-        # Test failure (default/standard python)
+        # Standard Python (get_ipython doesn't exist)
         with patch("IPython.core.getipython.get_ipython", side_effect=NameError):
             assert _is_IPython() is False
 
-        # Test success (IPython shell)
+        # Jupyter/ZMQ Shell (Success)
         with patch("IPython.core.getipython.get_ipython") as mock_get:
             mock_shell = MagicMock()
             mock_shell.__class__.__name__ = "ZMQInteractiveShell"
             mock_get.return_value = mock_shell
             assert _is_IPython() is True
 
-        # Test "Other type" (False)
+        # Terminal IPython (Success)
         with patch("IPython.core.getipython.get_ipython") as mock_get:
             mock_shell = MagicMock()
-            mock_shell.__class__.__name__ = "SomeOtherShell"
+            mock_shell.__class__.__name__ = "TerminalInteractiveShell"
+            mock_get.return_value = mock_shell
+            assert _is_IPython() is True
+
+        # Unrecognized Shell (Failure)
+        with patch("IPython.core.getipython.get_ipython") as mock_get:
+            mock_shell = MagicMock()
+            mock_shell.__class__.__name__ = "UnknownShell"
             mock_get.return_value = mock_shell
             assert _is_IPython() is False
 
-    def test_display_ipython(self):
+    def test_display_ipython_and_fallback(self):
         from ma1522.utils import display
         from unittest.mock import patch, MagicMock
         
-        # Mock IPython success
-        with patch("IPython.core.getipython.get_ipython") as mock_get:
-            mock_shell = MagicMock()
-            mock_shell.__class__.__name__ = "ZMQInteractiveShell"
-            mock_get.return_value = mock_shell
-            
+        # IPython SUCCESS
+        with patch("ma1522.utils._is_IPython", return_value=True):
             with patch("IPython.display.display") as mock_disp:
                 display({"a": 1}, 5, opt="dict")
                 assert mock_disp.called
-                
+
                 display("math expression", opt="math")
                 assert mock_disp.called
                 
                 display("standard")
                 assert mock_disp.called
+        # IPython ABSENT (Fallback to print)
+        with patch("ma1522.utils._is_IPython", return_value=False):
+            with patch("builtins.print") as mock_print:
+                display("hello world")
+                assert mock_print.called
+                # Check if it was called with the right argument
+                mock_print.assert_any_call("hello world")
 
     def test_gen_latex_repr_dict_special(self):
         from ma1522.utils import _gen_latex_repr_dict

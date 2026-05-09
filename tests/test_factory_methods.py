@@ -206,6 +206,20 @@ class TestFromList:
         result = Matrix.from_list(vectors, row_join)
         assert result == expected
 
+    def test_from_list_non_mutation(self):
+        """Verify from_list is independent of the input list and its contents (Regression)."""
+        v1 = Matrix([1, 2])
+        v2 = Matrix([3, 4])
+        vecs = [v1, v2]
+        res = Matrix.from_list(vecs)
+        
+        # Verify the list itself was not mutated (no .pop() occurred)
+        assert len(vecs) == 2
+        
+        # Verify defensive copying: changing v1 should NOT change 'res'
+        v1[0, 0] = 99
+        assert res[0, 0] == 1, "Matrix should be independent of future mutations to the input vectors"
+
     @pytest.mark.parametrize(
         "vectors",
         [
@@ -285,6 +299,21 @@ class TestCreateRandMatrix:
         assert mat.shape == (2, 2)
         assert mat == Matrix([[81, 14], [3, 94]])
 
+class TestApplyVander:
+    """Regression tests for Vandermonde matrix applications."""
+    def test_basic_substitution(self):
+        V = Matrix.create_vander(3, 3)
+        x_vec = Matrix([[2], [3], [5]])
+        result = V.apply_vander(x_vec)
+        assert result.free_symbols == set()
+
+    def test_free_symbols_not_mutated(self):
+        V = Matrix.create_vander(3, 3)
+        syms_before = frozenset(V.free_symbols)
+        x_vec = Matrix([[2], [3], [5]])
+        V.apply_vander(x_vec)
+        assert frozenset(V.free_symbols) == syms_before
+
 
 class TestOverriddenFactoryMethods:
     def test_eye(self):
@@ -311,3 +340,8 @@ class TestOverriddenFactoryMethods:
         mat = Matrix([[1, 2], [3, 4]])
         assert mat.T == Matrix([[1, 3], [2, 4]])
         assert isinstance(mat.T, Matrix)
+
+    def test_H_property(self):
+        mat = Matrix([[1, 2*sym.I], [3+4*sym.I, 4]])
+        assert mat.H == Matrix([[1, 3-4*sym.I], [-2*sym.I, 4]])
+        assert isinstance(mat.H, Matrix)
