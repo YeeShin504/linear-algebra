@@ -603,6 +603,16 @@ class Matrix(sym.MutableDenseMatrix):
 
     # Override
     @property
+    def H(self):
+        """Returns the Hermitian transpose (conjugate transpose) of the matrix.
+
+        This overrides the default behavior where .H calls .adjoint(), which in this
+        class is overridden to return the adjugate matrix.
+        """
+        return self.T.conjugate()
+
+    # Override
+    @property
     def T(self) -> Matrix:
         return Matrix(super().T)
 
@@ -2358,9 +2368,9 @@ class Matrix(sym.MutableDenseMatrix):
         if option is not None:
             X = Matrix.create_unk_matrix(r=self.cols, c=self.rows, symbol="x")
             if option == "left":
-                eqn = X @ self - sym.eye(self.cols)
+                eqn = X @ self - Matrix.eye(self.cols)
             else:
-                eqn = self @ X - sym.eye(self.rows)
+                eqn = self @ X - Matrix.eye(self.rows)
 
             sol = sym.solve(eqn, X.free_symbols)
             if isinstance(sol, list) and len(sol) > 0:
@@ -3164,7 +3174,7 @@ class Matrix(sym.MutableDenseMatrix):
             display(M)
             print("\nAfter RREF:")
             display(res)
-        P = res[: self.cols, self.cols :]
+        P = res[: to.cols, to.cols :]
         return P  # type: ignore
 
     ###############################################
@@ -3334,7 +3344,7 @@ class Matrix(sym.MutableDenseMatrix):
         if verbosity >= 1:
             print("self^T @ self")
             display(res)
-        return res.is_diagonal and all(entry == 1 for entry in res.diagonal())
+        return res.is_diagonal() and all(entry == 1 for entry in res.diagonal())
 
     def orthogonal_decomposition(self, to: Matrix, verbosity: int = 0) -> VecDecomp:
         """Decomposes the current vector (or matrix) into its orthogonal projection onto a subspace and its orthogonal complement.
@@ -3472,11 +3482,12 @@ class Matrix(sym.MutableDenseMatrix):
         orthogonal_set = [self.select_cols(0)]
         for i in range(1, self.cols):
             u = self.select_cols(i)
+            u_orig = u.copy()
             latex_eq = f"v_{i + 1} = {sym.latex(u)}"
             for _, v in enumerate(orthogonal_set, start=1):
                 if v.norm() != 0:
-                    latex_eq += f"- \\left(\\frac{{{sym.latex(v.dot(u))}}}{{{sym.latex(v.dot(v))}}}\\right) {sym.latex(v)}"
-                    u -= (v.dot(u) / v.dot(v)) * v
+                    latex_eq += f"- \\left(\\frac{{{sym.latex(u_orig.dot(v))}}}{{{sym.latex(v.dot(v))}}}\\right) {sym.latex(v)}"
+                    u -= (u_orig.dot(v) / v.dot(v)) * v
 
             if verbosity >= 1:
                 disp_u = u.copy()
