@@ -389,8 +389,8 @@ class Matrix(sym.MutableDenseMatrix):
         """
         if not vectors:
             return Matrix([])
-        res = Matrix(vectors.pop(0))
-        for vec in vectors:
+        res = Matrix(vectors[0])
+        for vec in vectors[1:]:
             if row_join:
                 res = res.row_join(vec, aug_line=False)
             else:
@@ -4315,7 +4315,8 @@ class Matrix(sym.MutableDenseMatrix):
                 S = S.identify(tol=tol, suppress_warnings=True)
                 V = V.identify(tol=tol, suppress_warnings=True)
                 residues = (self - U @ S @ V.T).norm()
-                if residues > tol:
+                _tol = tol if tol is not None else 1e-15
+                if residues > _tol:
                     res = residues.evalf()
                     warn(
                         f"Non-zero Identification Error: {res}",
