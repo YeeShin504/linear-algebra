@@ -4,6 +4,10 @@ from ma1522 import Matrix
 
 
 class TestTutorial04:
+    def test_zero_subspace_is_subspace_of_zero_subspace(self):
+        zero_subspace = Matrix.zeros(2, 0)
+        assert zero_subspace.is_subspace_of(zero_subspace, verbosity=0)
+
     def test_question_2a(self):
         U = Matrix.from_str("2 1 0 3; 3 -1 5 2; -1 0 2 1").T
         actual_constraints = U.column_constraints()

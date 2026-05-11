@@ -27,6 +27,13 @@ class TestMatrixInverse:
         assert inv is not None
         assert (inv @ mat) == Matrix.eye(2)
 
+    def test_auto_left_inverse_for_tall_full_column_rank(self):
+        """Automatic inverse detection should choose a left inverse."""
+        mat = Matrix([[1, 0], [0, 1], [1, 1]])
+        inv = mat.inverse()
+        assert inv is not None
+        assert (inv @ mat) == Matrix.eye(2)
+
     def test_right_inverse(self):
         """Test right inverse for full row rank matrix"""
         mat = Matrix([[1, 0, 1], [0, 1, 1]])

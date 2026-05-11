@@ -12,8 +12,9 @@
 """
 
 import sympy as sym
+import pytest
 
-from ma1522 import Matrix
+from ma1522 import Matrix, SVD
 
 
 class TestChapter6:
@@ -41,6 +42,15 @@ class TestChapter6:
         pdp = mat.diagonalize()
         assert (pdp.P @ pdp.D @ pdp.P.inv() - mat).norm() < 1e-10
 
+    def test_diagonalize_verbose_filters_complex_roots(self):
+        mat = Matrix([[0, -1], [1, 0]])
+        with pytest.raises(Exception):
+            mat.diagonalize(reals_only=True, verbosity=1)
+
+    def test_eigenvects_associated(self):
+        mat = Matrix([[2, 0], [0, 3]])
+        assert mat.eigenvects_associated(2) == [Matrix([[1], [0]])]
+
     def test_is_orthogonally_diagonalizable(self):
         mat = Matrix([[1, 2], [2, 1]])
         assert mat.is_orthogonally_diagonalizable() is True
@@ -52,6 +62,16 @@ class TestChapter6:
         pdp = mat.orthogonally_diagonalize(verbosity=0)
         assert (pdp.P @ pdp.D @ pdp.P.T - mat).norm() < 1e-10
 
+    def test_orthogonally_diagonalize_without_factoring(self):
+        mat = Matrix.eye(2)
+        pdp = mat.orthogonally_diagonalize(factor=False, verbosity=0)
+        assert (pdp.P @ pdp.D @ pdp.P.T - mat).norm() < 1e-10
+
+    def test_is_stochastic(self):
+        assert Matrix([[sym.Rational(1, 2), sym.Rational(1, 3)], [sym.Rational(1, 2), sym.Rational(2, 3)]]).is_stochastic(verbosity=0)
+        assert not Matrix([[1, 1], [-1, 0]]).is_stochastic(verbosity=0)
+        assert not Matrix([[1], [0]]).is_stochastic(verbosity=0)
+
     def test_equilibrium_vectors(self):
         mat = Matrix([[0.8, 0.3], [0.2, 0.7]])
         eq_vects = mat.equilibrium_vectors()
@@ -62,6 +82,12 @@ class TestChapter6:
         svd = mat.fast_svd(option="np", identify=False)
         U, S, V = svd.U, svd.S, svd.V
         assert (Matrix(U) @ Matrix(S) @ Matrix(V).T - mat).norm() < 1e-10
+
+    def test_fast_svd_invalid_option_falls_back_to_numpy_result(self):
+        mat = Matrix([[1, 2], [3, 4]])
+        with pytest.warns(SyntaxWarning, match="Invalid option"):
+            svd = mat.fast_svd(option="bad")  # type: ignore[arg-type]
+        assert not isinstance(svd, SVD)
 
     def test_singular_value_decomposition(self):
         mat = Matrix([[1, 2], [3, 4]])

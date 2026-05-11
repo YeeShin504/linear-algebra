@@ -206,6 +206,20 @@ class TestFromList:
         result = Matrix.from_list(vectors, row_join)
         assert result == expected
 
+    def test_from_list_non_mutation(self):
+        """Verify from_list is independent of the input list and its contents (Regression)."""
+        v1 = Matrix([1, 2])
+        v2 = Matrix([3, 4])
+        vecs = [v1, v2]
+        res = Matrix.from_list(vecs)
+        
+        # Verify the list itself was not mutated (no .pop() occurred)
+        assert len(vecs) == 2
+        
+        # Verify defensive copying: changing v1 should NOT change 'res'
+        v1[0, 0] = 99
+        assert res[0, 0] == 1, "Matrix should be independent of future mutations to the input vectors"
+
     @pytest.mark.parametrize(
         "vectors",
         [
@@ -219,6 +233,38 @@ class TestFromList:
         """Test invalid vector inputs raise appropriate errors"""
         with pytest.raises((ValueError, IndexError)):
             Matrix.from_list(vectors)
+
+    def test_empty_vectors_returns_empty_matrix(self):
+        assert Matrix.from_list([]) == Matrix([])
+
+    def test_augmented_position_is_preserved(self):
+        result = Matrix.from_list([Matrix([1, 2]), Matrix([3, 4])], aug_pos=0)
+        assert result == Matrix([[1, 3], [2, 4]], aug_pos=0)
+        assert "|" in repr(result)
+
+
+class TestShape:
+    def test_diagonal_shape_pads_rectangular_matrix(self):
+        wide = Matrix([[1, 2, 3], [4, 5, 6]])
+        tall = Matrix([[1, 2], [3, 4], [5, 6]])
+
+        assert wide._shape(Shape.DIAGONAL) == Matrix([[1, 0, 0], [0, 5, 0]])
+        assert tall._shape(Shape.DIAGONAL) == Matrix([[1, 0], [0, 4], [0, 0]])
+
+    def test_scalar_shape_rejects_non_square_matrix(self):
+        with pytest.raises(sym.NonSquareMatrixError):
+            Matrix([[1, 2, 3], [4, 5, 6]])._shape(Shape.SCALAR)
+
+    def test_strict_and_symmetric_shapes(self):
+        mat = Matrix([[1, 2], [3, 4]])
+
+        assert mat._shape(Shape.STRICT_UPPER) == Matrix([[0, 2], [0, 0]])
+        assert mat._shape(Shape.STRICT_LOWER) == Matrix([[0, 0], [3, 0]])
+        assert mat._shape(Shape.SYMMETRIC) == Matrix([[1, 2], [2, 4]])
+
+    def test_symmetric_shape_rejects_non_square_matrix(self):
+        with pytest.raises(sym.NonSquareMatrixError):
+            Matrix([[1, 2, 3], [4, 5, 6]])._shape(Shape.SYMMETRIC)
 
 
 class TestCreateUnkMatrix:
@@ -285,6 +331,42 @@ class TestCreateRandMatrix:
         assert mat.shape == (2, 2)
         assert mat == Matrix([[81, 14], [3, 94]])
 
+    def test_create_rand_matrix_with_shape(self):
+        mat = Matrix.create_rand_matrix(2, 2, shape=Shape.STRICT_UPPER, seed=42)
+        assert mat == Matrix([[0, 14], [0, 0]])
+
+class TestApplyVander:
+    """Regression tests for Vandermonde matrix applications."""
+    def test_create_vander(self):
+        result = Matrix.create_vander(2, 4)
+        assert result.shape == (2, 4)
+        assert [[str(entry) for entry in row] for row in result.tolist()] == [
+            ["1", "x_1", "x_1**2", "x_1**3"],
+            ["1", "x_2", "x_2**2", "x_2**3"],
+        ]
+
+    def test_basic_substitution(self):
+        V = Matrix.create_vander(3, 3)
+        x_vec = Matrix([[2], [3], [5]])
+        result = V.apply_vander(x_vec)
+        assert result == Matrix([[1, 2, 4], [1, 3, 9], [1, 5, 25]])
+        assert result.free_symbols == set()
+
+    def test_free_symbols_not_mutated(self):
+        V = Matrix.create_vander(3, 3)
+        syms_before = frozenset(V.free_symbols)
+        x_vec = Matrix([[2], [3], [5]])
+        V.apply_vander(x_vec)
+        assert frozenset(V.free_symbols) == syms_before
+
+    def test_apply_vander_rejects_non_column_vector(self):
+        with pytest.raises(sym.ShapeError):
+            Matrix.create_vander(2, 2).apply_vander(Matrix([[1, 2]]))
+
+    def test_apply_vander_rejects_row_mismatch(self):
+        with pytest.raises(sym.ShapeError):
+            Matrix.create_vander(2, 2).apply_vander(Matrix([[1], [2], [3]]))
+
 
 class TestOverriddenFactoryMethods:
     def test_eye(self):
@@ -311,3 +393,8 @@ class TestOverriddenFactoryMethods:
         mat = Matrix([[1, 2], [3, 4]])
         assert mat.T == Matrix([[1, 3], [2, 4]])
         assert isinstance(mat.T, Matrix)
+
+    def test_H_property(self):
+        mat = Matrix([[1, 2*sym.I], [3+4*sym.I, 4]])
+        assert mat.H == Matrix([[1, 3-4*sym.I], [-2*sym.I, 4]])
+        assert isinstance(mat.H, Matrix)

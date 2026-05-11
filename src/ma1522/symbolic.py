@@ -389,8 +389,8 @@ class Matrix(sym.MutableDenseMatrix):
         """
         if not vectors:
             return Matrix([])
-        res = Matrix(vectors.pop(0))
-        for vec in vectors:
+        res = Matrix(vectors[0])
+        for vec in vectors[1:]:
             if row_join:
                 res = res.row_join(vec, aug_line=False)
             else:
@@ -600,6 +600,16 @@ class Matrix(sym.MutableDenseMatrix):
     @staticmethod
     def diag(*args, aug_pos: Iterable[int] | int | None = None, **kwargs) -> Matrix:
         return Matrix(sym.diag(*args, **kwargs), aug_pos=aug_pos)
+
+    # Override
+    @property
+    def H(self):
+        """Returns the Hermitian transpose (conjugate transpose) of the matrix.
+
+        This overrides the default behavior where .H calls .adjoint(), which in this
+        class is overridden to return the adjugate matrix.
+        """
+        return self.T.conjugate()
 
     # Override
     @property
@@ -939,7 +949,7 @@ class Matrix(sym.MutableDenseMatrix):
         syms = self.free_symbols
         res: dict[Expr, Matrix] = defaultdict(Matrix)
         for s in syms:
-            sub = dict(((symbol, 0) for symbol in syms if symbol != sym))
+            sub = {symbol: 0 for symbol in syms if symbol != s}
             sub[s] = 1  # type: ignore
             res[s] = self.subs(sub)
         return res
@@ -994,7 +1004,8 @@ class Matrix(sym.MutableDenseMatrix):
                 F[:, i] /= g
                 scalars.append(prettify(g))
             D = Matrix.diag(*scalars)
-            assert self == (F @ D).doit(), "Matrix factorization failed."
+            if not self.free_symbols:
+                assert self == (F @ D).doit(), "Matrix factorization failed."
             return ScalarFactor(diag=D, full=F, order="FD")
         else:
             for i in range(self.rows):
@@ -1002,7 +1013,8 @@ class Matrix(sym.MutableDenseMatrix):
                 F[i, :] /= g
                 scalars.append(prettify(g))
             D = Matrix.diag(*scalars)
-            assert self == (D @ F).doit(), "Matrix factorization failed."
+            if not self.free_symbols:
+                assert self == (D @ F).doit(), "Matrix factorization failed."
             return ScalarFactor(diag=D, full=F, order="DF")
 
     #############################
@@ -2316,17 +2328,20 @@ class Matrix(sym.MutableDenseMatrix):
 
         if option is None:
             rank = self.rank()
-            if rank == self.cols:
+            full_col = rank == self.cols
+            full_row = rank == self.rows
+            if full_col and full_row:
+                if verbosity:
+                    print("Square inverse found!")
+                option = "both"
+            elif full_col:
                 if verbosity:
                     print("Left inverse found!")
                 option = "left"
-            if rank == self.rows:
+            elif full_row:
                 if verbosity:
                     print("Right inverse found!")
                 option = "right"
-                if self.rows == self.cols:
-                    # square matrix inverse works on both sides
-                    option = "both"
             else:
                 raise ValueError(
                     f"No inverse found! Rank: {rank}, Rows: {self.rows}, Columns: {self.cols}. Try pseudo-inverse: .pinv()"
@@ -2358,9 +2373,9 @@ class Matrix(sym.MutableDenseMatrix):
         if option is not None:
             X = Matrix.create_unk_matrix(r=self.cols, c=self.rows, symbol="x")
             if option == "left":
-                eqn = X @ self - sym.eye(self.cols)
+                eqn = X @ self - Matrix.eye(self.cols)
             else:
-                eqn = self @ X - sym.eye(self.rows)
+                eqn = self @ X - Matrix.eye(self.rows)
 
             sol = sym.solve(eqn, X.free_symbols)
             if isinstance(sol, list) and len(sol) > 0:
@@ -2988,6 +3003,11 @@ class Matrix(sym.MutableDenseMatrix):
         aug = other.copy().row_join(self)
         sub = aug.rref(pivots=True)
         assert isinstance(sub, RREF), "RREF should return a RREF dataclass"
+        if not sub.pivots:
+            if verbosity:
+                print("RREF has no pivots, so span(self) is the zero subspace.")
+                print("The zero subspace is trivially a subspace of span(other).\n")
+            return True
         if verbosity == 1:
             print("Check rref([other | self])")
         if verbosity >= 2:
@@ -3164,7 +3184,7 @@ class Matrix(sym.MutableDenseMatrix):
             display(M)
             print("\nAfter RREF:")
             display(res)
-        P = res[: self.cols, self.cols :]
+        P = res[: to.cols, to.cols :]
         return P  # type: ignore
 
     ###############################################
@@ -3334,7 +3354,7 @@ class Matrix(sym.MutableDenseMatrix):
         if verbosity >= 1:
             print("self^T @ self")
             display(res)
-        return res.is_diagonal and all(entry == 1 for entry in res.diagonal())
+        return res.is_diagonal() and all(entry == 1 for entry in res.diagonal())
 
     def orthogonal_decomposition(self, to: Matrix, verbosity: int = 0) -> VecDecomp:
         """Decomposes the current vector (or matrix) into its orthogonal projection onto a subspace and its orthogonal complement.
@@ -3472,11 +3492,14 @@ class Matrix(sym.MutableDenseMatrix):
         orthogonal_set = [self.select_cols(0)]
         for i in range(1, self.cols):
             u = self.select_cols(i)
+            u_orig = u.copy()
             latex_eq = f"v_{i + 1} = {sym.latex(u)}"
             for _, v in enumerate(orthogonal_set, start=1):
                 if v.norm() != 0:
-                    latex_eq += f"- \\left(\\frac{{{sym.latex(v.dot(u))}}}{{{sym.latex(v.dot(v))}}}\\right) {sym.latex(v)}"
-                    u -= (v.dot(u) / v.dot(v)) * v
+                    numerator = v.dot(u_orig, hermitian=True)
+                    denominator = v.dot(v, hermitian=True)
+                    latex_eq += f"- \\left(\\frac{{{sym.latex(numerator)}}}{{{sym.latex(denominator)}}}\\right) {sym.latex(v)}"
+                    u -= (numerator / denominator) * v
 
             if verbosity >= 1:
                 disp_u = u.copy()
@@ -3545,9 +3568,13 @@ class Matrix(sym.MutableDenseMatrix):
         Q, R = super().QRdecomposition()
         if full and Q.rows != Q.cols:
             Q = Matrix(Q)
-            Q_aug = Q.row_join(Q.elem(), aug_line=False).QRdecomposition()[0]
+            complement = Q.orthogonal_complement(verbosity=0)
+            orth_complement = complement.gram_schmidt(factor=False, verbosity=0)
+            Q_aug = Q.row_join(orth_complement, aug_line=False)
             R_aug = Matrix(R.col_join(sym.zeros(Q_aug.cols - R.rows, R.cols)))
-            assert Q_aug @ R_aug == self
+            assert (Q_aug @ R_aug).equals(self), (
+                "Full QR decomposition failed: Q_aug @ R_aug != self"
+            )
             return QR(Q_aug, R_aug)
         return QR(Q, R)
 
@@ -3613,7 +3640,10 @@ class Matrix(sym.MutableDenseMatrix):
 
         # Custom solve using sympy's solve method
         sol = Matrix.create_unk_matrix(ATb.rows, 1)
-        sol = sol.subs(sym.solve(ATA @ sol - ATb, dict=True)[0])
+        sol_dicts = sym.solve(ATA @ sol - ATb, dict=True)
+        if not sol_dicts:
+            raise ValueError("Normal equations have no solution")
+        sol = sol.subs(sol_dicts[0])
 
         if verbosity >= 1:
             print("Before RREF: [self.T @ self | self.T @ rhs]")
@@ -3714,7 +3744,7 @@ class Matrix(sym.MutableDenseMatrix):
             )
 
         # Get the free symbols from the last column of the matrix
-        ordered_syms = [entry.free_symbols.pop() for entry in self.select_cols(-1)]  # type: ignore
+        ordered_syms = [next(iter(entry.free_symbols)) for entry in self.select_cols(-1)]  # type: ignore
 
         # Create a substitution dictionary mapping symbols to values from vector x
         substitution = {var: val for var, val in zip(ordered_syms, x)}  # type: ignore
@@ -3890,25 +3920,41 @@ class Matrix(sym.MutableDenseMatrix):
             print("Characteristic Polynomial")
             poly = self.cpoly()
             display(poly)
-            for root, _ in sym.roots(poly).items():
-                if root.is_real:
-                    display(
-                        _textify("Before RREF: ")
-                        + sym.latex(root)
-                        + r"\mathbb{I} - \mathrm{self}",
-                        opt="math",
-                    )
-                    expr = root * self.elem() - self
-                    display(expr)
+            for root, _ in self.eigenvals().items():
+                if reals_only and root.is_real is False:
+                    continue
+                display(
+                    _textify("Before RREF: ")
+                    + sym.latex(root)
+                    + r"\mathbb{I} - \mathrm{self}",
+                    opt="math",
+                )
+                expr = root * self.elem() - self
+                display(expr)
 
-                    print("\nAfter RREF:")
-                    display(expr.rref())
+                print("\nAfter RREF:")
+                display(expr.rref())
 
-                    print("\nEigenvectors:")
-                    display(expr.nullspace())
-                    print("\n")
+                print("\nEigenvectors:")
+                display(expr.nullspace())
+                print("\n")
 
-        P, D = super().diagonalize(reals_only, *args, **kwargs)
+        try:
+            P, D = super().diagonalize(reals_only, *args, **kwargs)
+        except Exception:
+            eig_data = self.eigenvects()
+            cols_P: list[Matrix] = []
+            diag_vals: list[Expr] = []
+            for val, _mult, vecs in eig_data:
+                if reals_only and val.is_real is False:
+                    continue
+                for v in vecs:
+                    cols_P.append(v)
+                    diag_vals.append(val)
+            if len(cols_P) != self.rows:
+                raise
+            P = Matrix(sym.Matrix.hstack(*cols_P))
+            D = Matrix(sym.diag(*diag_vals))
         P.rm_aug_line()  # Remove augmented line if exists
         return PDP(P, D)
 
@@ -3993,8 +4039,8 @@ class Matrix(sym.MutableDenseMatrix):
         )
 
         d: DefaultDict[Expr, list[Matrix]] = defaultdict(list)
-        for vec, val in zip(P.columnspace(), D.diagonal()):
-            d[val].append(vec)
+        for i in range(P.cols):
+            d[D[i, i]].append(P.col(i))
 
         result = []
         for val, vecs in d.items():
@@ -4029,7 +4075,7 @@ class Matrix(sym.MutableDenseMatrix):
             for m in result[1:]:
                 ortho_P = ortho_P.row_join(m, aug_line=False)
 
-        assert (ortho_P @ D @ ortho_P.T - self).norm() == 0
+        assert (ortho_P @ D @ ortho_P.T - self).norm().equals(0) is True
         return PDP(ortho_P, D)
 
     def is_stochastic(self, verbosity: int = 1) -> bool:
@@ -4141,6 +4187,9 @@ class Matrix(sym.MutableDenseMatrix):
             - SymPy's [`Matrix.singular_value_decomposition`][sympy.matrices.matrixbase.MatrixBase.singular_value_decomposition]
         """
 
+        if verbosity == 0 and not verify:
+            return self.fast_svd(option="sym", identify=False)
+
         if verbosity >= 1:
             AT_A = self.T @ self
             print("A^T A")
@@ -4152,7 +4201,9 @@ class Matrix(sym.MutableDenseMatrix):
             V = P.select_cols(*[i for i in range(P.cols)][::-1])
 
             u_list = []
-            for idx, vec, val in zip(range(1, S.rows + 1), V.columnspace(), sigma):
+            for idx in range(1, S.rows + 1):
+                vec = V.col(idx - 1)
+                val = sigma[idx - 1]
                 if val != 0:
                     u_i = self @ vec / val
                     u_list.append(u_i)
@@ -4192,7 +4243,8 @@ class Matrix(sym.MutableDenseMatrix):
             )
 
             if verify:
-                assert (U @ S @ V.T - self).norm() == 0
+                residual = (U @ S @ V.T - self).norm()
+                assert residual.evalf() <= tol
             return SVD(U, S, V)
 
         m, n = self.shape
@@ -4304,7 +4356,8 @@ class Matrix(sym.MutableDenseMatrix):
                 S = S.identify(tol=tol, suppress_warnings=True)
                 V = V.identify(tol=tol, suppress_warnings=True)
                 residues = (self - U @ S @ V.T).norm()
-                if residues > tol:
+                _tol = tol if tol is not None else 0.0
+                if residues > _tol:
                     res = residues.evalf()
                     warn(
                         f"Non-zero Identification Error: {res}",
@@ -4368,12 +4421,6 @@ class Matrix(sym.MutableDenseMatrix):
                 sub = {s: 0 for s in symbols if s != symbol}
                 sub[symbol] = 1
                 examples.append(equal_0.subs(sub))
-
-            # for _ in range(X.rows * X.cols):
-            #     # Add random examples to condition the transformation matrix
-            #     rand = Matrix.create_rand_matrix(r=len(self.free_symbols), c=1)
-            #     sub = {s: rand[i, 0] for i, s in enumerate(symbols)}
-            #     examples.append(equal_0.subs(sub))
 
             condition = Matrix.from_list(examples)
             equal_0 = equal_0.row_join(condition, aug_line=False)

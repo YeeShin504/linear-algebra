@@ -255,12 +255,15 @@ def _is_IPython() -> bool:
     try:
         from IPython.core.getipython import get_ipython
 
-        shell = get_ipython().__class__.__name__
+        ip = get_ipython()
+        if ip is None:
+            return False
+        shell = ip.__class__.__name__
         if shell in ["ZMQInteractiveShell", "TerminalInteractiveShell", "Interpreter"]:
             return True  # Jupyter notebook, qtconsole or terminal running IPython
         else:
             return False  # Other type
-    except NameError:
+    except (NameError, AttributeError):
         return False  # Probably standard Python interpreter
     except ImportError:
         return False  # IPython module does not exist
@@ -274,11 +277,11 @@ def display(*args, opt: Literal["math", "dict"] | None = None, **kwargs) -> None
 
     Args:
         *args: The objects to display.
-        opt:
+        opt (Literal["math", "dict"] | None): 
 
             - If "math", displays the object as a math expression.
             - If "dict", generates a LaTeX representation of the dictionary for display.
-            - If none, assumes the object can be passed into IPython's [`display`][IPython.display.display] function directly.
+            - If None, assumes the object can be passed into IPython's [`display`][IPython.display.display] function directly.
         **kwargs: Additional keyword arguments to pass to the display function.
 
     See Also:
