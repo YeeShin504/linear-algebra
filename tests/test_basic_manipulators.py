@@ -77,12 +77,25 @@ class TestBasicManipulators:
         assert part_gen.part_sol == Matrix([[1, 0], [2, 0]])
         assert part_gen.gen_sol == Matrix([[x, y], [0, x + y]])
 
+    def test_sep_unk_splits_each_symbol(self):
+        x, y = sym.symbols("x y")
+        mat = Matrix([[x + y, 2 * x]])
+        parts = mat.sep_unk()
+        assert parts[x] == Matrix([[1, 2]])
+        assert parts[y] == Matrix([[1, 0]])
+
     def test_scalar_factor(self):
         mat = Matrix([[2, 4], [6, 8]])
         scalar_factor = mat.scalar_factor()
         assert isinstance(scalar_factor, ScalarFactor)
         assert scalar_factor.full == Matrix([[1, 1], [3, 2]])
         assert scalar_factor.diag == Matrix([[2, 0], [0, 4]])
+
+    def test_scalar_factor_symbolic_reconstructs(self):
+        x = sym.symbols("x")
+        mat = Matrix([[2 * x, 4], [6 * x, 8]])
+        scalar_factor = mat.scalar_factor()
+        assert scalar_factor.full @ scalar_factor.diag == mat
 
     def test_hermitian_transpose(self):
         """Verify the .H property for complex matrices."""

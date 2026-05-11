@@ -70,6 +70,14 @@ class TestChapter5:
         assert ortho_mat.full.is_vec_orthogonal() is True  # type: ignore
         assert ortho_mat.full.select_cols(0).dot(ortho_mat.full.select_cols(1)) == 0  # type: ignore
 
+    def test_gram_schmidt_complex_uses_hermitian_projection(self):
+        mat = Matrix([[1, sym.I], [sym.I, 0]])
+        ortho_mat = mat.gram_schmidt(factor=False, verbosity=0)
+        assert isinstance(ortho_mat, Matrix)
+        assert ortho_mat.select_cols(0).dot(
+            ortho_mat.select_cols(1), hermitian=True
+        ) == 0
+
     def test_QRdecomposition(self):
         mat = Matrix([[1, 1], [1, 0]])
         q, r = mat.QRdecomposition()
@@ -77,6 +85,13 @@ class TestChapter5:
         assert (q.T @ q) == Matrix.eye(2)
         # Verify R is upper triangular
         assert r[1, 0] == 0
+
+    def test_full_QRdecomposition_rectangular(self):
+        mat = Matrix([[1, 0], [0, 1], [1, 1]])
+        q, r = mat.QRdecomposition(full=True)
+        assert q.shape == (3, 3)
+        assert r.shape == (3, 2)
+        assert (q @ r).equals(mat)
 
     def test_solve_least_squares(self):
         """Test least squares solution"""
