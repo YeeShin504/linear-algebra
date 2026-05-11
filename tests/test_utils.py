@@ -1,4 +1,5 @@
 import sympy as sym
+from unittest.mock import patch
 
 from ma1522.utils import _powerset, _is_zero
 
@@ -35,7 +36,7 @@ class TestUtils:
     def test_ipython_detection(self):
         """Mock various environments to verify IPython detection logic."""
         from ma1522.utils import _is_IPython
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock
 
         # Standard Python (get_ipython doesn't exist)
         with patch("IPython.core.getipython.get_ipython", side_effect=NameError):
@@ -62,9 +63,20 @@ class TestUtils:
             mock_get.return_value = mock_shell
             assert _is_IPython() is False
 
+    def test_ipython_detection_without_ipython_installed(self):
+        from ma1522.utils import _is_IPython
+
+        def fake_import(name, *args, **kwargs):
+            if name == "IPython.core.getipython":
+                raise ImportError
+            return original_import(name, *args, **kwargs)
+
+        original_import = __import__
+        with patch("builtins.__import__", side_effect=fake_import):
+            assert _is_IPython() is False
+
     def test_display_ipython_and_fallback(self):
         from ma1522.utils import display
-        from unittest.mock import patch, MagicMock
         
         # IPython SUCCESS
         with patch("ma1522.utils._is_IPython", return_value=True):

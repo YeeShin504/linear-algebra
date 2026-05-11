@@ -14,7 +14,7 @@
 
 import sympy as sym
 
-from ma1522 import Matrix, VecDecomp
+from ma1522 import Matrix, PartGen, VecDecomp
 
 
 class TestChapter5:
@@ -86,6 +86,11 @@ class TestChapter5:
         # Verify R is upper triangular
         assert r[1, 0] == 0
 
+    def test_QRdecomposition_verbose(self):
+        mat = Matrix([[1, 1], [1, 0]])
+        q, r = mat.QRdecomposition(verbosity=1)
+        assert (q @ r).equals(mat)
+
     def test_full_QRdecomposition_rectangular(self):
         mat = Matrix([[1, 0], [0, 1], [1, 1]])
         q, r = mat.QRdecomposition(full=True)
@@ -99,3 +104,10 @@ class TestChapter5:
         b = Matrix([[6], [0], [0]])
         x = A.solve_least_squares(b)
         assert (A @ x - b).norm() == sym.sqrt(6)  # Minimized error
+
+    def test_solve_least_squares_fallback_part_gen(self):
+        A = Matrix([[1, 0], [0, 0]])
+        b = Matrix([[1], [2]])
+        result = A.solve_least_squares(b, verbosity=0, matrices=2)
+        assert isinstance(result, PartGen)
+        assert A @ result.part_sol == Matrix([[1], [0]])

@@ -97,6 +97,27 @@ class TestBasicManipulators:
         scalar_factor = mat.scalar_factor()
         assert scalar_factor.full @ scalar_factor.diag == mat
 
+    def test_scalar_factor_by_rows(self):
+        mat = Matrix([[2, 4], [6, 8]])
+        scalar_factor = mat.scalar_factor(column=False)
+        assert scalar_factor.order == "DF"
+        assert scalar_factor.diag @ scalar_factor.full == mat
+
+    def test_symbolic_reduce_row_updates_l_matrix(self):
+        x = sym.symbols("x")
+        mat = Matrix([[1, 0], [x, 1]])
+        l_matrix = Matrix.eye(2)
+
+        mat._symbolic_reduce_row(1, 0, 0, L_matrix=l_matrix)
+
+        assert mat == Matrix([[1, 0], [0, 1]])
+        assert l_matrix == Matrix([[1, 0], [x, 1]])
+
+    def test_symbolic_reduce_row_warns_when_max_tries_exceeded(self):
+        mat = Matrix([[0], [1]])
+        with pytest.warns(RuntimeWarning, match="Max tries exceeded"):
+            mat._symbolic_reduce_row(1, 0, 0, max_tries=0)
+
     def test_hermitian_transpose(self):
         """Verify the .H property for complex matrices."""
         A = Matrix([[1, 2 + sym.I], [3 - sym.I, 4]])
