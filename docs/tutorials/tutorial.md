@@ -259,6 +259,6 @@ display(orth_comp)
 
 ---
 
-This tutorial covers the core functionalities of the `symbolic.Matrix` class. 
+This tutorial covers the core functionalities of the `symbolic.Matrix` class.
 Selected questions and suggested methods to solve them are provided in the [other](../tut01) pages.
 For more details on specific functions, you can refer to the [API Reference](../api/custom_types.md).

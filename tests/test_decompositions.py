@@ -1,6 +1,7 @@
 import pytest
 import sympy as sym
-from ma1522 import Matrix, SVD, PDP
+
+from ma1522 import PDP, SVD, Matrix
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -73,7 +74,7 @@ class TestVectorSpaces:
         B = Matrix([[1, 0], [0, 1]])
         C = Matrix([[1, 1], [1, -1]])
         T = B.transition_matrix(to=C, verbosity=0)
-        assert T == C.inv() @ B
+        assert C.inv() @ B == T
 
     def test_gram_schmidt_orthonormal(self):
         """Verify Gram-Schmidt returns orthonormal vectors."""

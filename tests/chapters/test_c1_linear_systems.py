@@ -156,7 +156,7 @@ class TestReductions:
         mat = Matrix([[1, 2], [3, 4]])
         plu = mat.ref()
         assert plu.U[1, 0] == 0  # Verify lower triangular is zero
-        assert plu.U == Matrix([[1, 2], [0, -2]])  # Verify exact REF result
+        assert Matrix([[1, 2], [0, -2]]) == plu.U  # Verify exact REF result
 
     def test_rref(self):
         """Test reduced row echelon form"""

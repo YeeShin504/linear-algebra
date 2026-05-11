@@ -23,10 +23,10 @@ class TestTutorial03:
 
         plu = A.ref()
         assert plu.U.is_echelon
-        assert plu.P == Matrix.eye(3)
+        assert Matrix.eye(3) == plu.P
         # Explicitly assert L and U from notebook
-        assert plu.L == Matrix([[1, 0, 0], [-3, 1, 0], [4, -1, 1]])
-        assert plu.U == Matrix([[2, -1, 2], [0, -3, 4], [0, 0, 1]])
+        assert Matrix([[1, 0, 0], [-3, 1, 0], [4, -1, 1]]) == plu.L
+        assert Matrix([[2, -1, 2], [0, -3, 4], [0, 0, 1]]) == plu.U
         assert (plu.L @ plu.U).applyfunc(sym.simplify) == A
 
         # Solve the unique system A @ x = b
@@ -40,8 +40,8 @@ class TestTutorial03:
         plu = A.ref()
         assert plu.U.is_echelon
         # Explicitly assert L and U from notebook
-        assert plu.L == Matrix([[1, 0, 0], [3, 1, 0], [sym.Rational(-1, 2), -2, 1]])
-        assert plu.U == Matrix([[2, -4, 4, -2], [0, 3, -5, 3], [0, 0, 0, 5]])
+        assert Matrix([[1, 0, 0], [3, 1, 0], [sym.Rational(-1, 2), -2, 1]]) == plu.L
+        assert Matrix([[2, -4, 4, -2], [0, 3, -5, 3], [0, 0, 0, 5]]) == plu.U
         assert (plu.P.T @ plu.L @ plu.U).applyfunc(sym.simplify) == A
 
         # Solve underdetermined system A @ x = b (multiple solutions)

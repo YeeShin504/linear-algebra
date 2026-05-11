@@ -1,6 +1,14 @@
+"""Custom data types for linear algebra decompositions and transformations.
+
+This module defines data classes and types for representing various linear algebra
+decompositions (PLU, QR, SVD, etc.), shape properties, and mathematical structures
+used throughout the library.
+"""
+
 from __future__ import annotations
-from abc import abstractmethod
+
 import dataclasses
+from abc import abstractmethod
 from enum import Enum
 from typing import TYPE_CHECKING, NamedTuple
 
@@ -33,11 +41,11 @@ class Shape(Enum):
 
     DIAGONAL = "DIAGONAL"
     r"""Diagonal matrix.
-    
+
     A matrix where all off-diagonal entries are zero. Only elements on the
     main diagonal ($i,j$ where $i = j$) can be non-zero. The diagonal entries
     can have different values and need not be square (unlike SCALAR matrices).
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -50,11 +58,11 @@ class Shape(Enum):
 
     SCALAR = "SCALAR"
     r"""Scalar matrix (diagonal matrix with equal diagonal entries).
-    
+
     A square matrix where all diagonal entries are equal to the same scalar value,
     and all off-diagonal entries are zero. This is also known as a scalar matrix
     or scalar multiple of the identity matrix.
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -67,10 +75,10 @@ class Shape(Enum):
 
     STRICT_UPPER = "STRICT_UPPER"
     r"""Strictly upper triangular matrix.
-    
+
     A matrix where all elements on and below the main diagonal are zero.
     Only elements above the main diagonal ($i,j$ where $i < j$) can be non-zero.
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -83,10 +91,10 @@ class Shape(Enum):
 
     STRICT_LOWER = "STRICT_LOWER"
     r"""Strictly lower triangular matrix.
-    
+
     A matrix where all elements on and above the main diagonal are zero.
     Only elements below the main diagonal ($i,j$ where $i > j$) can be non-zero.
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -99,10 +107,10 @@ class Shape(Enum):
 
     UPPER = "UPPER"
     r"""Upper triangular matrix.
-    
+
     A matrix where all elements below the main diagonal are zero.
     Elements on and above the main diagonal ($i,j$ where $i <= j$) can be non-zero.
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -115,10 +123,10 @@ class Shape(Enum):
 
     LOWER = "LOWER"
     r"""Lower triangular matrix.
-    
+
     A matrix where all elements above the main diagonal are zero.
     Elements on and below the main diagonal ($i,j$ where $i >= j$) can be non-zero.
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -131,10 +139,10 @@ class Shape(Enum):
 
     SYMMETRIC = "SYMMETRIC"
     r"""Symmetric matrix.
-    
+
     A square matrix where elements are symmetric about the main diagonal,
     meaning $A_{i, j} = A_{j,i}$ for all valid indices $i$ and $j$.
-    
+
     Example:
         $$
         \begin{pmatrix}
@@ -219,6 +227,11 @@ class PartGen(Printable):
         )
 
     def eval(self) -> Matrix:
+        """Evaluate and return the full solution matrix.
+
+        Returns:
+            The sum of the particular and general solutions.
+        """
         return (self.part_sol + self.gen_sol).doit()
 
 
@@ -247,6 +260,11 @@ class ScalarFactor(Printable):
             return self.diag._latex(printer) + self.full._latex(printer)
 
     def eval(self) -> Matrix:
+        """Evaluate and return the factored matrix.
+
+        Returns:
+            The product of the full matrix and diagonal matrix in the specified order.
+        """
         if self.order == "FD":
             return (self.full @ self.diag).doit()
         else:
@@ -275,6 +293,11 @@ class PLU(Printable):
         return self.P._latex(printer) + self.L._latex(printer) + self.U._latex(printer)
 
     def eval(self) -> Matrix:
+        """Evaluate and return the original matrix from PLU decomposition.
+
+        Returns:
+            The product P @ L @ U.
+        """
         return (self.P @ self.L @ self.U).doit()
 
 
@@ -294,6 +317,11 @@ class RREF(Printable):
     pivots: tuple[int, ...]
 
     def eval(self) -> Matrix:
+        """Evaluate and return the RREF matrix.
+
+        Returns:
+            The reduced row echelon form.
+        """
         return self.rref
 
 
@@ -344,7 +372,12 @@ class RREFCase(Printable):
         inner = r",\quad ".join(_textify(k) + " = " + v for k, v in parts.items())
         return _textify("RREFCase") + r"\left\{" + inner + r"\right\}"
 
-    def eval(self) -> "Matrix":
+    def eval(self) -> Matrix:
+        """Evaluate and return the RREF matrix for this case.
+
+        Returns:
+            The reduced row echelon form for this particular case.
+        """
         return self.rref
 
 
@@ -364,6 +397,11 @@ class VecDecomp(Printable):
     norm: Matrix
 
     def eval(self) -> Matrix:
+        """Evaluate and return the original vector from decomposition.
+
+        Returns:
+            The sum of the projection and normal components.
+        """
         return (self.proj + self.norm).doit()
 
 
@@ -386,6 +424,11 @@ class QR(Printable):
         return self.Q._latex(printer) + self.R._latex(printer)
 
     def eval(self) -> Matrix:
+        """Evaluate and return the original matrix from QR decomposition.
+
+        Returns:
+            The product Q @ R.
+        """
         return (self.Q @ self.R).doit()
 
 
@@ -422,6 +465,11 @@ class PDP(Printable):
             )
 
     def eval(self) -> Matrix:
+        """Evaluate and return the original matrix from PDP diagonalization.
+
+        Returns:
+            The product P @ D @ P^(-1).
+        """
         return (self.P @ self.D @ self.P.inv()).doit()
 
 
@@ -448,6 +496,11 @@ class SVD(Printable):
         )
 
     def eval(self) -> Matrix:
+        """Evaluate and return the original matrix from SVD.
+
+        Returns:
+            The product U @ S @ V.T.
+        """
         return (self.U @ self.S @ self.V.T).doit()
 
 
@@ -474,4 +527,9 @@ class NumSVD(NamedTuple):
         V = \n{self.V.__repr__()})"""
 
     def eval(self) -> np.typing.NDArray:
+        """Evaluate and return the original matrix from numerical SVD.
+
+        Returns:
+            The product U @ S @ V.T.
+        """
         return self.U @ self.S @ self.V.T

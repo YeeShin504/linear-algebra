@@ -1,17 +1,18 @@
 import numpy as np
+
 from ma1522 import Matrix
 from ma1522.custom_types import (
-    Shape,
-    PartGen,
-    ScalarFactor,
-    PLU,
-    RREF,
-    VecDecomp,
-    QR,
     PDP,
+    PLU,
+    QR,
+    RREF,
     SVD,
     NumSVD,
+    PartGen,
     RREFCase,
+    ScalarFactor,
+    Shape,
+    VecDecomp,
 )
 
 
@@ -28,18 +29,18 @@ class TestCustomTypes:
         mat = Matrix([[1, 2], [3, 4]])
         pivots = (0, 1)
         rref = RREF(mat, pivots)
-        
+
         # Iteration
         fields = list(rref)
         assert fields[0] == mat
         assert fields[1] == pivots
-        
+
         # Get/Set
         assert rref[0] == mat
         new_mat = Matrix.eye(2)
         rref[0] = new_mat
         assert rref.rref == new_mat
-        
+
         # Eval / Evalf
         assert rref.eval() == new_mat
         assert isinstance(rref.evalf(), Matrix)
@@ -57,7 +58,7 @@ class TestCustomTypes:
         sf = ScalarFactor(diag, full, "DF")
         assert sf.eval() == Matrix([[2, 4], [6, 8]])
         assert sf._latex().startswith(diag._latex())
-        
+
         sf_fd = ScalarFactor(diag, full, "FD")
         assert sf_fd.eval() == Matrix([[2, 4], [6, 8]])
         assert sf_fd._latex().endswith(diag._latex())
@@ -86,7 +87,7 @@ class TestCustomTypes:
         pdp = PDP(P, D)
         assert pdp.eval() == P @ D @ P.inv()
         assert pdp._latex().count("array") == 6
-        
+
         # Singular case (exception fallback)
         P_sing = Matrix([[1, 1], [1, 1]])
         pdp_sing = PDP(P_sing, D)
@@ -113,7 +114,7 @@ class TestCustomTypes:
             rref=Matrix.eye(2),
             pivots=(0, 1),
             free_params=0,
-            is_consistent=True
+            is_consistent=True,
         )
         assert rc.eval() == Matrix.eye(2)
         assert "RREFCase" in rc._latex()

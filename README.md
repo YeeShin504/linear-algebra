@@ -75,11 +75,11 @@ A = Matrix([[1, 2, 3],
             [4, 5, 5],
             [7, 8, 9]])
 
-b = Matrix([[1], 
-            [2], 
+b = Matrix([[1],
+            [2],
             [3]])
 
-# Join matrices along the columns via `row_join`. 
+# Join matrices along the columns via `row_join`.
 augmented_matrix = A.aug_line().row_join(b)
 
 # `aug_line` adds a visual line that can be seen using `display`

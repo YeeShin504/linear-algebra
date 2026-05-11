@@ -33,7 +33,7 @@ jobs:
           uv python install ${{ matrix.python-version }}
           uv sync
           uv pip install -e .
-          
+
       - name: Run tests with coverage
         run: |
           uv run --python ${{ matrix.python-version }} pytest --doctest-modules --cov=src --cov-branch --cov-report=xml tests/

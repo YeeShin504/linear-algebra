@@ -1,4 +1,3 @@
-import gen
 import pytest
 import sympy as sym
 

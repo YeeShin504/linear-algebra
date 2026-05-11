@@ -21,7 +21,6 @@ import sympy as sym
 
 from ma1522 import Matrix, RREFCase
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -56,7 +55,7 @@ class TestNoFreeSymbols:
         assert c.is_consistent is None
 
     def test_rank_deficient(self):
-        """3×3 singular matrix → single case, 1 free param."""
+        """3x3 singular matrix → single case, 1 free param."""
         A = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         cases = A.rref_cases()
         assert len(cases) == 1
@@ -76,7 +75,7 @@ class TestNoFreeSymbols:
 
 
 # ---------------------------------------------------------------------------
-# 2. Single symbol – can be zero
+# 2. Single symbol - can be zero
 # ---------------------------------------------------------------------------
 
 
@@ -143,7 +142,7 @@ class TestSingleSymbolCanBeZero:
 
 
 # ---------------------------------------------------------------------------
-# 3. Single symbol – cannot be zero
+# 3. Single symbol - cannot be zero
 # ---------------------------------------------------------------------------
 
 
@@ -213,7 +212,7 @@ class TestTwoIndependentSymbols:
 
 
 # ---------------------------------------------------------------------------
-# 5. With RHS – consistency checks
+# 5. With RHS - consistency checks
 # ---------------------------------------------------------------------------
 
 
@@ -338,7 +337,7 @@ class TestHomogeneousConsistency:
 
 
 # ---------------------------------------------------------------------------
-# 9. Idempotency – rref_cases on a constant matrix matches rref()
+# 9. Idempotency - rref_cases on a constant matrix matches rref()
 # ---------------------------------------------------------------------------
 
 

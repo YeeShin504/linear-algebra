@@ -1,4 +1,3 @@
-from numpy import char
 import pytest
 import sympy as sym
 from sympy.matrices.matrixbase import MatrixError
