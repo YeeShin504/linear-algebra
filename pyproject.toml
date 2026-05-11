@@ -14,13 +14,13 @@ dependencies = [
 
 classifiers = [
     "Development Status :: 4 - Beta",
-    
+
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
-    
+
     "Topic :: Education",
     "Topic :: Scientific/Engineering :: Mathematics",
-    
+
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -66,6 +66,28 @@ addopts = [
 ]
 pythonpath = "src"
 doctest_optionflags = [
-    "NORMALIZE_WHITESPACE", 
+    "NORMALIZE_WHITESPACE",
     "IGNORE_EXCEPTION_DETAIL",
 ]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+src = ["src"]
+exclude = ["docs/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "D100", "D101", "D104", "T20", "PIE"]
+ignore = ["E501"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["F401", "F841", "D", "ARG", "T20", "B017"]
+"src/ma1522/symbolic.py" = ["T20", "N802", "N803", "C901"]
+"src/ma1522/custom_types.py" = ["N802", "N803"]
+"src/ma1522/utils.py" = ["T20"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ma1522"]
