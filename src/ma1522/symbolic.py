@@ -18,6 +18,7 @@ import numpy as np
 import sympy as sym
 from latex2sympy2 import latex2sympy
 from sympy.parsing.sympy_parser import parse_expr
+from ._workers import _get_orth
 
 from .custom_types import (
     PDP,
@@ -46,9 +47,6 @@ from sympy.core.symbol import Symbol
 
 sym.init_printing(use_unicode=True)
 np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
-
-
-# ---------------------------------------------------------------------------
 
 
 class Matrix(sym.MutableDenseMatrix):
@@ -3566,6 +3564,9 @@ class Matrix(sym.MutableDenseMatrix):
             Q = Matrix(Q)
             complement = Q.orthogonal_complement(verbosity=0)
             orth_complement = complement.gram_schmidt(factor=False, verbosity=0)
+            assert isinstance(orth_complement, Matrix), (
+                "Result should be a Matrix object"
+            )
             Q_aug = Q.row_join(orth_complement, aug_line=False)
             R_aug = Matrix(R.col_join(sym.zeros(Q_aug.cols - R.rows, R.cols)))
             assert (Q_aug @ R_aug).equals(self), (
@@ -3741,8 +3742,9 @@ class Matrix(sym.MutableDenseMatrix):
 
         # Get the free symbols from the last column of the matrix
         ordered_syms = [
-            next(iter(entry.free_symbols)) for entry in self.select_cols(-1)
-        ]  # type: ignore
+            next(iter(entry.free_symbols))  # type: ignore
+            for entry in self.select_cols(-1)
+        ]
 
         # Create a substitution dictionary mapping symbols to values from vector x
         substitution = {var: val for var, val in zip(ordered_syms, x, strict=False)}  # type: ignore
@@ -4138,7 +4140,11 @@ class Matrix(sym.MutableDenseMatrix):
         return P
 
     def singular_value_decomposition(
-        self, verbosity: int = 0, tol: float = 0.0, verify: bool = True
+        self,
+        verbosity: int = 0,
+        tol: float = 0.0,
+        verify: bool = True,
+        timeout_seconds: int = 30,
     ) -> SVD:
         """Performs Singular Value Decomposition (SVD) on the matrix, following the MA1522 syllabus.
 
@@ -4155,6 +4161,8 @@ class Matrix(sym.MutableDenseMatrix):
             tol (float, optional): Tolerance for verification of the SVD result.
             verify (bool): If `True`, verifies the result of the SVD by checking if `self = U @ S @ V.T`.
                 If `False`, skips the verification step for performance reasons.
+            timeout_seconds (int): Maximum time allowed for the symbolic SVD computation before it uses
+                a numerical fallback is used.
 
         Returns:
             (SVD): A dataclass containing:
@@ -4167,112 +4175,103 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[3, 2, 2], [2, 3, -2]])
-            >>> mat.singular_value_decomposition(verbosity=0, verify=False)
-            SVD(U=Matrix([
-            [sqrt(2)/2, -sqrt(2)/2]
-            [sqrt(2)/2,  sqrt(2)/2]
-            ]), S=Matrix([
+            >>> svd = mat.singular_value_decomposition(verbosity=0, verify=False)
+            >>> svd.S
+            Matrix([
             [5, 0, 0]
             [0, 3, 0]
-            ]), V=Matrix([
-            [sqrt(2)/2,   -sqrt(2)/6,  2/3]
-            [sqrt(2)/2,    sqrt(2)/6, -2/3]
-            [        0, -2*sqrt(2)/3, -1/3]
-            ]))
+            ])
+            >>> (svd.U @ svd.S @ svd.V.T).equals(mat)
+            True
 
         See Also:
             - [`fast_svd`][..fast_svd] for a faster numerical SVD
             - SymPy's [`Matrix.singular_value_decomposition`][sympy.matrices.matrixbase.MatrixBase.singular_value_decomposition]
         """
 
-        if verbosity == 0 and not verify:
-            return self.fast_svd(option="sym", identify=False)
-
+        AT_A = self.T @ self
         if verbosity >= 1:
-            AT_A = self.T @ self
             print("A^T A")
             display(AT_A)
-            P, D = AT_A.orthogonally_diagonalize(verbosity=verbosity)
-            # Reverse index such that singular values are in decreasing order
-            sigma = [sym.sqrt(val) for val in D.diagonal()][::-1]
-            S = Matrix.diag(*[singular for singular in sigma if (singular != 0)])
-            V = P.select_cols(*[i for i in range(P.cols)][::-1])
 
-            u_list = []
-            for idx in range(1, S.rows + 1):
-                vec = V.col(idx - 1)
-                val = sigma[idx - 1]
-                if val != 0:
-                    u_i = self @ vec / val
-                    u_list.append(u_i)
+        # Do not call orthogonally_diagonalize() here: for algebraic eigenvectors,
+        # its exact reconstruction proof can dominate SVD runtime. We only need
+        # orthogonalized right singular vectors, so build them directly from
+        # eigenspaces of A.T @ A.
+        P_raw, D = AT_A.diagonalize(reals_only=True, verbosity=verbosity)
+        eigenspaces: defaultdict[Expr, list[Matrix]] = defaultdict(list)
+        for i in range(P_raw.cols):
+            eigenspaces[D[i, i]].append(P_raw.col(i))
+
+        orthogonal_cols: list[Matrix] = []
+        for vecs in eigenspaces.values():
+            if len(vecs) == 1:
+                vec = vecs[0].normalized(factor=False)
+                assert isinstance(vec, Matrix), "Expected vec to be a Matrix object"
+                orthogonal_cols.append(vec)
+                continue
+
+            gram_matrix = Matrix.from_list(vecs).gram_schmidt(
+                factor=False, verbosity=verbosity
+            )
+            assert isinstance(gram_matrix, Matrix), (
+                "Expected gram_matrix to be a Matrix object"
+            )
+            for i in range(gram_matrix.cols):
+                orthogonal_cols.append(gram_matrix.col(i))
+
+        P = Matrix.from_list(orthogonal_cols)
+        # Reverse index such that singular values are in decreasing order
+        sigma = [sym.sqrt(val) for val in D.diagonal()][::-1]
+        S = Matrix.diag(*[singular for singular in sigma if (singular != 0)])
+        V = P.select_cols(*[i for i in range(P.cols)][::-1])
+
+        u_list = []
+        for idx in range(1, S.rows + 1):
+            vec = V.col(idx - 1)
+            val = sigma[idx - 1]
+            if val != 0:
+                u_i = self @ vec / val
+                u_list.append(u_i)
+                if verbosity >= 1:
                     display(
                         f"u_{idx} = (1/{sym.latex(val)})A{sym.latex(vec)} = {sym.latex(u_i)}",
                         opt="math",
                     )
 
-            U = Matrix.from_list(u_list)
-            # Extend basis using orthogonal complement and gram-schmidt if insufficient vectors
-            if U.cols < self.rows:
+        U = Matrix.from_list(u_list)
+        # Extend basis using orthogonal complement and gram-schmidt if insufficient vectors
+        if U.cols < self.rows:
+            if verbosity >= 1:
                 print("\nExtending U with its orthogonal complement.")
-                if U.cols == 0:
-                    # Pad edge case with identity
-                    orth = Matrix.eye(self.rows)
-                else:
-                    complement = U.orthogonal_complement(verbosity=verbosity)
-                    gram_result = complement.gram_schmidt(
-                        factor=True, verbosity=verbosity
-                    )
-                    if isinstance(gram_result, ScalarFactor):
-                        orth = gram_result.full
-                    else:
-                        orth = gram_result
-
-                    orth = orth.normalized(factor=False)
-                    assert isinstance(orth, Matrix), (
-                        f"Expected orth to be a Matrix, got {type(orth)}"
-                    )
-                U = U.row_join(orth, aug_line=False)
-
-            # Add zero rows and columns to S so that matrix multiplication is defined
-            m, n = self.shape
-            r, c = S.shape
-            S = S.row_join(sym.zeros(r, n - c), aug_line=False).col_join(
-                sym.zeros(m - r, n)
-            )
-
-            if verify:
-                residual = (U @ S @ V.T - self).norm()
-                assert residual.evalf() <= tol
-            return SVD(U, S, V)
-
-        m, n = self.shape
-        U, S, V = super().singular_value_decomposition()
-        # Reverse index such that singular values are in decreasing order
-        new_S = Matrix.diag(*S.diagonal()[::-1])
-
-        S_index = [i for i in range(S.cols)][::-1]
-        new_U = Matrix(U).select_cols(*S_index)
-        new_V = Matrix(V).select_cols(*S_index)
-
-        # new_U = Matrix(U).
-        # Add orthonormal columns to U and V so that they are square matrices
-        new_U = new_U.QRdecomposition(full=True).Q
-        new_V = new_V.QRdecomposition(full=True).Q
+            if U.cols == 0:
+                # Pad edge case with identity
+                orth = Matrix.eye(self.rows)
+            else:
+                orth = _get_orth(
+                    U, timeout_seconds=timeout_seconds, verbosity=verbosity
+                )
+                assert isinstance(orth, Matrix), (
+                    f"Expected orth to be a Matrix, got {type(orth)}"
+                )
+            U = U.row_join(orth, aug_line=False)
 
         # Add zero rows and columns to S so that matrix multiplication is defined
-        r, c = new_S.shape
-        new_S = new_S.row_join(sym.zeros(r, n - c), aug_line=False).col_join(
+        m, n = self.shape
+        r, c = S.shape
+        S = S.row_join(sym.zeros(r, n - c), aug_line=False).col_join(
             sym.zeros(m - r, n)
         )
 
-        if verify and (residues := (new_U @ new_S @ new_V.T - self).norm()) > tol:
+        if verify and (residues := (U @ S @ V.T - self).norm()) > tol:
             res = residues.evalf()
             warn(
                 f"Verification failed: norm of residual is {res} > {tol}",
                 RuntimeWarning,
                 stacklevel=2,
             )
-        return SVD(new_U, new_S, new_V)
+
+        return SVD(U, S, V)
 
     def fast_svd(
         self,

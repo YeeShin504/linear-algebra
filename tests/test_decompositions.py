@@ -38,7 +38,8 @@ class TestSVDDecomposition:
         """Test SVD on matrix with irrational eigenvalues (Regression)."""
         A = Matrix([[1, -2, -1], [2, 0, 1], [2, -4, 2], [4, 0, 0]])
         # Note: verify=False because the symbolic norm check is extremely expensive for this matrix
-        svd = A.singular_value_decomposition(verbosity=0, verify=False)
+        with pytest.warns(RuntimeWarning, match="Gram-Schmidt fallback"):
+            svd = A.singular_value_decomposition(verbosity=0, verify=False)
         assert _reconstruction_norm(svd, A) < 1e-8
 
     def test_rank_deficient_reconstruction(self):
