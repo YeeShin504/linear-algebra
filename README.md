@@ -13,18 +13,19 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 
 ### Key Features
 
-1. Import matrices directly from $\rm\LaTeX$ or string/list representations.
-2. Step-by-step workings for most algorithms (including LU Factorisation, SVD, QR, diagonalization, and more).
-3. Enhanced symbolic matrix class with:
+1. **Import matrices directly** from $\rm\LaTeX$ or string/list representations.
+2. **Step-by-step workings** for most algorithms (including LU Factorisation, SVD, QR, diagonalization, and more).
+3. **Enhanced symbolic matrix class** with:
     - Matrix creation from lists, $\rm\LaTeX$, or random values.
     - Matrix decompositions: REF, RREF, LU, QR, SVD, diagonalization.
     - Vector space operations: orthogonalization, projections, basis manipulation, subspace intersection, and more.
     - Eigenvalue/eigenvector computations and characteristic polynomials.
     - Custom pretty-printing and $\rm\LaTeX$ formatting, including augmented matrices.
     - Support for both exact symbolic and numerical computations.
+    - **Automatic timeout handling for long-running SVD computations** with fallback to numerical methods.
     - Utilities for displaying results in Jupyter/IPython or standard Python.
-4. Follows MA1522 syllabus conventions for linear algebra and provides detailed, educational output.
-5. Rich set of custom types for representing decompositions, solutions, and factorizations.
+4. **MA1522 syllabus conventions**: Follows syllabus conventions for linear algebra and provides detailed, educational output.
+5. **Rich type system**: Custom types for representing decompositions, solutions, and factorizations.
 
 ## Installation and Usage
 
@@ -34,7 +35,7 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 
 This project is best supported in a Jupyter Notebook environment with Python 3.10+. You can download Python from [here](https://www.python.org/downloads/).
 
-Alternatively, you can use a minimal GUI developed by [@MarcusMa06-code](https://github.com/MarcusMa06-code) [here](https://github.com/MarcusMa06-code/linear-algebra/tree/gui-development).
+Alternatively, you can use the GUI developed by [@MarcusMa06-code](https://github.com/MarcusMa06-code) [here](https://github.com/MarcusMa06-code/linear-algebra/tree/gui-development) or [@Tuxedolphin](https://github.com/Tuxedolphin) [here](https://github.com/Tuxedolphin/linear-algebra)
 
 #### Install Dependencies
 
