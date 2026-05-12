@@ -11,10 +11,10 @@
 - fast_svd
 """
 
-import sympy as sym
 import pytest
+import sympy as sym
 
-from ma1522 import Matrix, SVD
+from ma1522 import SVD, Matrix
 
 
 class TestChapter6:
@@ -68,7 +68,12 @@ class TestChapter6:
         assert (pdp.P @ pdp.D @ pdp.P.T - mat).norm() < 1e-10
 
     def test_is_stochastic(self):
-        assert Matrix([[sym.Rational(1, 2), sym.Rational(1, 3)], [sym.Rational(1, 2), sym.Rational(2, 3)]]).is_stochastic(verbosity=0)
+        assert Matrix(
+            [
+                [sym.Rational(1, 2), sym.Rational(1, 3)],
+                [sym.Rational(1, 2), sym.Rational(2, 3)],
+            ]
+        ).is_stochastic(verbosity=0)
         assert not Matrix([[1, 1], [-1, 0]]).is_stochastic(verbosity=0)
         assert not Matrix([[1], [0]]).is_stochastic(verbosity=0)
 

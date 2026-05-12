@@ -1,6 +1,6 @@
 import sympy as sym
 
-from ma1522 import Matrix, SVD
+from ma1522 import SVD, Matrix
 
 
 class TestTutorial10:

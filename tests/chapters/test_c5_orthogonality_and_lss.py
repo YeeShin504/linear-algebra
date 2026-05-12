@@ -74,9 +74,9 @@ class TestChapter5:
         mat = Matrix([[1, sym.I], [sym.I, 0]])
         ortho_mat = mat.gram_schmidt(factor=False, verbosity=0)
         assert isinstance(ortho_mat, Matrix)
-        assert ortho_mat.select_cols(0).dot(
-            ortho_mat.select_cols(1), hermitian=True
-        ) == 0
+        assert (
+            ortho_mat.select_cols(0).dot(ortho_mat.select_cols(1), hermitian=True) == 0
+        )
 
     def test_QRdecomposition(self):
         mat = Matrix([[1, 1], [1, 0]])

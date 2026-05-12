@@ -35,7 +35,7 @@ class TestFromLatex:
             \begin{pmatrix}
             1 & 2 \\
             3 & 4
-            \end{pmatrix}    
+            \end{pmatrix}
         """)
         expected = Matrix([[1, 2], [3, 4]])
         assert result == expected
@@ -65,9 +65,9 @@ class TestFromLatex:
         are properly converted to matrix format.
         """
         result = Matrix.from_latex(r"""
-            \begin{array} 
+            \begin{array}
             1 & 2 \\
-            3 & 4 
+            3 & 4
             \end{array}
         """)
         expected = Matrix([[1, 2], [3, 4]])
@@ -78,7 +78,7 @@ class TestFromLatex:
         result = Matrix.from_latex(r"""
             \begin{array}{cc}
             1 & 2 \\
-            3 & 4 
+            3 & 4
             \end{array}
         """)
         expected = Matrix([[1, 2], [3, 4]])
@@ -87,9 +87,9 @@ class TestFromLatex:
     def test_array_conversion3(self):
         """Test conversion from array environment to pmatrix"""
         result = Matrix.from_latex(r"""
-            \begin{array}{} 
+            \begin{array}{}
             1 & 2 \\
-            3 & 4 
+            3 & 4
             \end{array}
         """)
         expected = Matrix([[1, 2], [3, 4]])
@@ -98,13 +98,13 @@ class TestFromLatex:
     def test_matmul_expression(self):
         """Test parsing a matrix multiplication expression"""
         result = Matrix.from_latex(r"""
-            \begin{pmatrix} 
+            \begin{pmatrix}
             1 & 2 \\
-            3 & 4 
+            3 & 4
             \end{pmatrix}
-            \begin{pmatrix} 
+            \begin{pmatrix}
             5 & 6 \\
-            7 & 8 
+            7 & 8
             \end{pmatrix}
         """)
         expected = Matrix([[1, 2], [3, 4]]) * Matrix([[5, 6], [7, 8]])
@@ -212,13 +212,15 @@ class TestFromList:
         v2 = Matrix([3, 4])
         vecs = [v1, v2]
         res = Matrix.from_list(vecs)
-        
+
         # Verify the list itself was not mutated (no .pop() occurred)
         assert len(vecs) == 2
-        
+
         # Verify defensive copying: changing v1 should NOT change 'res'
         v1[0, 0] = 99
-        assert res[0, 0] == 1, "Matrix should be independent of future mutations to the input vectors"
+        assert res[0, 0] == 1, (
+            "Matrix should be independent of future mutations to the input vectors"
+        )
 
     @pytest.mark.parametrize(
         "vectors",
@@ -335,8 +337,10 @@ class TestCreateRandMatrix:
         mat = Matrix.create_rand_matrix(2, 2, shape=Shape.STRICT_UPPER, seed=42)
         assert mat == Matrix([[0, 14], [0, 0]])
 
+
 class TestApplyVander:
     """Regression tests for Vandermonde matrix applications."""
+
     def test_create_vander(self):
         result = Matrix.create_vander(2, 4)
         assert result.shape == (2, 4)
@@ -391,10 +395,10 @@ class TestOverriddenFactoryMethods:
 
     def test_T_property(self):
         mat = Matrix([[1, 2], [3, 4]])
-        assert mat.T == Matrix([[1, 3], [2, 4]])
+        assert Matrix([[1, 3], [2, 4]]) == mat.T
         assert isinstance(mat.T, Matrix)
 
     def test_H_property(self):
-        mat = Matrix([[1, 2*sym.I], [3+4*sym.I, 4]])
-        assert mat.H == Matrix([[1, 3-4*sym.I], [-2*sym.I, 4]])
+        mat = Matrix([[1, 2 * sym.I], [3 + 4 * sym.I, 4]])
+        assert Matrix([[1, 3 - 4 * sym.I], [-2 * sym.I, 4]]) == mat.H
         assert isinstance(mat.H, Matrix)

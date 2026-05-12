@@ -1,5 +1,5 @@
-import sympy as sym
 import pytest
+import sympy as sym
 
 from ma1522 import Matrix
 
@@ -52,12 +52,12 @@ class TestTutorial11:
         F_in = Matrix.from_str("x1; x2; x3")
         F_out = Matrix.from_str("x1 - 2*x2; x1 + x2 - 3*x3; 5*x2 - x3", col_sep="?")
         A_F = F_in.standard_matrix(F_out, matrices=1)[0]
-        assert A_F == Matrix.from_str("1 -2 0; 1 1 -3; 0 5 -1")
+        assert Matrix.from_str("1 -2 0; 1 1 -3; 0 5 -1") == A_F
 
         G_in = Matrix.from_str("x1; x2; x3")
         G_out = Matrix.from_str("x3 - x1; x2 + 5*x1; x1 + x2 + x3", col_sep="?")
         B_G = G_in.standard_matrix(G_out, matrices=1)[0]
-        assert B_G == Matrix.from_str("-1 0 1; 5 1 0; 1 1 1")
+        assert Matrix.from_str("-1 0 1; 5 1 0; 1 1 1") == B_G
 
     def test_question_2c(self):
         A_F = Matrix.from_str("1 -2 0; 1 1 -3; 0 5 -1")

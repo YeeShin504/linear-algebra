@@ -1,6 +1,7 @@
 import pytest
 import sympy as sym
-from ma1522 import Matrix, SVD, PDP
+
+from ma1522 import PDP, SVD, Matrix
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -37,7 +38,8 @@ class TestSVDDecomposition:
         """Test SVD on matrix with irrational eigenvalues (Regression)."""
         A = Matrix([[1, -2, -1], [2, 0, 1], [2, -4, 2], [4, 0, 0]])
         # Note: verify=False because the symbolic norm check is extremely expensive for this matrix
-        svd = A.singular_value_decomposition(verbosity=0, verify=False)
+        with pytest.warns(RuntimeWarning, match="Gram-Schmidt fallback"):
+            svd = A.singular_value_decomposition(verbosity=0, verify=False)
         assert _reconstruction_norm(svd, A) < 1e-8
 
     def test_rank_deficient_reconstruction(self):
@@ -73,7 +75,7 @@ class TestVectorSpaces:
         B = Matrix([[1, 0], [0, 1]])
         C = Matrix([[1, 1], [1, -1]])
         T = B.transition_matrix(to=C, verbosity=0)
-        assert T == C.inv() @ B
+        assert C.inv() @ B == T
 
     def test_gram_schmidt_orthonormal(self):
         """Verify Gram-Schmidt returns orthonormal vectors."""

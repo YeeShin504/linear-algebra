@@ -1,5 +1,3 @@
-import pytest
-
 from ma1522 import Matrix
 
 

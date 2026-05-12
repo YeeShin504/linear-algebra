@@ -1,48 +1,52 @@
+"""Symbolic linear algebra computations and matrix operations.
+
+This module provides the extended Matrix class with support for step-by-step
+symbolic computation, decompositions (PLU, QR, SVD, etc.), and rich printing
+for understanding linear algebra algorithms.
+"""
+
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
 from warnings import warn
 
+import mpmath as mp
+import numpy as np
 import sympy as sym
+from latex2sympy2 import latex2sympy
 from sympy.parsing.sympy_parser import parse_expr
 
-import numpy as np
-import mpmath as mp
-from latex2sympy2 import latex2sympy
-import re
-
-# import IPython.display
-
-from .utils import _is_zero, _standardise_symbol, _textify, display
-
+from ._workers import _get_orth
 from .custom_types import (
-    Shape,
-    PartGen,
-    ScalarFactor,
-    PLU,
-    RREF,
-    RREFCase,
-    VecDecomp,
-    QR,
     PDP,
+    PLU,
+    QR,
+    RREF,
     SVD,
     NumSVD,
+    PartGen,
+    RREFCase,
+    ScalarFactor,
+    Shape,
+    VecDecomp,
 )
 
+# import IPython.display
+from .utils import _is_zero, _standardise_symbol, _textify, display
+
 if TYPE_CHECKING:
-    from typing import Callable, Literal, DefaultDict
+    from collections.abc import Callable
+    from typing import Literal
 
 from sympy.core.expr import Expr
-from sympy.core.symbol import Symbol
 from sympy.core.mul import Mul
+from sympy.core.symbol import Symbol
 
 sym.init_printing(use_unicode=True)
 np.set_printoptions(formatter={"float": lambda x: f"{x:10.7g}"})
-
-
-# ---------------------------------------------------------------------------
 
 
 class Matrix(sym.MutableDenseMatrix):
@@ -178,7 +182,7 @@ class Matrix(sym.MutableDenseMatrix):
         delta.extend([ls[i] - ls[i - 1] for i in range(1, len(ls))])
         remainder = self.cols - sum(delta) - 1
         delta.append(remainder)
-        s = "\\begin{array}{c" + "|".join(("c" * i for i in delta)) + "}"
+        s = "\\begin{array}{c" + "|".join("c" * i for i in delta) + "}"
         array_c = "\\begin{array}{" + "c" * self.cols + "}"
 
         return raw.replace(array_c, s)
@@ -339,7 +343,7 @@ class Matrix(sym.MutableDenseMatrix):
 
         symbols = matrix.free_symbols
         new_symbols = _standardise_symbol(symbols, is_real=is_real)
-        matrix = matrix.subs({s: n for s, n in zip(symbols, new_symbols)})
+        matrix = matrix.subs({s: n for s, n in zip(symbols, new_symbols, strict=False)})
         return matrix
 
     @staticmethod
@@ -391,10 +395,7 @@ class Matrix(sym.MutableDenseMatrix):
             return Matrix([])
         res = Matrix(vectors[0])
         for vec in vectors[1:]:
-            if row_join:
-                res = res.row_join(vec, aug_line=False)
-            else:
-                res = res.col_join(vec)
+            res = res.row_join(vec, aug_line=False) if row_join else res.col_join(vec)
         if aug_pos is not None:
             return Matrix(res, aug_pos=aug_pos)
         return res
@@ -771,10 +772,7 @@ class Matrix(sym.MutableDenseMatrix):
                 )
         if simplify:
             temp = sym.simplify(temp, *args, **kwargs)
-        if expand:
-            temp = sym.expand(temp)
-        else:
-            temp = temp.applyfunc(lambda x: sym.factor(x))
+        temp = sym.expand(temp) if expand else temp.applyfunc(lambda x: sym.factor(x))
         if collect_sym is not None:
             temp = temp.applyfunc(lambda x: sym.collect(x, collect_sym))
 
@@ -828,7 +826,7 @@ class Matrix(sym.MutableDenseMatrix):
               For general simplification of the matrix entries.
         """
 
-        temp = self.applyfunc(lambda x: mp.identify(x, tol=tol, *args, **kwargs))
+        temp = self.applyfunc(lambda x: mp.identify(x, *args, tol=tol, **kwargs))
         residues = (temp - self).norm()
         if residues != 0 and not suppress_warnings:
             res = residues.evalf()
@@ -924,7 +922,7 @@ class Matrix(sym.MutableDenseMatrix):
             ])
         """
 
-        set_0 = dict(((symbol, 0) for symbol in self.free_symbols))
+        set_0 = dict((symbol, 0) for symbol in self.free_symbols)
         part_sol = self.subs(set_0)
         gen_sol = self - part_sol
         return PartGen(part_sol, gen_sol)
@@ -1369,13 +1367,11 @@ class Matrix(sym.MutableDenseMatrix):
         if not follow_GE:
             for row_idx in range(row_start_idx, self.rows):
                 term = self[row_idx, col_idx]
-                if term != 0:
+                if term != 0 and (
+                    not isinstance(term, Expr) or len(term.free_symbols) == 0
+                ):
                     # Check if it's not a symbolic expression
-                    if not isinstance(term, Expr):
-                        return row_idx
-                    # Check if it's a non-symbolic constant
-                    elif len(term.free_symbols) == 0:
-                        return row_idx
+                    return row_idx
 
         # Step 2: If no non-zero constant is found, return the first non-zero element (symbolic or not)
         for row_idx in range(row_start_idx, self.rows):
@@ -1489,10 +1485,7 @@ class Matrix(sym.MutableDenseMatrix):
                     decomp = sym.apart(scalar)  # partial fractions
                 except Exception:
                     decomp = scalar
-                if isinstance(decomp, sym.Add):
-                    terms = decomp.args
-                else:
-                    terms = [decomp]
+                terms = decomp.args if isinstance(decomp, sym.Add) else [decomp]
 
                 for term in terms:
                     _, d = sym.fraction(term)
@@ -1521,7 +1514,7 @@ class Matrix(sym.MutableDenseMatrix):
                             )
                             L_matrix.__dict__.update((L_matrix @ elem).__dict__)
             except Exception as error:
-                warn(f"Reduction error: {error}", RuntimeWarning)
+                warn(f"Reduction error: {error}", RuntimeWarning, stacklevel=2)
                 break
 
     def ref(
@@ -1655,7 +1648,7 @@ class Matrix(sym.MutableDenseMatrix):
     def _dedupe_key(cls, case: RREFCase) -> tuple:
         """Exact signature used for evaluate_cases de-duplication."""
         excluded_keys = tuple(
-            sorted(cls._case_item_key(tuple(d.items())[0]) for d in case.excluded)
+            sorted(cls._case_item_key(next(iter(d.items()))) for d in case.excluded)
         )
         condition_keys = tuple(
             sorted(cls._case_item_key(it) for it in case.conditions.items())
@@ -1679,7 +1672,7 @@ class Matrix(sym.MutableDenseMatrix):
             changed = False
             for general in group_cases:
                 gen_items = set(general.conditions.items())
-                gen_excluded = {tuple(d.items())[0] for d in general.excluded}
+                gen_excluded = {next(iter(d.items())) for d in general.excluded}
                 for specific in group_cases:
                     if general is specific:
                         continue
@@ -1694,7 +1687,9 @@ class Matrix(sym.MutableDenseMatrix):
                         continue
 
                     general.excluded = [
-                        d for d in general.excluded if tuple(d.items())[0] != extra_item
+                        d
+                        for d in general.excluded
+                        if next(iter(d.items())) != extra_item
                     ]
                     changed = True
 
@@ -1715,7 +1710,7 @@ class Matrix(sym.MutableDenseMatrix):
                 if not dropped_items:
                     continue
 
-                general_excluded = {tuple(d.items())[0] for d in general.excluded}
+                general_excluded = {next(iter(d.items())) for d in general.excluded}
                 if all(item not in general_excluded for item in dropped_items):
                     is_redundant = True
                     break
@@ -1732,7 +1727,9 @@ class Matrix(sym.MutableDenseMatrix):
                 len(c.conditions),
                 tuple(sorted(cls._case_item_key(it) for it in c.conditions.items())),
                 tuple(
-                    sorted(cls._case_item_key(tuple(d.items())[0]) for d in c.excluded)
+                    sorted(
+                        cls._case_item_key(next(iter(d.items()))) for d in c.excluded
+                    )
                 ),
             ),
         ):
@@ -1906,7 +1903,7 @@ class Matrix(sym.MutableDenseMatrix):
         pivot_row: int,
         nonzero_assumptions: tuple[sym.Expr, ...] = (),
         verbosity: int = 0,
-    ) -> "list[tuple[Matrix, dict]]":
+    ) -> list[tuple[Matrix, dict]]:
         """Swap the pivot into place, normalise the pivot row to 1, eliminate the
         pivot column in every other row (full RREF), then recurse.
         """
@@ -1943,7 +1940,7 @@ class Matrix(sym.MutableDenseMatrix):
         cur_col: int,
         nonzero_assumptions: tuple[sym.Expr, ...] = (),
         verbosity: int = 0,
-    ) -> "list[tuple[Matrix, dict]]":
+    ) -> list[tuple[Matrix, dict]]:
         """Recursively compute RREF, branching whenever a pivot entry has free
         symbols that could be zero under some assignment.
         """
@@ -2080,7 +2077,7 @@ class Matrix(sym.MutableDenseMatrix):
                 cur_row=cur_row,
                 cur_col=cur_col,
                 pivot_row=pivot_row,
-                nonzero_assumptions=nonzero_assumptions + (pivot_entry,),
+                nonzero_assumptions=(*nonzero_assumptions, pivot_entry),
                 verbosity=verbosity,
             )
         )
@@ -2601,10 +2598,7 @@ class Matrix(sym.MutableDenseMatrix):
         hidden = self.elem()
 
         M = self.copy().row_join(hidden).row_join(vector)
-        if use_ref:
-            res = M.ref().U
-        else:
-            res = M.rref(pivots=False)
+        res = M.ref().U if use_ref else M.rref(pivots=False)
 
         visible_cols = (*range(self.cols), -1)
         res_matrix = res.select_cols(*visible_cols).aug_line(-2)  # type: ignore
@@ -3570,6 +3564,9 @@ class Matrix(sym.MutableDenseMatrix):
             Q = Matrix(Q)
             complement = Q.orthogonal_complement(verbosity=0)
             orth_complement = complement.gram_schmidt(factor=False, verbosity=0)
+            assert isinstance(orth_complement, Matrix), (
+                "Result should be a Matrix object"
+            )
             Q_aug = Q.row_join(orth_complement, aug_line=False)
             R_aug = Matrix(R.col_join(sym.zeros(Q_aug.cols - R.rows, R.cols)))
             assert (Q_aug @ R_aug).equals(self), (
@@ -3622,9 +3619,9 @@ class Matrix(sym.MutableDenseMatrix):
         if verbosity == 0:
             try:
                 A, b = sym.Matrix(self), sym.Matrix(rhs)
-                return A.solve_least_squares(rhs=b, *args, **kwargs)
+                return A.solve_least_squares(*args, rhs=b, **kwargs)
             except Exception as e:
-                print(f"Exception Encountered: {str(e)}")
+                print(f"Exception Encountered: {e!s}")
                 print("Attempting custom solve...")
 
         ATA, ATb = self.T @ self, self.T @ rhs
@@ -3744,10 +3741,13 @@ class Matrix(sym.MutableDenseMatrix):
             )
 
         # Get the free symbols from the last column of the matrix
-        ordered_syms = [next(iter(entry.free_symbols)) for entry in self.select_cols(-1)]  # type: ignore
+        ordered_syms = [
+            next(iter(entry.free_symbols))  # type: ignore
+            for entry in self.select_cols(-1)
+        ]
 
         # Create a substitution dictionary mapping symbols to values from vector x
-        substitution = {var: val for var, val in zip(ordered_syms, x)}  # type: ignore
+        substitution = {var: val for var, val in zip(ordered_syms, x, strict=False)}  # type: ignore
         return self.subs(substitution)
 
     #############################
@@ -4035,10 +4035,10 @@ class Matrix(sym.MutableDenseMatrix):
         assert self.is_orthogonally_diagonalizable(verbosity=verbosity)
         # P, D = super().diagonalize(reals_only, *args, **kwargs)
         P, D = self.diagonalize(
-            reals_only=reals_only, verbosity=verbosity, *args, **kwargs
+            *args, reals_only=reals_only, verbosity=verbosity, **kwargs
         )
 
-        d: DefaultDict[Expr, list[Matrix]] = defaultdict(list)
+        d: defaultdict[Expr, list[Matrix]] = defaultdict(list)
         for i in range(P.cols):
             d[D[i, i]].append(P.col(i))
 
@@ -4140,7 +4140,11 @@ class Matrix(sym.MutableDenseMatrix):
         return P
 
     def singular_value_decomposition(
-        self, verbosity: int = 0, tol: float = 0.0, verify: bool = True
+        self,
+        verbosity: int = 0,
+        tol: float = 0.0,
+        verify: bool = True,
+        timeout_seconds: int = 30,
     ) -> SVD:
         """Performs Singular Value Decomposition (SVD) on the matrix, following the MA1522 syllabus.
 
@@ -4157,6 +4161,8 @@ class Matrix(sym.MutableDenseMatrix):
             tol (float, optional): Tolerance for verification of the SVD result.
             verify (bool): If `True`, verifies the result of the SVD by checking if `self = U @ S @ V.T`.
                 If `False`, skips the verification step for performance reasons.
+            timeout_seconds (int): Maximum time allowed for the symbolic SVD computation before it uses
+                a numerical fallback is used.
 
         Returns:
             (SVD): A dataclass containing:
@@ -4169,112 +4175,103 @@ class Matrix(sym.MutableDenseMatrix):
 
         Examples:
             >>> mat = Matrix([[3, 2, 2], [2, 3, -2]])
-            >>> mat.singular_value_decomposition(verbosity=0, verify=False)
-            SVD(U=Matrix([
-            [sqrt(2)/2, -sqrt(2)/2]
-            [sqrt(2)/2,  sqrt(2)/2]
-            ]), S=Matrix([
+            >>> svd = mat.singular_value_decomposition(verbosity=0, verify=False)
+            >>> svd.S
+            Matrix([
             [5, 0, 0]
             [0, 3, 0]
-            ]), V=Matrix([
-            [sqrt(2)/2,   -sqrt(2)/6,  2/3]
-            [sqrt(2)/2,    sqrt(2)/6, -2/3]
-            [        0, -2*sqrt(2)/3, -1/3]
-            ]))
+            ])
+            >>> (svd.U @ svd.S @ svd.V.T).equals(mat)
+            True
 
         See Also:
             - [`fast_svd`][..fast_svd] for a faster numerical SVD
             - SymPy's [`Matrix.singular_value_decomposition`][sympy.matrices.matrixbase.MatrixBase.singular_value_decomposition]
         """
 
-        if verbosity == 0 and not verify:
-            return self.fast_svd(option="sym", identify=False)
-
+        AT_A = self.T @ self
         if verbosity >= 1:
-            AT_A = self.T @ self
             print("A^T A")
             display(AT_A)
-            P, D = AT_A.orthogonally_diagonalize(verbosity=verbosity)
-            # Reverse index such that singular values are in decreasing order
-            sigma = [sym.sqrt(val) for val in D.diagonal()][::-1]
-            S = Matrix.diag(*[singular for singular in sigma if (singular != 0)])
-            V = P.select_cols(*[i for i in range(P.cols)][::-1])
 
-            u_list = []
-            for idx in range(1, S.rows + 1):
-                vec = V.col(idx - 1)
-                val = sigma[idx - 1]
-                if val != 0:
-                    u_i = self @ vec / val
-                    u_list.append(u_i)
+        # Do not call orthogonally_diagonalize() here: for algebraic eigenvectors,
+        # its exact reconstruction proof can dominate SVD runtime. We only need
+        # orthogonalized right singular vectors, so build them directly from
+        # eigenspaces of A.T @ A.
+        P_raw, D = AT_A.diagonalize(reals_only=True, verbosity=verbosity)
+        eigenspaces: defaultdict[Expr, list[Matrix]] = defaultdict(list)
+        for i in range(P_raw.cols):
+            eigenspaces[D[i, i]].append(P_raw.col(i))
+
+        orthogonal_cols: list[Matrix] = []
+        for vecs in eigenspaces.values():
+            if len(vecs) == 1:
+                vec = vecs[0].normalized(factor=False)
+                assert isinstance(vec, Matrix), "Expected vec to be a Matrix object"
+                orthogonal_cols.append(vec)
+                continue
+
+            gram_matrix = Matrix.from_list(vecs).gram_schmidt(
+                factor=False, verbosity=verbosity
+            )
+            assert isinstance(gram_matrix, Matrix), (
+                "Expected gram_matrix to be a Matrix object"
+            )
+            for i in range(gram_matrix.cols):
+                orthogonal_cols.append(gram_matrix.col(i))
+
+        P = Matrix.from_list(orthogonal_cols)
+        # Reverse index such that singular values are in decreasing order
+        sigma = [sym.sqrt(val) for val in D.diagonal()][::-1]
+        S = Matrix.diag(*[singular for singular in sigma if (singular != 0)])
+        V = P.select_cols(*[i for i in range(P.cols)][::-1])
+
+        u_list = []
+        for idx in range(1, S.rows + 1):
+            vec = V.col(idx - 1)
+            val = sigma[idx - 1]
+            if val != 0:
+                u_i = self @ vec / val
+                u_list.append(u_i)
+                if verbosity >= 1:
                     display(
                         f"u_{idx} = (1/{sym.latex(val)})A{sym.latex(vec)} = {sym.latex(u_i)}",
                         opt="math",
                     )
 
-            U = Matrix.from_list(u_list)
-            # Extend basis using orthogonal complement and gram-schmidt if insufficient vectors
-            if U.cols < self.rows:
+        U = Matrix.from_list(u_list)
+        # Extend basis using orthogonal complement and gram-schmidt if insufficient vectors
+        if U.cols < self.rows:
+            if verbosity >= 1:
                 print("\nExtending U with its orthogonal complement.")
-                if U.cols == 0:
-                    # Pad edge case with identity
-                    orth = Matrix.eye(self.rows)
-                else:
-                    complement = U.orthogonal_complement(verbosity=verbosity)
-                    gram_result = complement.gram_schmidt(
-                        factor=True, verbosity=verbosity
-                    )
-                    if isinstance(gram_result, ScalarFactor):
-                        orth = gram_result.full
-                    else:
-                        orth = gram_result
-
-                    orth = orth.normalized(factor=False)
-                    assert isinstance(orth, Matrix), (
-                        f"Expected orth to be a Matrix, got {type(orth)}"
-                    )
-                U = U.row_join(orth, aug_line=False)
-
-            # Add zero rows and columns to S so that matrix multiplication is defined
-            m, n = self.shape
-            r, c = S.shape
-            S = S.row_join(sym.zeros(r, n - c), aug_line=False).col_join(
-                sym.zeros(m - r, n)
-            )
-
-            if verify:
-                residual = (U @ S @ V.T - self).norm()
-                assert residual.evalf() <= tol
-            return SVD(U, S, V)
-
-        m, n = self.shape
-        U, S, V = super().singular_value_decomposition()
-        # Reverse index such that singular values are in decreasing order
-        new_S = Matrix.diag(*S.diagonal()[::-1])
-
-        S_index = [i for i in range(S.cols)][::-1]
-        new_U = Matrix(U).select_cols(*S_index)
-        new_V = Matrix(V).select_cols(*S_index)
-
-        # new_U = Matrix(U).
-        # Add orthonormal columns to U and V so that they are square matrices
-        new_U = new_U.QRdecomposition(full=True).Q
-        new_V = new_V.QRdecomposition(full=True).Q
+            if U.cols == 0:
+                # Pad edge case with identity
+                orth = Matrix.eye(self.rows)
+            else:
+                orth = _get_orth(
+                    U, timeout_seconds=timeout_seconds, verbosity=verbosity
+                )
+                assert isinstance(orth, Matrix), (
+                    f"Expected orth to be a Matrix, got {type(orth)}"
+                )
+            U = U.row_join(orth, aug_line=False)
 
         # Add zero rows and columns to S so that matrix multiplication is defined
-        r, c = new_S.shape
-        new_S = new_S.row_join(sym.zeros(r, n - c), aug_line=False).col_join(
+        m, n = self.shape
+        r, c = S.shape
+        S = S.row_join(sym.zeros(r, n - c), aug_line=False).col_join(
             sym.zeros(m - r, n)
         )
 
-        if verify and (residues := (new_U @ new_S @ new_V.T - self).norm()) > tol:
+        if verify and (residues := (U @ S @ V.T - self).norm()) > tol:
             res = residues.evalf()
             warn(
                 f"Verification failed: norm of residual is {res} > {tol}",
                 RuntimeWarning,
                 stacklevel=2,
             )
-        return SVD(new_U, new_S, new_V)
+
+        return SVD(U, S, V)
 
     def fast_svd(
         self,

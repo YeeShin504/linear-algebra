@@ -122,10 +122,10 @@ class TestBasicManipulators:
         """Verify the .H property for complex matrices."""
         A = Matrix([[1, 2 + sym.I], [3 - sym.I, 4]])
         expected = Matrix([[1, 3 + sym.I], [2 - sym.I, 4]])
-        assert A.H == expected
+        assert expected == A.H
 
     def test_is_mat_orthogonal_behavioral(self):
-        """Verify is_mat_orthogonal calls .is_diagonal() as a method, not a property."""        
+        """Verify is_mat_orthogonal calls .is_diagonal() as a method, not a property."""
         A = Matrix.eye(2)
         assert A.is_mat_orthogonal() is True
         B = Matrix([[1, 1], [0, 1]])

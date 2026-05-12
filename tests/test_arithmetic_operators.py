@@ -22,19 +22,19 @@ class TestArithmeticOperators:
         A = Matrix([[1, 2], [3, 4]])
         B = Matrix([[5, 6], [7, 8]])
         expected = Matrix([[-4, -4], [-4, -4]])
-        assert A - B == expected
+        assert expected == A - B
 
     def test_scalar_multiplication(self):
         A = Matrix([[1, 2], [3, 4]])
         expected = Matrix([[2, 4], [6, 8]])
-        assert 2 * A == expected
-        assert A * 2 == expected
+        assert expected == 2 * A
+        assert expected == A * 2
 
     def test_matrix_multiplication(self):
         A = Matrix([[1, 2], [3, 4]])
         B = Matrix([[5, 6], [7, 8]])
         expected = Matrix([[19, 22], [43, 50]])
-        assert A @ B == expected
+        assert expected == A @ B
 
     def test_neg(self):
         mat = Matrix([[1, 2], [3, 4]])

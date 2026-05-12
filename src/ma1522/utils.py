@@ -1,14 +1,24 @@
+"""Utility functions for linear algebra operations and display.
+
+This module provides helper functions for matrix operations, symbolic computation,
+output formatting, and interactive display capabilities.
+"""
+
 from __future__ import annotations
+
 import dataclasses
-from itertools import chain, combinations
 import re
+from itertools import chain, combinations
 from typing import TYPE_CHECKING
 
 import sympy as sym
 
 if TYPE_CHECKING:
-    from typing import Iterable, Literal
+    from collections.abc import Iterable
+    from typing import Literal
+
     from sympy.printing.latex import LatexPrinter
+
     from ma1522.custom_types import Printable
 
 
@@ -149,7 +159,7 @@ def _is_zero(expr) -> bool:
 
     # set symbols assumption to true
     real_symbols = sym.symbols(f"x:{len(expr.free_symbols)}")
-    for symbol, real_symbol in zip(expr.free_symbols, real_symbols):
+    for symbol, real_symbol in zip(expr.free_symbols, real_symbols, strict=False):
         expr = expr.subs({symbol: real_symbol})
 
     sol = sym.solve(sym.Eq(expr, 0), expr.free_symbols)
@@ -259,10 +269,11 @@ def _is_IPython() -> bool:
         if ip is None:
             return False
         shell = ip.__class__.__name__
-        if shell in ["ZMQInteractiveShell", "TerminalInteractiveShell", "Interpreter"]:
-            return True  # Jupyter notebook, qtconsole or terminal running IPython
-        else:
-            return False  # Other type
+        return shell in [
+            "ZMQInteractiveShell",  # Jupyter notebook or qtconsole
+            "TerminalInteractiveShell",  # Terminal running IPython
+            "Interpreter",  # IPython running in embedded mode
+        ]
     except (NameError, AttributeError):
         return False  # Probably standard Python interpreter
     except ImportError:
@@ -277,7 +288,7 @@ def display(*args, opt: Literal["math", "dict"] | None = None, **kwargs) -> None
 
     Args:
         *args: The objects to display.
-        opt (Literal["math", "dict"] | None): 
+        opt (Literal["math", "dict"] | None):
 
             - If "math", displays the object as a math expression.
             - If "dict", generates a LaTeX representation of the dictionary for display.
