@@ -18,8 +18,8 @@ import numpy as np
 import sympy as sym
 from latex2sympy2 import latex2sympy
 from sympy.parsing.sympy_parser import parse_expr
-from ._workers import _get_orth
 
+from ._workers import _get_orth
 from .custom_types import (
     PDP,
     PLU,

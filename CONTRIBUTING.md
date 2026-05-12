@@ -24,12 +24,49 @@ Key files and directories:
 
 ## Linting & Formatting
 
-- Use [ruff](https://docs.astral.sh/ruff/) for linting and formatting:
+Use [ruff](https://docs.astral.sh/ruff/) for linting and formatting:
 
 ```sh
 ruff check src/ tests/
 ruff format src/ tests/
 ```
+
+## Pre-commit Hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to automate code quality checks on every commit.
+
+### Setup
+
+Install the git hooks:
+
+```sh
+pre-commit install
+```
+
+### Running Manually
+
+Run all hooks on all files:
+
+```sh
+pre-commit run --all-files
+```
+
+Run a specific hook:
+
+```sh
+pre-commit run ruff --all-files
+pre-commit run check-yaml --all-files
+```
+
+### What Hooks Are Configured
+
+The `.pre-commit-config.yaml` file defines:
+- **ruff**: Linting and code style checks (enforces docstrings, naming conventions, complexity rules, etc.)
+- **check-yaml**: Validates YAML syntax (with `--unsafe` flag for Python-specific YAML tags in `mkdocs.yml`)
+- **check-merge-conflict**: Detects merge conflict markers
+- **end-of-file-fixer**: Ensures files end with a newline
+
+These hooks run automatically before each commit to catch issues early. If a hook fails, the commit is blocked. Fix the issues and try again.
 
 ## Running Tests
 
