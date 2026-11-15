@@ -5,7 +5,7 @@ Thank you for your interest in contributing! All types of contributions are welc
 
 ## Getting Started
 
-- This project requires **Python 3.10 or higher**.
+- This project requires **Python 3.11 or higher**.
 - Dependencies are managed with [uv](https://github.com/astral-sh/uv) and specified in `pyproject.toml` and `uv.lock`.
 - To set up the development environment:
 
