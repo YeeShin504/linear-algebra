@@ -31,9 +31,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           uv python install ${{ matrix.python-version }}
-          uv lock --upgrade-package soupsieve --upgrade-package tornado --upgrade-package pyzmq --upgrade-package pywin32 --upgrade-package rpds-py
-          uv sync --python ${{ matrix.python-version }}
-          uv pip install --python ${{ matrix.python-version }} -e .
+          uv pip install --python ${{ matrix.python-version }} -e . pytest pytest-cov
 
       - name: Run tests with coverage
         run: |
