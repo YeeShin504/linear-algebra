@@ -33,7 +33,7 @@ This project builds on SymPy's Matrix class and is designed for students taking 
 
 #### Prerequisites
 
-This project is best supported in a Jupyter Notebook environment with Python 3.10+. You can download Python from [here](https://www.python.org/downloads/).
+This project is best supported in a Jupyter Notebook environment with Python 3.11+. You can download Python from [here](https://www.python.org/downloads/).
 
 Alternatively, you can use the GUI developed by [@MarcusMa06-code](https://github.com/MarcusMa06-code) [here](https://github.com/MarcusMa06-code/linear-algebra/tree/gui-development) or [@Tuxedolphin](https://github.com/Tuxedolphin) [here](https://github.com/Tuxedolphin/linear-algebra)
 
