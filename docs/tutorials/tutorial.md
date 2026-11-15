@@ -7,7 +7,7 @@ This guide is designed for undergraduate students who are new to Python and want
 First, you need to set up your Python environment. We recommend using a Jupyter Notebook for an interactive experience.
 
 !!! tip "Prerequisites"
-    - Python 3.10+
+    - Python 3.11+
     - Jupyter Notebook or JupyterLab
 
 Follow these steps to get everything set up:
