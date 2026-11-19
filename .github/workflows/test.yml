@@ -31,7 +31,8 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           uv python install ${{ matrix.python-version }}
-          uv pip install --python ${{ matrix.python-version }} -e . pytest pytest-cov
+          uv venv --python ${{ matrix.python-version }}
+          uv pip install --python ${{ matrix.python-version }} -e . pytest pytest-cov ipython
 
       - name: Run tests with coverage
         run: |
