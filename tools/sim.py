@@ -162,11 +162,18 @@ def fmt(v, frac=False):
 
 
 # --------------------------------------------------------------------------- interpreter
+def nonreal(x) -> bool:
+    return isinstance(x, complex) and x.imag != 0
+
+
 class Calc:
     def __init__(self, src_dir: str | Path, echo: bool = False):
         self.src_dir = Path(src_dir)
         self.reals: dict[str, object] = {c: 0.0 for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZθ"}
         self.lists: dict[str, list] = {f"L{i}": [] for i in range(1, 7)}
+        # On the calculator a list is either real or complex. Storing a nonreal number into
+        # an element of a real list is ERR:DATA TYPE, so track which lists are complex.
+        self.clists: set[str] = set()
         self.mats: dict[str, list] = {}
         self.strs: dict[str, str] = {}
         self.complex_mode = False
@@ -378,6 +385,7 @@ class Calc:
             t = toks[1]
             if t[0] == "list":
                 self.lists.pop(t[1], None)
+                self.clists.discard(t[1])
             elif t[0] == "mat":
                 self.mats.pop(t[1], None)
             return
@@ -433,6 +441,8 @@ class Calc:
             obj = target[1]
             if obj[0] == "list":
                 n = int(val)
+                if obj[1] not in self.lists:
+                    self.clists.discard(obj[1])  # dim( on a new list creates a real list
                 old = self.lists.get(obj[1], [])
                 self.lists[obj[1]] = (old + [0.0] * n)[:n]
             else:
@@ -448,6 +458,12 @@ class Calc:
                 if not is_list(val):
                     raise TIError("ERR:DATA TYPE")
                 self.lists[t[1]] = list(val)
+                # Strict model: a stored list is complex only if some element is nonreal
+                # (the calculator may turn e.g. 0*complex list into a real list).
+                if any(nonreal(e) for e in val):
+                    self.clists.add(t[1])
+                else:
+                    self.clists.discard(t[1])
                 return
             i = int(self.eval(target[2:-1] if target[-1] == ("op", ")") else target[2:])) - 1
             lst = self.lists[t[1]]
@@ -455,6 +471,8 @@ class Calc:
                 lst.append(0.0)
             if not 0 <= i < len(lst):
                 raise TIError("ERR:INVALID DIM")
+            if nonreal(val) and t[1] not in self.clists:
+                raise TIError(f"ERR:DATA TYPE (nonreal value stored into real list ʟ{t[1]})")
             lst[i] = val
             return
         if t[0] == "mat":
@@ -768,6 +786,9 @@ class Calc:
             while (s > 0 and x <= b) or (s < 0 and x >= b):
                 self.reals[var] = x
                 out.append(self.eval(parts[0]))
+                if nonreal(out[-1]) and not nonreal(out[0]):
+                    # Strict model: the list type follows the first element.
+                    raise TIError("ERR:DATA TYPE (seq( first element real, later one complex)")
                 x += s
             self._t, self._p = saved
             return out

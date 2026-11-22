@@ -295,6 +295,14 @@ class TestEigen(unittest.TestCase):
     def test_complex(self):
         c = calc(A=[[0, -1], [1, 0]]).run("EIGEN")
         self.assertEqual(c.reals["Z"], 1)
+        self.assertEqual(sorted(e.imag for e in c.lists["EC"]), [-1, 1])
+
+    def test_complex_lists_are_complex_typed(self):
+        # The calculator gives ERR:DATA TYPE when a nonreal number is stored into an
+        # element of a real list, so ZEIG must create ʟZR and ʟEC as complex lists.
+        c = calc(A=[[4, 1], [2, 3]]).run("EIGEN")
+        self.assertIn("ZR", c.clists)
+        self.assertIn("EC", c.clists)
 
     def test_irrational(self):
         A = [[1, 2], [2, 2]]

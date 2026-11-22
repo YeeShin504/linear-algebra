@@ -33,7 +33,14 @@ For(I,1,N)
 max(B,abs(ʟCP(I+1))^(1/I))→B
 End
 2*B+1→B
-seq(B*(.4+.9𝑖)^(K-1),K,1,N)→ʟZR
+// ʟZR and ʟEC must be complex lists: storing a nonreal number into an element of a
+// real list is ERR:DATA TYPE. Start from {𝑖} (always complex) and resize; dim( keeps
+// the list type. Do not build them with seq( or 0*list, which may give a real list.
+{𝑖}→ʟZR
+N→dim(ʟZR)
+For(K,1,N)
+B*(.4+.9𝑖)^(K-1)→ʟZR(K)
+End
 For(L,1,100)
 0→D
 For(K,1,N)
@@ -61,7 +68,8 @@ N→dim(ʟZU)
 Fill(0,ʟZU)
 DelVar ʟEV
 DelVar ʟAM
-0*ʟZR→ʟEC
+{𝑖}→ʟEC
+N→dim(ʟEC)
 N→dim(ʟEV)
 N→dim(ʟAM)
 0→E
