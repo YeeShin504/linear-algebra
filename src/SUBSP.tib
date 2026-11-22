@@ -1,0 +1,130 @@
+// SUBSP - subspace tools for V=span(cols of [A]) and W=span(cols of [B]).
+// 1 V in W?   2 V = W?   3 basis of V n W -> [C]
+// 4 extend lin. indep. cols of [A] to a basis of R^m -> [C]
+// 5 simpler basis of V (RREF rows of A^T, as columns) -> [C]
+ClrHome
+Menu("SUBSPACE TOOLS","SPAN A IN SPAN B?",1,"SPAN A = SPAN B?",2,"INTERSECTION",3,"EXTEND TO R^M",4,"SIMPLIFY BASIS",5)
+Lbl 1
+1→A
+Goto S
+Lbl 2
+2→A
+Lbl S
+[B]→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+R→G
+augment([B],[A])→[J]
+0→W
+prgmZRREF
+R→H
+[A]→[J]
+0→W
+prgmZRREF
+R→U
+augment([A],[B])→[J]
+0→W
+prgmZRREF
+R→O
+ClrHome
+Disp "RANK A, B, [B|A], [A|B]"
+Disp {U,G,H,O}
+If H=G:Then
+Disp "SPAN(A) IS IN SPAN(B)"
+Else
+Disp "SPAN(A) NOT IN SPAN(B)"
+End
+If A=2:Then
+If O=U:Then
+Disp "SPAN(B) IS IN SPAN(A)"
+Else
+Disp "SPAN(B) NOT IN SPAN(A)"
+End
+If H=G and O=U:Then
+Disp "=> SAME SUBSPACE"
+Else
+Disp "=> DIFFERENT SUBSPACES"
+End
+End
+Return
+// ---- intersection: null space of [A | -B] ----
+Lbl 3
+dim([A])→ʟZD
+ʟZD(2)→G
+augment([A],⁻[B])→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+prgmZNULL
+ClrHome
+If F=0:Then
+Disp "INTERSECTION = {0}"
+Return
+End
+{G,F}→dim([I])
+[A]*[I]→[J]
+[J]→[H]
+0→W
+prgmZRREF
+If R=0:Then
+Disp "INTERSECTION = {0}"
+Return
+End
+{M,R}→dim([C])
+For(J,1,R)
+For(I,1,M)
+[H](I,ʟPIV(J))→[C](I,J)
+End
+End
+Disp "BASIS OF INTERSECTION","= COLS OF [C]","DIM =",R
+Pause [C]►Frac
+Return
+// ---- extend to a basis of R^m ----
+Lbl 4
+dim([A])→ʟZD
+ʟZD(1)→G
+ʟZD(2)→U
+augment([A],identity(G))→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+{G,R}→dim([C])
+augment([A],identity(G))→[H]
+For(J,1,R)
+For(I,1,G)
+[H](I,ʟPIV(J))→[C](I,J)
+End
+End
+ClrHome
+0→X
+If R<U:Then
+1→X
+Else
+If ʟPIV(U)≠U
+1→X
+End
+If X
+Disp "NOTE COLS OF A ARE","NOT LIN INDEP, ONLY","PIVOT COLS ARE KEPT"
+Disp "BASIS OF R^M = [C]","ADDED STD VECTORS E_I","I ="
+For(J,1,R)
+If ʟPIV(J)>U
+Disp ʟPIV(J)-U
+End
+Pause [C]►Frac
+Return
+// ---- simplify basis ----
+Lbl 5
+[A]ᵀ→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+{max(1,R),N}→dim([J])
+[J]ᵀ→[C]
+ClrHome
+Disp "SIMPLER BASIS FOR","SPAN(A) = COLS OF [C]","DIM =",R
+Pause [C]►Frac

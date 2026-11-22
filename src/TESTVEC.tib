@@ -1,0 +1,77 @@
+// TESTVEC - test several candidate vectors against [A] at once (for MCQ options).
+// [A] = the matrix, [B] = the candidate vectors as columns.
+// If the vectors have as many entries as [A] has columns: shows A*v, whether A*v = 0
+// (v in Null(A)) and, for square [A], whether v is an eigenvector and its eigenvalue.
+// If they have as many entries as [A] has rows: whether v is in Col(A).
+// Out: B = rank(A) (when tested against Col(A)), [E] = A*v for the last vector
+ClrHome
+Disp "TEST VECTORS","A = [A]","VECTORS = COLS OF [B]"
+dim([A])→ʟZD
+ʟZD(1)→G
+ʟZD(2)→H
+dim([B])→ʟZD
+ʟZD(1)→U
+ʟZD(2)→V
+If U≠H and U≠G:Then
+Disp "ROWS OF [B] MUST EQUAL","ROWS OR COLS OF [A]"
+Return
+End
+// rank of A, to compare with rank [A|v] for the column space test
+If U=G:Then
+[A]→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+R→B
+End
+For(L,1,V)
+Matr►list([B],L,ʟTV)
+max(abs(ʟTV))→E
+ClrHome
+Disp "VECTOR",L
+If U=H:Then
+List►matr(ʟTV,[C])
+[A]*[C]→[E]
+Matr►list([E],1,ʟTW)
+max(abs(ʟTW))→Z
+Disp "A*V ="
+Pause [E]►Frac
+If Z≤1ᴇ⁻9*max(1,E):Then
+Disp "A*V=0: IN NULL(A)"
+If G=H and E>1ᴇ⁻12
+Disp "EIGENVECTOR, LAMBDA=0"
+Else
+If G=H:Then
+// lambda from the first non-zero entry of v, then check A*v = lambda*v
+1→D
+While abs(ʟTV(D))≤1ᴇ⁻12
+D+1→D
+End
+ʟTW(D)/ʟTV(D)→O
+If max(abs(ʟTW-O*ʟTV))≤1ᴇ⁻9*max(1,Z):Then
+Disp "EIGENVECTOR, LAMBDA="
+Disp O►Frac
+Else
+Disp "NOT AN EIGENVECTOR"
+End
+End
+End
+End
+If U=G:Then
+List►matr(ʟTV,[D])
+augment([A],[D])→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+If R=B:Then
+Disp "IN COL(A)"
+Else
+Disp "NOT IN COL(A)"
+End
+End
+If E≤1ᴇ⁻12
+Disp "(ZERO VECTOR)"
+Pause
+End

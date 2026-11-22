@@ -1,0 +1,96 @@
+// SVD - singular value decomposition A = U*S*V^T of [A] (m x n).
+// V: orthonormal eigenvectors of A^T A (eigenvalues high to low)
+// U: u_i = A v_i / s_i for s_i > 0, extended to an orthonormal basis of R^m
+// Out: [C] = U (m x m), [D] = Sigma (m x n), [E] = V (n x n), ʟSV = singular values
+// For exact answers it also shows, in fractions: for each eigenvalue of A^T A the
+// unnormalised eigenvectors v and A*v (u = A*v/|A*v|), and the extra u vectors unnormalised.
+ClrHome
+Disp "SVD OF [A]","WORKING..."
+dim([A])→ʟZD
+ʟZD(1)→A
+ʟZD(2)→G
+[A]ᵀ*[A]→[F]
+[F]→[J]
+prgmZEIG
+If Z:Then
+Real
+Disp "NUMERICAL ERROR:","COMPLEX EIGENVALUES"
+Return
+End
+0*[F]→[E]
+G→dim(ʟSV)
+0→H
+For(U,1,E)
+ʟEV(U)→O
+[F]-O*identity(G)→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+prgmZNULL
+[I]→[H]
+prgmZGS
+// show this eigenspace exactly: unnormalised v's, and A*v (= sigma*u)
+ClrHome
+Disp "EIGENVALUE OF ATA"
+Disp O►Frac
+Disp "V VECTORS UNNORMALISED"
+Pause [I]►Frac
+If O>1ᴇ⁻9:Then
+[A]*[I]→[D]
+Disp "A*V = SIGMA*U, SO","U = A*V / |A*V|"
+Pause [D]►Frac
+End
+For(J,1,K)
+H+1→H
+√(max(0,O))→ʟSV(H)
+For(I,1,G)
+[G](I,J)→[E](I,H)
+End
+End
+End
+// rank = number of non-zero singular values
+0→U
+For(I,1,G)
+If ʟSV(I)>1ᴇ⁻6*max(1,ʟSV(1))
+U+1→U
+End
+{A,G}→dim([D])
+Fill(0,[D])
+For(I,1,min(A,G))
+ʟSV(I)→[D](I,I)
+End
+If U=0:Then
+identity(A)→[C]
+Else
+[A]*[E]→[H]
+For(J,1,U)
+For(I,1,A)
+[H](I,J)/ʟSV(J)→[H](I,J)
+End
+End
+{A,U}→dim([H])
+augment([H],identity(A))→[H]
+prgmZGS
+[G]→[C]
+{A,A}→dim([C])
+If U<A:Then
+ClrHome
+Disp "EXTRA U VECTORS:","COLS",U+1,"TO",A,"OF [I] (UNNORMALISED)"
+Pause [I]►Frac
+End
+End
+ClrHome
+Disp "SINGULAR VALUES","(SQRT OF EIG OF ATA)"
+Pause ʟSV
+Disp "SQUARED"
+Pause (ʟSV²)►Frac
+ClrHome
+Disp "A = U*S*V^T","U = [C]"
+Pause [C]
+ClrHome
+Disp "SIGMA = [D]"
+Pause [D]
+ClrHome
+Disp "V = [E]"
+Pause [E]

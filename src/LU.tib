@@ -1,0 +1,84 @@
+// LU - LU factorisation by Gaussian elimination, A = P*L*U.
+// Out: [C] = L (unit lower triangular), [D] = U (row-echelon form), [E] = P
+// If no row swap is needed P = I and A = LU.
+ClrHome
+Disp "LU FACTORISATION","A = P*L*U"
+Input "SHOW STEPS 1/0? ",S
+dim([A])→ʟZD
+ʟZD(1)→M
+ʟZD(2)→N
+[A]→[D]
+identity(M)→[C]
+identity(M)→[E]
+0→T
+For(I,1,M)
+For(J,1,N)
+max(T,abs([A](I,J)))→T
+End
+End
+1ᴇ⁻9*max(1,T)→T
+1→P
+For(J,1,N)
+If P≤M:Then
+0→K
+For(I,P,M)
+If K=0 and abs([D](I,J))>T
+I→K
+End
+If K>0:Then
+If K≠P:Then
+rowSwap([D],P,K)→[D]
+rowSwap([E],P,K)→[E]
+For(I,1,P-1)
+[C](P,I)→X
+[C](K,I)→[C](P,I)
+X→[C](K,I)
+End
+If S:Then
+ClrHome
+Disp "R"+sub("123456789",P,1)+" <-> R"+sub("123456789",K,1)
+Pause [D]►Frac
+End
+End
+For(I,P+1,M)
+[D](I,J)/[D](P,J)→X
+If abs(X)>1ᴇ⁻12:Then
+*row+(⁻X,[D],P,I)→[D]
+0→[D](I,J)
+X→[C](I,P)
+For(K,1,N)
+If abs([D](I,K))≤T
+0→[D](I,K)
+End
+If S:Then
+ClrHome
+Disp "R"+sub("123456789",I,1)+" = R"+sub("123456789",I,1)+" - C*R"+sub("123456789",P,1),"C = L("+sub("123456789",I,1)+","+sub("123456789",P,1)+") ="
+Disp X►Frac
+Pause [D]►Frac
+End
+Else
+0→[D](I,J)
+End
+End
+P+1→P
+End
+End
+End
+[E]ᵀ→[E]
+0→X
+For(I,1,M)
+X+[E](I,I)→X
+End
+ClrHome
+If X=M:Then
+Disp "NO ROW SWAPS","A = LU, P = I"
+Else
+Disp "ROW SWAPS NEEDED","A = P*L*U, P = [E]"
+Pause [E]
+ClrHome
+End
+Disp "L = [C]"
+Pause [C]►Frac
+ClrHome
+Disp "U = [D]"
+Pause [D]►Frac

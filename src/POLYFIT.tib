@@ -1,0 +1,31 @@
+// POLYFIT - least squares (or exact) polynomial fit with a Vandermonde matrix.
+// Data: x values in L1, y values in L2.
+// Out: [E] = Vandermonde matrix (columns 1, x, x^2, ...), [C] = coefficients a0..aD
+//      y = a0 + a1 x + ... + aD x^D
+ClrHome
+Disp "POLY FIT, X IN L1","Y IN L2"
+Input "DEGREE? ",O
+dim(L₁)→G
+{G,O+1}→dim([E])
+For(I,1,G)
+1→[E](I,1)
+For(J,2,O+1)
+L₁(I)^(J-1)→[E](I,J)
+End
+End
+List►matr(L₂,[F])
+augment([E]ᵀ*[E],[E]ᵀ*[F])→[J]
+0→S
+0→Q
+O+1→W
+prgmZRREF
+{O+1,1}→dim([C])
+Fill(0,[C])
+For(I,1,R)
+[J](I,O+2)→[C](ʟPIV(I),1)
+End
+ClrHome
+If R<O+1
+Disp "NOT UNIQUE (TOO FEW","POINTS), ONE SOLUTION:"
+Disp "Y=A0+A1X+...+ADX^D","[A0,...,AD] = [C]"
+Pause [C]►Frac

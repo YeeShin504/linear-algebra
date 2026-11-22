@@ -1,0 +1,53 @@
+// SPACES - rank, nullity, bases for column/row/null space of [A], linear independence.
+// Out: [C] = column space basis (pivot columns of A)
+//      [D] = row space basis (non-zero rows of RREF, as rows)
+//      [E] = null space basis (columns), [F] = RREF of A
+ClrHome
+Disp "SUBSPACES OF [A]"
+[A]→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+[J]→[F]
+{M,max(1,R)}→dim([C])
+Fill(0,[C])
+For(J,1,R)
+For(I,1,M)
+[A](I,ʟPIV(J))→[C](I,J)
+End
+End
+[F]→[D]
+{max(1,R),N}→dim([D])
+prgmZNULL
+[I]→[E]
+Disp "RANK =",R,"NULLITY =",F
+If R>0:Then
+Disp "PIVOT COLUMNS"
+Pause ʟPIV
+End
+ClrHome
+If R=N:Then
+Disp "COLUMNS ARE","LINEARLY INDEPENDENT"
+Else
+Disp "COLUMNS ARE","LINEARLY DEPENDENT"
+End
+If R=M:Then
+Disp "COLUMNS SPAN R^M"
+Else
+Disp "COLUMNS DO NOT SPAN R^M"
+End
+If R=N
+Disp "ROWS SPAN R^N"
+Pause
+ClrHome
+Disp "COL SPACE BASIS [C]","(PIVOT COLUMNS OF A)"
+Pause [C]►Frac
+ClrHome
+Disp "ROW SPACE BASIS [D]","(ROWS OF RREF)"
+Pause [D]►Frac
+ClrHome
+Disp "NULL SPACE BASIS [E]"
+If F=0
+Disp "(ONLY ZERO VECTOR)"
+Pause [E]►Frac

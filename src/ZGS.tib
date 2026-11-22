@@ -1,0 +1,33 @@
+// ZGS - helper: Gram-Schmidt process on the columns of [H].
+// In : [H] (m x n)
+// Out: [I] = orthogonal vectors v1..vK (not normalised), [G] = orthonormal vectors,
+//      K = number of vectors kept (columns that depend on earlier ones are dropped).
+//      If K=0 both are the m x 1 zero vector.
+// v_j = u_j - sum (u_j.v_i)/(v_i.v_i) v_i
+// Uses: M N J L I X, ʟZD ʟZU ʟZV ʟZW
+dim([H])→ʟZD
+ʟZD(1)→M
+ʟZD(2)→N
+0*[H]→[I]
+0*[H]→[G]
+0→K
+For(J,1,N)
+Matr►list([H],J,ʟZV)
+ʟZV→ʟZW
+For(L,1,K)
+Matr►list([I],L,ʟZU)
+ʟZW-(sum(ʟZW*ʟZU)/sum(ʟZU²))*ʟZU→ʟZW
+End
+√(sum(ʟZW²))→X
+If X>1ᴇ⁻9*max(1,√(sum(ʟZV²))):Then
+K+1→K
+For(I,1,M)
+If abs(ʟZW(I))<1ᴇ⁻12*X
+0→ʟZW(I)
+ʟZW(I)→[I](I,K)
+ʟZW(I)/X→[G](I,K)
+End
+End
+End
+{M,max(1,K)}→dim([I])
+{M,max(1,K)}→dim([G])

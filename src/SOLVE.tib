@@ -1,0 +1,48 @@
+// SOLVE - general solution of AX=B (B may have several columns).
+// Out: [C] = particular solution (free variables = 0)
+//      [D] = null space basis (columns); X = [C] + s1*D1 + ... + sF*DF
+//      [E] = RREF of [A|B], F = number of parameters
+ClrHome
+Disp "SOLVE AX=B","A=[A]  B=[B]"
+Input "SHOW STEPS 1/0? ",S
+dim([A])→ʟZD
+ʟZD(2)→G
+augment([A],[B])→[J]
+0→Q
+G→W
+prgmZRREF
+[J]→[E]
+0→O
+For(I,R+1,M)
+For(J,G+1,N)
+If [J](I,J)≠0
+1→O
+End
+End
+ClrHome
+If O:Then
+Disp "INCONSISTENT","NO SOLUTION","RREF OF [A|B]"
+Pause [E]►Frac
+Return
+End
+N-G→U
+{G,U}→dim([C])
+Fill(0,[C])
+For(I,1,R)
+For(J,1,U)
+[J](I,G+J)→[C](ʟPIV(I),J)
+End
+End
+prgmZNULL
+[I]→[D]
+ClrHome
+If F=0:Then
+Disp "UNIQUE SOLUTION","X = [C]"
+Pause [C]►Frac
+Else
+Disp "INFINITELY MANY","X=[C]+S1*D1+...+SF*DF","F =",F,"PARTICULAR [C]"
+Pause [C]►Frac
+ClrHome
+Disp "NULL SPACE BASIS","D1..DF = COLS OF [D]"
+Pause [D]►Frac
+End

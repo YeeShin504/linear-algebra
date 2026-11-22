@@ -1,0 +1,68 @@
+// MA1522 - main menu. Enter matrices in [A] (and [B]) with the matrix editor first.
+Lbl 0
+Menu("MA1522 (1/3)","REF / RREF",1,"SOLVE AX=B",2,"LU = PLU",3,"DET/INVERSE/ADJ",4,"CRAMER RULE",5,"NEXT PAGE",A,"QUIT",Q)
+Lbl A
+Menu("MA1522 (2/3)","SUBSPACES OF A",6,"COL CONSTRAINTS",7,"SUBSPACE TOOLS",8,"COORD/TRANSITION",9,"LINEAR TRANSFORM",10,"NEXT PAGE",B,"BACK",0)
+Lbl B
+Menu("MA1522 (3/3)","ORTHOGONALITY",11,"GRAM-SCHMIDT/QR",12,"LEAST SQUARES",13,"POLYNOMIAL FIT",14,"EIGEN/DIAGONAL",15,"MORE",C,"BACK",A)
+Lbl C
+Menu("MA1522 (MORE)","ORTHOG DIAGONAL",16,"SVD",17,"MARKOV CHAIN",18,"TEST VECTORS",19,"BACK",0,"QUIT",Q)
+Lbl 1
+prgmRREF
+Return
+Lbl 2
+prgmSOLVE
+Return
+Lbl 3
+prgmLU
+Return
+Lbl 4
+prgmINVERSE
+Return
+Lbl 5
+prgmCRAMER
+Return
+Lbl 6
+prgmSPACES
+Return
+Lbl 7
+prgmCOLCON
+Return
+Lbl 8
+prgmSUBSP
+Return
+Lbl 9
+prgmCOORD
+Return
+Lbl 10
+prgmLINTRAN
+Return
+Lbl 11
+prgmORTHO
+Return
+Lbl 12
+prgmGRAMSCH
+Return
+Lbl 13
+prgmLEASTSQ
+Return
+Lbl 14
+prgmPOLYFIT
+Return
+Lbl 15
+prgmEIGEN
+Return
+Lbl 16
+prgmORTDIAG
+Return
+Lbl 17
+prgmSVD
+Return
+Lbl 18
+prgmMARKOV
+Return
+Lbl 19
+prgmTESTVEC
+Return
+Lbl Q
+ClrHome

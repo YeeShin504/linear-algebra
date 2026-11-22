@@ -1,0 +1,65 @@
+// INVERSE - determinant, inverse (via RREF of [A|I]), cofactor matrix and adjoint.
+// Out: O = det(A), [C] = A^-1 (if it exists), [D] = adj(A), [E] = cofactor matrix
+ClrHome
+Disp "DET/INVERSE/ADJ OF [A]"
+dim([A])→ʟZD
+If ʟZD(1)≠ʟZD(2):Then
+Disp "A MUST BE SQUARE"
+Return
+End
+ʟZD(1)→G
+Input "SHOW STEPS 1/0? ",S
+augment([A],identity(G))→[J]
+0→Q
+G→W
+prgmZRREF
+det([A])→O
+If abs(O-round(O,0))<1ᴇ⁻9*max(1,abs(O))
+round(O,0)→O
+If R<G
+0→O
+ClrHome
+Disp "DET(A) ="
+Disp O►Frac
+If R<G:Then
+Disp "SINGULAR (RANK<N)","NO INVERSE","RREF OF [A|I]"
+Pause [J]►Frac
+Else
+{G,G}→dim([C])
+For(I,1,G)
+For(J,1,G)
+[J](I,G+J)→[C](I,J)
+End
+End
+Disp "A^-1 = [C]"
+Pause [C]►Frac
+End
+// ---- cofactors and adjoint ----
+{G,G}→dim([D])
+{G,G}→dim([E])
+If G=1:Then
+[[1]]→[D]
+[[1]]→[E]
+Else
+{G-1,G-1}→dim([H])
+For(I,1,G)
+For(J,1,G)
+For(K,1,G-1)
+For(L,1,G-1)
+[A](K+(K≥I),L+(L≥J))→[H](K,L)
+End
+End
+(⁻1)^(I+J)*det([H])→X
+If abs(X-round(X,0))<1ᴇ⁻9*max(1,abs(X))
+round(X,0)→X
+X→[E](I,J)
+X→[D](J,I)
+End
+End
+End
+ClrHome
+Disp "ADJ(A) = [D]"
+Pause [D]►Frac
+ClrHome
+Disp "COFACTOR MATRIX [E]","(ADJ = TRANSPOSE)"
+Pause [E]►Frac

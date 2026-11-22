@@ -1,0 +1,68 @@
+// ORTDIAG - orthogonal diagonalisation of a symmetric matrix [A]: A = P D P^T.
+// Each eigenspace basis is made orthonormal with Gram-Schmidt.
+// Out: [C] = P (orthonormal eigenvectors), [D] = D, [E] = orthogonal (unnormalised)
+//      eigenvectors, ʟEV / ʟAM as in EIGEN
+ClrHome
+Disp "ORTHOGONALLY DIAGONAL-","ISE [A]"
+dim([A])→ʟZD
+If ʟZD(1)≠ʟZD(2):Then
+Disp "A MUST BE SQUARE"
+Return
+End
+ʟZD(1)→G
+0→O
+For(I,1,G)
+For(J,1,G)
+If abs([A](I,J)-[A](J,I))>1ᴇ⁻9
+1→O
+End
+End
+If O:Then
+Disp "A IS NOT SYMMETRIC","=> NOT ORTHOGONALLY","DIAGONALIZABLE"
+Return
+End
+Disp "WORKING..."
+[A]→[J]
+prgmZEIG
+If Z:Then
+Real
+Disp "NUMERICAL ERROR:","COMPLEX EIGENVALUES"
+Return
+End
+0*[A]→[C]
+0*[A]→[D]
+0*[A]→[E]
+0→H
+For(U,1,E)
+ʟEV(U)→O
+[A]-O*identity(G)→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+prgmZNULL
+[I]→[H]
+prgmZGS
+ClrHome
+Disp "EIGENVALUE"
+Disp O►Frac
+Disp "ORTHOGONAL BASIS"
+Pause [I]►Frac
+For(J,1,K)
+H+1→H
+O→[D](H,H)
+For(I,1,G)
+[G](I,J)→[C](I,H)
+[I](I,J)→[E](I,H)
+End
+End
+End
+ClrHome
+Disp "A = P*D*P^T","P = [C] ORTHOGONAL"
+Pause [C]
+ClrHome
+Disp "D = [D]"
+Pause [D]►Frac
+ClrHome
+Disp "P BEFORE NORMALISING","= [E]"
+Pause [E]►Frac
