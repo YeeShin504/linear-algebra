@@ -1,0 +1,39 @@
+// CRAMER - Cramer's rule for AX=B, A square, B a column.
+// x_i = det(A_i)/det(A), A_i = A with column i replaced by B.
+// Out: [C] = solution
+ClrHome
+Disp "CRAMER RULE AX=B"
+dim([A])→ʟZD
+If ʟZD(1)≠ʟZD(2):Then
+Disp "A MUST BE SQUARE"
+Return
+End
+ʟZD(1)→G
+det([A])→O
+If abs(O-round(O,0))<1ᴇ⁻9*max(1,abs(O))
+round(O,0)→O
+If abs(O)<1ᴇ⁻10:Then
+Disp "DET(A)=0","CRAMER NOT APPLICABLE"
+Return
+End
+Disp "DET(A) ="
+Pause O►Frac
+{G,1}→dim([C])
+For(I,1,G)
+[A]→[H]
+For(K,1,G)
+[B](K,1)→[H](K,I)
+End
+det([H])→X
+If abs(X-round(X,0))<1ᴇ⁻9*max(1,abs(X))
+round(X,0)→X
+X/O→[C](I,1)
+ClrHome
+Disp "DET(A"+sub("123456789",I,1)+") ="
+Disp X►Frac
+Disp "X"+sub("123456789",I,1)+" ="
+Pause (X/O)►Frac
+End
+ClrHome
+Disp "SOLUTION X = [C]"
+Pause [C]►Frac

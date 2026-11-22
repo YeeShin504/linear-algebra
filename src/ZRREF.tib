@@ -1,0 +1,115 @@
+// ZRREF - helper: row-reduce [J] in place.
+// In : [J]  matrix to reduce
+//      S    1 = show every row operation, 0 = silent
+//      Q    1 = stop at row-echelon form (Gaussian elimination only), 0 = full RREF
+//      W    only columns 1..W may hold pivots (e.g. W=n for [A|b]); W<1 means all
+// Out: [J]  REF / RREF, R = rank, ʟPIV(1..R) = pivot column of row i,
+//      ʟISP(j) = row holding the pivot of column j (0 if column j is free)
+// Uses: M N T P I J K X Y C, ʟZD, Str1
+// With S=1 pivots are the first non-zero entry (like hand working);
+// with S=0 the largest entry is used (partial pivoting, more accurate).
+dim([J])→ʟZD
+ʟZD(1)→M
+ʟZD(2)→N
+If W<1 or W>N
+N→W
+0→T
+For(I,1,M)
+For(J,1,N)
+max(T,abs([J](I,J)))→T
+End
+End
+1ᴇ⁻9*max(1,T)→T
+W→dim(ʟPIV)
+W→dim(ʟISP)
+Fill(0,ʟPIV)
+Fill(0,ʟISP)
+1→P
+// ---- forward elimination ----
+For(J,1,W)
+If P≤M:Then
+0→K
+0→X
+For(I,P,M)
+abs([J](I,J))→Y
+If Y>T and (K=0 or (S=0 and Y>X)):Then
+I→K
+Y→X
+End
+End
+If K>0:Then
+If K≠P:Then
+rowSwap([J],P,K)→[J]
+If S:Then
+ClrHome
+Disp "R"+sub("123456789",P,1)+" <-> R"+sub("123456789",K,1)
+Pause [J]►Frac
+End
+End
+For(I,P+1,M)
+[J](I,J)→C
+If abs(C)>T:Then
+⁻C/[J](P,J)→C
+*row+(C,[J],P,I)→[J]
+0→[J](I,J)
+For(K,1,N)
+If abs([J](I,K))≤T
+0→[J](I,K)
+End
+If S:Then
+ClrHome
+Disp "R"+sub("123456789",I,1)+" = R"+sub("123456789",I,1)+" + C*R"+sub("123456789",P,1),"WHERE C ="
+Disp C►Frac
+Pause [J]►Frac
+End
+Else
+0→[J](I,J)
+End
+End
+J→ʟPIV(P)
+P→ʟISP(J)
+P+1→P
+End
+End
+End
+P-1→R
+If R=0
+1→dim(ʟPIV)
+// ---- backward phase: leading 1s and zeros above pivots ----
+If not(Q) and R>0:Then
+For(P,R,1,⁻1)
+ʟPIV(P)→J
+[J](P,J)→C
+If C≠1:Then
+*row(1/C,[J],P)→[J]
+1→[J](P,J)
+If S:Then
+ClrHome
+Disp "R"+sub("123456789",P,1)+" = C*R"+sub("123456789",P,1),"WHERE C ="
+Disp (1/C)►Frac
+Pause [J]►Frac
+End
+End
+For(I,1,P-1)
+[J](I,J)→C
+If abs(C)>T:Then
+*row+(⁻C,[J],P,I)→[J]
+0→[J](I,J)
+For(K,1,N)
+If abs([J](I,K))≤T
+0→[J](I,K)
+End
+If S:Then
+ClrHome
+Disp "R"+sub("123456789",I,1)+" = R"+sub("123456789",I,1)+" + C*R"+sub("123456789",P,1),"WHERE C ="
+Disp (⁻C)►Frac
+Pause [J]►Frac
+End
+Else
+0→[J](I,J)
+End
+End
+End
+End
+If R>0
+R→dim(ʟPIV)

@@ -1,0 +1,57 @@
+// MARKOV - stochastic matrix check, equilibrium vector, and k-step state.
+// [A] = transition matrix (columns sum to 1), [B] = initial state (optional)
+// Out: [C] = equilibrium vector(s) (entries summing to 1), [D] = A^k B
+ClrHome
+Disp "MARKOV CHAIN [A]"
+dim([A])→ʟZD
+If ʟZD(1)≠ʟZD(2):Then
+Disp "A MUST BE SQUARE"
+Return
+End
+ʟZD(1)→G
+0→O
+For(J,1,G)
+0→X
+For(I,1,G)
+X+[A](I,J)→X
+If [A](I,J)<0
+1→O
+End
+If abs(X-1)>1ᴇ⁻9
+1→O
+End
+If O:Then
+Disp "NOT STOCHASTIC","(ENTRIES>=0, COLUMNS","MUST SUM TO 1)"
+Else
+Disp "A IS STOCHASTIC"
+End
+[A]-identity(G)→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+prgmZNULL
+[I]→[C]
+For(J,1,F)
+0→X
+For(I,1,G)
+X+[C](I,J)→X
+End
+If X≠0:Then
+For(I,1,G)
+[C](I,J)/X→[C](I,J)
+End
+End
+End
+If F=0:Then
+Disp "NO NONZERO VECTOR","WITH AX = X"
+Else
+Disp "EQUILIBRIUM VECTOR(S)","(AX=X, SUM=1) = [C]"
+Pause [C]►Frac
+End
+Input "K STEPS FOR A^K*B, 0=NO? ",U
+If U>0:Then
+[A]^U*[B]→[D]
+Disp "A^K*B = [D]"
+Pause [D]►Frac
+End

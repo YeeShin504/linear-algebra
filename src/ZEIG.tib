@@ -1,0 +1,127 @@
+// ZEIG - helper: characteristic polynomial and eigenvalues of the square matrix [J].
+// Out: ʟCP = coefficients of det(xI-A), highest power first (length N+1)
+//      ʟEV = distinct eigenvalues (sorted high to low when all real)
+//      ʟEC = the same eigenvalues as complex numbers (use when Z=1)
+//      ʟAM = algebraic multiplicity of each, E = number of distinct eigenvalues
+//      Z   = 1 if some eigenvalue is not real (calculator is then left in a+bi mode)
+// Method: Faddeev-LeVerrier for the polynomial, Durand-Kerner for its roots, repeated
+// roots are merged (cluster average) and snapped to simple fractions p/q, q<=12.
+// Uses: N K I J L X Y V D B, [H] [G], ʟZD ʟZR ʟZU ʟZV ʟZW
+dim([J])→ʟZD
+ʟZD(1)→N
+a+b𝑖
+DelVar ʟCP
+N+1→dim(ʟCP)
+Fill(0,ʟCP)
+1→ʟCP(1)
+0*[J]→[H]
+For(K,1,N)
+[J]*[H]+ʟCP(K)*identity(N)→[H]
+[J]*[H]→[G]
+0→X
+For(I,1,N)
+X+[G](I,I)→X
+End
+⁻X/K→X
+If abs(X-round(X,0))<1ᴇ⁻9*max(1,abs(X))
+round(X,0)→X
+X→ʟCP(K+1)
+End
+// ---- roots of the polynomial (Durand-Kerner) ----
+0→B
+For(I,1,N)
+max(B,abs(ʟCP(I+1))^(1/I))→B
+End
+2*B+1→B
+seq(B*(.4+.9𝑖)^(K-1),K,1,N)→ʟZR
+For(L,1,100)
+0→D
+For(K,1,N)
+ʟZR(K)→V
+ʟCP(1)→Y
+For(I,2,N+1)
+Y*V+ʟCP(I)→Y
+End
+1→X
+For(I,1,N)
+If I≠K
+X*(V-ʟZR(I))→X
+End
+If X≠0:Then
+Y/X→Y
+V-Y→ʟZR(K)
+max(D,abs(Y))→D
+End
+End
+If D<1ᴇ⁻11*B
+100→L
+End
+// ---- merge repeated roots, snap to fractions ----
+N→dim(ʟZU)
+Fill(0,ʟZU)
+DelVar ʟEV
+DelVar ʟAM
+0*ʟZR→ʟEC
+N→dim(ʟEV)
+N→dim(ʟAM)
+0→E
+0→Z
+For(K,1,N)
+If not(ʟZU(K)):Then
+E+1→E
+0→V
+0→X
+For(I,K,N)
+If not(ʟZU(I)):Then
+If abs(ʟZR(I)-ʟZR(K))<1ᴇ⁻3*max(1,abs(ʟZR(K))):Then
+1→ʟZU(I)
+V+ʟZR(I)→V
+X+1→X
+End
+End
+End
+V/X→V
+X→ʟAM(E)
+If abs(imag(V))<1ᴇ⁻4*max(1,abs(V)):Then
+real(V)→V
+// polish: a root of multiplicity X is a simple root of the (X-1)th derivative
+ʟCP→ʟZW
+For(I,1,X)
+If I>1
+ʟZV→ʟZW
+seq(ʟZW(J)*(dim(ʟZW)-J),J,1,dim(ʟZW)-1)→ʟZV
+End
+For(L,1,25)
+ʟZW(1)→Y
+For(I,2,dim(ʟZW))
+Y*V+ʟZW(I)→Y
+End
+ʟZV(1)→D
+For(I,2,dim(ʟZV))
+D*V+ʟZV(I)→D
+End
+If D≠0
+V-Y/D→V
+End
+If abs(V)<1ᴇ⁻9
+0→V
+For(I,1,12)
+If abs(I*V-round(I*V,0))<1ᴇ⁻6*I:Then
+round(I*V,0)/I→V
+99→I
+End
+End
+Else
+1→Z
+End
+V→ʟEC(E)
+real(V)→ʟEV(E)
+End
+End
+E→dim(ʟEV)
+E→dim(ʟAM)
+E→dim(ʟEC)
+If not(Z):Then
+SortD(ʟEV,ʟAM)
+Real
+End

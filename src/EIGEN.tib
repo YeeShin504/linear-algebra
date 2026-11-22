@@ -1,0 +1,79 @@
+// EIGEN - characteristic polynomial, eigenvalues, eigenspaces, diagonalisation of [A].
+// Out: ʟCP = coefficients of det(xI-A) (highest power first)
+//      ʟEV = eigenvalues, ʟAM / ʟGM = algebraic / geometric multiplicities
+//      [C] = P (eigenvector columns), [D] = D (diagonal) with A = P D P^-1
+//      [E] = P^-1 (shown in fractions, for A^m = P D^m P^-1)
+ClrHome
+Disp "EIGEN / DIAGONALISE [A]"
+dim([A])→ʟZD
+If ʟZD(1)≠ʟZD(2):Then
+Disp "A MUST BE SQUARE"
+Return
+End
+ʟZD(1)→G
+Disp "WORKING..."
+[A]→[J]
+prgmZEIG
+ClrHome
+Disp "CHAR POLY DET(XI-A)","COEFFS, HIGHEST POWER","OF X FIRST"
+Pause ʟCP►Frac
+If Z:Then
+ClrHome
+Disp "EIGENVALUES (COMPLEX)"
+Pause ʟEC
+Disp "NOT DIAGONALIZABLE","OVER THE REALS"
+Return
+End
+ClrHome
+Disp "EIGENVALUES"
+Pause ʟEV►Frac
+Disp "ALGEBRAIC MULT."
+Pause ʟAM
+0*[A]→[C]
+0→H
+E→dim(ʟGM)
+For(U,1,E)
+ʟEV(U)→O
+[A]-O*identity(G)→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+prgmZNULL
+F→ʟGM(U)
+ClrHome
+Disp "EIGENVALUE"
+Disp O►Frac
+Disp "ALG MULT, GEO MULT"
+Disp {ʟAM(U),F}
+Disp "EIGENSPACE BASIS"
+Pause [I]►Frac
+For(J,1,F)
+H+1→H
+For(I,1,G)
+[I](I,J)→[C](I,H)
+End
+End
+End
+ClrHome
+If H<G:Then
+Disp "NOT DIAGONALIZABLE","(SOME GEO MULT IS LESS","THAN ITS ALG MULT)"
+Return
+End
+0*[A]→[D]
+0→H
+For(U,1,E)
+For(J,1,ʟGM(U))
+H+1→H
+ʟEV(U)→[D](H,H)
+End
+End
+Disp "DIAGONALIZABLE","A = P*D*P^-1","P = [C]"
+Pause [C]►Frac
+ClrHome
+Disp "D = [D]"
+Pause [D]►Frac
+ClrHome
+[C]⁻¹→[E]
+Disp "P^-1 = [E]"
+Pause [E]►Frac

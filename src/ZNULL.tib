@@ -1,0 +1,19 @@
+// ZNULL - helper: null space basis from an RREF produced by prgmZRREF.
+// In : [J] (RREF), W, R, ʟPIV, ʟISP (all as left by ZRREF)
+// Out: [I] = W x F matrix whose columns are a basis of the null space of the first
+//      W columns (each free variable set to 1 in turn), F = nullity = W-R.
+//      If F=0, [I] is the W x 1 zero vector.
+// Uses: I J K
+W-R→F
+{W,max(1,F)}→dim([I])
+Fill(0,[I])
+0→K
+For(J,1,W)
+If not(ʟISP(J)):Then
+K+1→K
+1→[I](J,K)
+For(I,1,R)
+⁻[J](I,J)→[I](ʟPIV(I),K)
+End
+End
+End

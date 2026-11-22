@@ -1,0 +1,38 @@
+// LINTRAN - standard matrix of a linear transformation from input/output vectors.
+// Columns of [A] = v1..vk, columns of [B] = T(v1)..T(vk). Finds T with T*A = B
+// by solving A^T T^T = B^T.
+// Out: [C] = standard matrix (free variables = 0 if it is not unique)
+ClrHome
+Disp "STANDARD MATRIX","T(COLS OF [A])","= COLS OF [B]"
+dim([A])→ʟZD
+ʟZD(1)→G
+dim([B])→ʟZD
+ʟZD(1)→U
+augment([A]ᵀ,[B]ᵀ)→[J]
+0→S
+0→Q
+G→W
+prgmZRREF
+0→O
+For(I,R+1,M)
+For(J,G+1,N)
+If [J](I,J)≠0
+1→O
+End
+End
+If O:Then
+Disp "NO SUCH LINEAR T","(INPUTS DEPENDENT BUT","OUTPUTS INCONSISTENT)"
+Return
+End
+{G,U}→dim([H])
+Fill(0,[H])
+For(I,1,R)
+For(J,1,U)
+[J](I,G+J)→[H](ʟPIV(I),J)
+End
+End
+[H]ᵀ→[C]
+If R<G
+Disp "NOT UNIQUE (INPUTS","DO NOT SPAN), ONE IS:"
+Disp "STANDARD MATRIX [C]"
+Pause [C]►Frac

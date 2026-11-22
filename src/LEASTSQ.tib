@@ -1,0 +1,49 @@
+// LEASTSQ - least squares solution of AX=B and projection of B onto col(A).
+// Solves the normal equation A^T A X = A^T B.
+// Out: [C] = least squares solution (free variables = 0), [D] = null space of A^T A
+//      [E] = projection of B onto col(A) = A[C], [F] = B - [E] (orthogonal part)
+ClrHome
+Disp "LEAST SQUARES AX=B","NORMAL EQN ATAX=ATB"
+dim([A])→ʟZD
+ʟZD(2)→G
+augment([A]ᵀ*[A],[A]ᵀ*[B])→[J]
+0→S
+0→Q
+G→W
+prgmZRREF
+N-G→U
+{G,U}→dim([C])
+Fill(0,[C])
+For(I,1,R)
+For(J,1,U)
+[J](I,G+J)→[C](ʟPIV(I),J)
+End
+End
+prgmZNULL
+[I]→[D]
+[A]*[C]→[E]
+[B]-[E]→[F]
+If F=0:Then
+Disp "UNIQUE LSQ SOLUTION"
+Else
+Disp "INFINITELY MANY:","X=[C]+S1*D1+..+SF*DF","F =",F
+End
+Disp "X = [C]"
+Pause [C]►Frac
+ClrHome
+If F>0:Then
+Disp "NULL BASIS [D]"
+Pause [D]►Frac
+ClrHome
+End
+Disp "PROJECTION OF B ONTO","COL(A) = A*X = [E]"
+Pause [E]►Frac
+ClrHome
+Disp "B - PROJ = [F]","(ORTHOGONAL TO COL A)"
+Pause [F]►Frac
+Matr►list([F],1,ʟZV)
+ClrHome
+Disp "DIST = NORM(B-AX)"
+Disp √(sum(ʟZV²))
+Disp "SQUARED ="
+Pause sum(ʟZV²)►Frac

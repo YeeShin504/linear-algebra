@@ -1,0 +1,23 @@
+// RREF - REF / RREF of [A] with optional step-by-step row operations.
+// Out: [C] = REF or RREF, ʟPIV = pivot columns, R = rank
+ClrHome
+Disp "REF/RREF OF [A]"
+Input "SHOW STEPS 1/0? ",S
+Input "REF ONLY 1/0? ",Q
+[A]→[J]
+0→W
+prgmZRREF
+[J]→[C]
+ClrHome
+If Q:Then
+Disp "REF OF A = [C]"
+Else
+Disp "RREF OF A = [C]"
+End
+Pause [C]►Frac
+ClrHome
+Disp "RANK =",R,"NULLITY =",N-R
+If R>0:Then
+Disp "PIVOT COLUMNS"
+Pause ʟPIV
+End

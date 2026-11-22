@@ -1,0 +1,63 @@
+// ORTHO - orthogonality checks and orthogonal complement for the columns of [A].
+// Out: [C] = A^T A (dot products) or basis of the orthogonal complement, or the
+//      normalised columns of A.
+ClrHome
+Menu("ORTHOGONALITY","ORTHOGONAL CHECK",1,"ORTH COMPLEMENT",2,"NORMALISE COLS",3)
+Lbl 1
+[A]ᵀ*[A]→[C]
+dim([C])→ʟZD
+ʟZD(1)→G
+dim([A])→ʟZD
+0→O
+0→U
+For(I,1,G)
+If abs([C](I,I)-1)>1ᴇ⁻9
+1→U
+For(J,1,G)
+If I≠J and abs([C](I,J))>1ᴇ⁻9
+1→O
+End
+End
+ClrHome
+Disp "DOT PRODUCTS A^T*A=[C]"
+Pause [C]►Frac
+If O:Then
+Disp "COLS NOT ORTHOGONAL"
+Return
+End
+Disp "COLS ARE ORTHOGONAL"
+If U:Then
+Disp "NOT ORTHONORMAL"
+Return
+End
+Disp "COLS ARE ORTHONORMAL"
+If ʟZD(1)=ʟZD(2)
+Disp "A IS AN ORTHOGONAL","MATRIX (A^-1 = A^T)"
+Return
+Lbl 2
+[A]ᵀ→[J]
+0→S
+0→Q
+0→W
+prgmZRREF
+prgmZNULL
+[I]→[C]
+ClrHome
+Disp "ORTH COMPLEMENT OF","COL SPACE = NULL(A^T)","DIM =",F
+Pause [C]►Frac
+Return
+Lbl 3
+[A]→[C]
+dim([A])→ʟZD
+For(J,1,ʟZD(2))
+Matr►list([A],J,ʟZV)
+√(sum(ʟZV²))→X
+If X>0:Then
+For(I,1,ʟZD(1))
+ʟZV(I)/X→[C](I,J)
+End
+End
+End
+ClrHome
+Disp "NORMALISED COLS [C]"
+Pause [C]►Frac

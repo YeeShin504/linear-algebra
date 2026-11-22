@@ -1,0 +1,52 @@
+// GRAMSCH - Gram-Schmidt on the columns of [A], and QR factorisation.
+// Out: [C] = orthogonal basis v1..vK, ʟNRM = |vi|^2 (so ui = vi/sqrt(ʟNRM(i)))
+//      [D] = orthonormal basis = Q, [E] = R = Q^T A (when columns are lin. indep.)
+//      [F] = V^T A in fractions: exact R entries are r_ij = F(i,j) / sqrt(ʟNRM(i))
+ClrHome
+Disp "GRAM-SCHMIDT ON [A]"
+[A]→[H]
+prgmZGS
+[I]→[C]
+[G]→[D]
+dim([C])→ʟZD
+ʟZD(2)→G
+G→dim(ʟNRM)
+For(J,1,G)
+Matr►list([C],J,ʟZV)
+sum(ʟZV²)→ʟNRM(J)
+End
+Disp "ORTHOGONAL BASIS [C]"
+Pause [C]►Frac
+ClrHome
+Disp "SQUARED NORMS |VI|^2"
+Pause ʟNRM►Frac
+ClrHome
+Disp "ORTHONORMAL BASIS [D]"
+Pause [D]
+dim([A])→ʟZD
+If K<ʟZD(2):Then
+ClrHome
+Disp "COLS OF A DEPENDENT","(DROPPED ZERO VECTORS)","NO QR FACTORISATION"
+Return
+End
+[D]ᵀ*[A]→[E]
+For(I,1,K)
+For(J,1,K)
+If I>J or abs([E](I,J))<1ᴇ⁻10
+0→[E](I,J)
+End
+End
+ClrHome
+Disp "A = QR","Q = [D], R = [E]"
+Pause [E]
+// exact form of R: r_ij = q_i . a_j = (v_i . a_j) / |v_i|
+[C]ᵀ*[A]→[F]
+For(I,1,K)
+For(J,1,K)
+If I>J or abs([F](I,J))<1ᴇ⁻10
+0→[F](I,J)
+End
+End
+ClrHome
+Disp "EXACT FORM, NI=|VI|^2:","R(I,J)=F(I,J)/SQRT(NI)","Q COL I=[C] COL I","        /SQRT(NI)","F = [F]"
+Pause [F]►Frac

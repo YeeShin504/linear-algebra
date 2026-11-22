@@ -1,0 +1,29 @@
+// COLCON - conditions on b for AX=b to be consistent (column space constraints).
+// Row-reduce [A|I]; rows of the right block next to zero rows of A give c with c.b = 0.
+// Out: [C] = constraint rows (AX=b consistent  <=>  [C]*b = 0)
+ClrHome
+Disp "CONSTRAINTS ON B","FOR AX=B CONSISTENT"
+dim([A])→ʟZD
+ʟZD(1)→G
+ʟZD(2)→U
+augment([A],identity(G))→[J]
+0→S
+0→Q
+U→W
+prgmZRREF
+If R=G:Then
+Disp "RANK = NUMBER OF ROWS","ALWAYS CONSISTENT","(COLS SPAN R^M)"
+Return
+End
+{G-R,G}→dim([C])
+For(I,1,G-R)
+For(J,1,G)
+[J](R+I,U+J)→[C](I,J)
+End
+End
+[C]→[J]
+0→W
+prgmZRREF
+[J]→[C]
+Disp "CONSISTENT IFF","[C]*B = 0, I.E. EACH ROW","C OF [C] HAS C.B = 0"
+Pause [C]►Frac

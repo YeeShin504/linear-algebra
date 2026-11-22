@@ -18,3 +18,6 @@ site/
 htmlcov/
 .coverage/
 .coverage
+
+# Token sheet downloaded by tools/build.py
+tools/8X.xml

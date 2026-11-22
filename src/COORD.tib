@@ -1,0 +1,43 @@
+// COORD - coordinate vectors and transition matrices.
+// 1: [v]_S for every column v of [B], basis S = columns of [A]     -> [C]
+// 2: transition matrix from basis S=[A] to basis T=[B]: [v]_T = P[v]_S -> [C]
+//    (P = T^-1 S, found from RREF of [T|S])
+ClrHome
+Menu("COORDINATES","COORDS OF B IN A",1,"TRANSITION A TO B",2)
+Lbl 1
+augment([A],[B])→[J]
+dim([A])→ʟZD
+Goto C
+Lbl 2
+augment([B],[A])→[J]
+dim([B])→ʟZD
+Lbl C
+ʟZD(2)→G
+0→S
+0→Q
+G→W
+prgmZRREF
+ClrHome
+If R<G:Then
+Disp "BASIS COLUMNS ARE","NOT LIN INDEPENDENT"
+Return
+End
+0→O
+For(I,R+1,M)
+For(J,G+1,N)
+If [J](I,J)≠0
+1→O
+End
+End
+If O:Then
+Disp "SOME VECTOR IS NOT","IN THE SPAN OF BASIS"
+Return
+End
+{G,N-G}→dim([C])
+For(I,1,G)
+For(J,1,N-G)
+[J](I,G+J)→[C](I,J)
+End
+End
+Disp "RESULT [C]"
+Pause [C]►Frac
